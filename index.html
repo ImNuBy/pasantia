@@ -3,321 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.E.S.T N°2 - Técnica Electrónica</title>
     <link rel="stylesheet" href="css/styles.css">
-    <title>Escuela Primaria para Adultos - Tu Futuro Comienza Aquí</title>
-  
+    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <a href="#inicio" class="logo">🎓 Escuela Primaria Adultos</a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#sobre-nosotros">Sobre Nosotros</a></li>
-                    <li><a href="#programas">Programas</a></li>
-                    <li><a href="#testimonios">Testimonios</a></li>
-                    <li><a href="#inscripcion">Inscripción</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                    <li><a href="#login" class="login-btn">Iniciar Sesión</a></li>
+    <!-- Header -->
+    <header class="header" id="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>E.E.S.T N°2</h1>
+                </div>
+                <ul class="nav-menu" id="nav-menu">
+                    <li class="nav-item">
+                        <a href="#inicio" class="nav-link active">INICIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#nosotros" class="nav-link">NOSOTROS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#orientaciones" class="nav-link">ORIENTACIONES</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#proyectos" class="nav-link">PROYECTOS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contacto" class="nav-link">CONTACTO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#login" class="nav-link login-btn">INICIAR SESION</a>
+                    </li>
                 </ul>
-            </nav>
-        </div>
+                <div class="nav-toggle" id="nav-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
     </header>
 
-    <main>
-        <!-- Sección Inicio -->
-        <section id="inicio" class="section hero fade-in">
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-background"></div>
+        <div class="hero-content">
             <div class="container">
-                <h1>Tu Futuro Comienza Aquí</h1>
-                <p>Nunca es tarde para aprender. Completa tu educación primaria con nosotros en un ambiente diseñado especialmente para adultos.</p>
-                <a href="#inscripcion" class="cta-button">Inscríbete Ahora</a>
+                <h1 class="hero-title">Técnica N°2</h1>
+                <h2 class="hero-subtitle">Electrónica</h2>
+                <p class="hero-description">
+                    Formando profesionales técnicos en electrónica con excelencia académica 
+                    y preparación para el mundo laboral del siglo XXI.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#nosotros" class="btn btn-primary">Conocer Más</a>
+                    <a href="#orientaciones" class="btn btn-secondary">Nuestras Orientaciones</a>
+                </div>
             </div>
-        </section>
+        </div>
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
 
-        <!-- Sección Sobre Nosotros -->
-        <section id="sobre-nosotros" class="section fade-in">
-            <div class="container">
-                <h2>Sobre Nosotros</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <span class="card-icon">🏫</span>
-                        <h3>Nuestra Misión</h3>
-                        <p>Brindar educación primaria de calidad a adultos que buscan completar sus estudios básicos, con metodologías adaptadas a sus necesidades y horarios.</p>
+    <!-- Nosotros Section -->
+    <section id="nosotros" class="section nosotros">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Sobre Nosotros</h2>
+                <p class="section-subtitle">Más de 50 años formando técnicos especializados</p>
+            </div>
+            <div class="nosotros-grid">
+                <div class="nosotros-card">
+                    <div class="card-icon">
+                        <i class="icon-graduation"></i>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">👥</span>
-                        <h3>Nuestra Visión</h3>
-                        <p>Ser la institución líder en educación primaria para adultos, promoviendo la inclusión educativa y el desarrollo personal de nuestros estudiantes.</p>
+                    <h3>Nuestra Historia</h3>
+                    <p>Fundada en 1970, somos una institución líder en formación técnica, con más de 5000 egresados trabajando en la industria.</p>
+                </div>
+                <div class="nosotros-card">
+                    <div class="card-icon">
+                        <i class="icon-target"></i>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">⭐</span>
-                        <h3>Nuestros Valores</h3>
-                        <p>Respeto, inclusión, excelencia académica, flexibilidad y compromiso con el desarrollo integral de cada estudiante.</p>
+                    <h3>Nuestra Misión</h3>
+                    <p>Formar técnicos competentes en electrónica, comprometidos con la innovación y el desarrollo tecnológico del país.</p>
+                </div>
+                <div class="nosotros-card">
+                    <div class="card-icon">
+                        <i class="icon-vision"></i>
+                    </div>
+                    <h3>Nuestra Visión</h3>
+                    <p>Ser la escuela técnica de referencia en electrónica, reconocida por la calidad de nuestros egresados y proyectos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Orientaciones Section -->
+    <section id="orientaciones" class="section orientaciones">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Orientaciones Técnicas</h2>
+                <p class="section-subtitle">Especializaciones que ofrecemos</p>
+            </div>
+            <div class="orientaciones-grid">
+                <div class="orientacion-card">
+                    <div class="card-image">
+                        <div class="card-overlay"></div>
+                        <h3>Electrónica</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Formación integral en sistemas electrónicos, microcontroladores, automatización y control industrial.</p>
+                        <ul>
+                            <li>Circuitos Analógicos y Digitales</li>
+                            <li>Microcontroladores y Microprocesadores</li>
+                            <li>Sistemas de Control</li>
+                            <li>Instrumentación Electrónica</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="orientacion-card">
+                    <div class="card-image">
+                        <div class="card-overlay"></div>
+                        <h3>Computación</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Especialización en programación, redes, bases de datos y desarrollo de software.</p>
+                        <ul>
+                            <li>Programación en Múltiples Lenguajes</li>
+                            <li>Administración de Redes</li>
+                            <li>Bases de Datos</li>
+                            <li>Desarrollo Web y Móvil</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="orientacion-card">
+                    <div class="card-image">
+                        <div class="card-overlay"></div>
+                        <h3>Comunicaciones</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Tecnologías de la información y comunicación, telecomunicaciones y sistemas de transmisión.</p>
+                        <ul>
+                            <li>Sistemas de Telecomunicaciones</li>
+                            <li>Redes de Comunicación</li>
+                            <li>Fibra Óptica</li>
+                            <li>Sistemas Inalámbricos</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Sección Programas -->
-        <section id="programas" class="section fade-in">
-            <div class="container">
-                <h2>Nuestros Programas</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <span class="card-icon">📚</span>
-                        <h3>Educación Primaria Completa</h3>
-                        <p>Programa integral que abarca todos los grados de primaria con materias fundamentales: Lengua, Matemáticas, Ciencias Naturales, Ciencias Sociales.</p>
-                        <p><strong>Duración:</strong> 3 años</p>
-                        <p><strong>Modalidad:</strong> Presencial y Semi-presencial</p>
+    <!-- Proyectos Section -->
+    <section id="proyectos" class="section proyectos">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Proyectos Destacados</h2>
+                <p class="section-subtitle">Innovación y desarrollo tecnológico</p>
+            </div>
+            <div class="proyectos-grid">
+                <div class="proyecto-card">
+                    <div class="proyecto-image"></div>
+                    <div class="proyecto-content">
+                        <h3>Sistema de Monitoreo Ambiental</h3>
+                        <p>Desarrollo de sensores IoT para monitoreo de calidad del aire y condiciones ambientales urbanas.</p>
+                        <div class="proyecto-tags">
+                            <span class="tag">IoT</span>
+                            <span class="tag">Sensores</span>
+                            <span class="tag">Arduino</span>
+                        </div>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">🕒</span>
-                        <h3>Horarios Flexibles</h3>
-                        <p>Adaptamos nuestros horarios a tu vida laboral y familiar.</p>
-                        <p><strong>Turno Mañana:</strong> 8:00 - 12:00 hs</p>
-                        <p><strong>Turno Tarde:</strong> 14:00 - 18:00 hs</p>
-                        <p><strong>Turno Noche:</strong> 19:00 - 22:00 hs</p>
+                </div>
+                <div class="proyecto-card">
+                    <div class="proyecto-image"></div>
+                    <div class="proyecto-content">
+                        <h3>Brazo Robótico Educativo</h3>
+                        <p>Construcción de brazo robótico controlado por microcontroladores para aplicaciones educativas.</p>
+                        <div class="proyecto-tags">
+                            <span class="tag">Robótica</span>
+                            <span class="tag">Control</span>
+                            <span class="tag">Educación</span>
+                        </div>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">🎯</span>
-                        <h3>Apoyo Personalizado</h3>
-                        <p>Tutorías individuales, material de estudio adaptado y seguimiento personalizado del progreso académico.</p>
-                        <p><strong>Incluye:</strong> Apoyo psicopedagógico, orientación vocacional y talleres de técnicas de estudio.</p>
+                </div>
+                <div class="proyecto-card">
+                    <div class="proyecto-image"></div>
+                    <div class="proyecto-content">
+                        <h3>App de Gestión Escolar</h3>
+                        <p>Aplicación móvil para gestión de calificaciones, asistencia y comunicación escolar.</p>
+                        <div class="proyecto-tags">
+                            <span class="tag">Mobile</span>
+                            <span class="tag">Backend</span>
+                            <span class="tag">Database</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Sección Testimonios -->
-        <section id="testimonios" class="section fade-in">
-            <div class="container">
-                <h2>Testimonios</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <span class="card-icon">💬</span>
-                        <h3>María González</h3>
-                        <p>"Después de 20 años sin estudiar, encontré en esta escuela el apoyo que necesitaba. Los profesores entienden nuestras necesidades como adultos."</p>
-                        <p><strong>Graduada 2023</strong></p>
+    <!-- Contacto Section -->
+    <section id="contacto" class="section contacto">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contacto</h2>
+                <p class="section-subtitle">Ponte en contacto con nosotros</p>
+            </div>
+            <div class="contacto-grid">
+                <div class="contacto-info">
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <h3>Dirección</h3>
+                            <p>Av. Tecnológica 1234<br>
+                            Ciudad Técnica, Buenos Aires<br>
+                            Argentina</p>
+                        </div>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">💬</span>
-                        <h3>Carlos Rodríguez</h3>
-                        <p>"Pude combinar mis estudios con mi trabajo gracias a los horarios flexibles. Ahora puedo ayudar a mis hijos con sus tareas."</p>
-                        <p><strong>Estudiante Actual</strong></p>
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <h3>Teléfono</h3>
+                            <p>+54 11 1234-5678<br>
+                            +54 11 8765-4321</p>
+                        </div>
                     </div>
-                    <div class="card">
-                        <span class="card-icon">💬</span>
-                        <h3>Ana Martínez</h3>
-                        <p>"El ambiente es muy cálido y comprensivo. Nunca me sentí juzgada por mi edad. Recomiendo esta escuela a todos los adultos que quieran estudiar."</p>
-                        <p><strong>Graduada 2024</strong></p>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <h3>Email</h3>
+                            <p>info@eest2.edu.ar<br>
+                            secretaria@eest2.edu.ar</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕒</div>
+                        <div class="info-content">
+                            <h3>Horarios</h3>
+                            <p>Lunes a Viernes: 7:00 - 18:00<br>
+                            Sábados: 8:00 - 12:00</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Sección Inscripción -->
-        <section id="inscripcion" class="section fade-in">
-            <div class="container">
-                <h2>Inscripción</h2>
-                <div class="contact-form">
-                    <h3 style="text-align: center; margin-bottom: 2rem; color: #2d3748;">Completa este formulario para pre-inscribirte</h3>
-                    <form id="inscripcionForm">
+                <div class="contacto-form">
+                    <form id="contactForm">
                         <div class="form-group">
-                            <label for="nombre">Nombre Completo *</label>
+                            <label for="nombre">Nombre completo</label>
                             <input type="text" id="nombre" name="nombre" required>
                         </div>
                         <div class="form-group">
-                            <label for="edad">Edad *</label>
-                            <input type="number" id="edad" name="edad" min="18" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email *</label>
+                            <label for="email">Email</label>
                             <input type="email" id="email" name="email" required>
                         </div>
                         <div class="form-group">
-                            <label for="telefono">Teléfono *</label>
-                            <input type="tel" id="telefono" name="telefono" required>
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono">
                         </div>
                         <div class="form-group">
-                            <label for="turno">Turno Preferido *</label>
-                            <select id="turno" name="turno" required>
-                                <option value="">Selecciona un turno</option>
-                                <option value="mañana">Mañana (8:00 - 12:00)</option>
-                                <option value="tarde">Tarde (14:00 - 18:00)</option>
-                                <option value="noche">Noche (19:00 - 22:00)</option>
+                            <label for="asunto">Asunto</label>
+                            <select id="asunto" name="asunto" required>
+                                <option value="">Seleccionar asunto</option>
+                                <option value="inscripcion">Información sobre inscripción</option>
+                                <option value="orientaciones">Consulta sobre orientaciones</option>
+                                <option value="proyectos">Información sobre proyectos</option>
+                                <option value="general">Consulta general</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="modalidad">Modalidad *</label>
-                            <select id="modalidad" name="modalidad" required>
-                                <option value="">Selecciona una modalidad</option>
-                                <option value="presencial">Presencial</option>
-                                <option value="semi-presencial">Semi-presencial</option>
-                            </select>
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
                         </div>
-                        <div class="form-group">
-                            <label for="mensaje">Comentarios adicionales</label>
-                            <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos sobre tu situación particular o cualquier consulta que tengas..."></textarea>
-                        </div>
-                        <button type="submit" class="cta-button" style="width: 100%;">Enviar Pre-inscripción</button>
+                        <button type="submit" class="btn btn-primary btn-full">Enviar Mensaje</button>
                     </form>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Sección Contacto -->
-        <section id="contacto" class="section fade-in">
-            <div class="container">
-                <h2>Contacto</h2>
-                <div class="cards-grid">
-                    <div class="card">
-                        <span class="card-icon">📍</span>
-                        <h3>Ubicación</h3>
-                        <p>Av. Educación 1234<br>Ciudad Autónoma de Buenos Aires<br>Argentina</p>
-                    </div>
-                    <div class="card">
-                        <span class="card-icon">📞</span>
-                        <h3>Teléfono</h3>
-                        <p>+54 11 1234-5678<br>+54 11 8765-4321</p>
-                        <p><strong>Horario de atención:</strong><br>Lunes a Viernes: 8:00 - 18:00 hs</p>
-                    </div>
-                    <div class="card">
-                        <span class="card-icon">📧</span>
-                        <h3>Email</h3>
-                        <p>info@escuelaprimaria.edu.ar<br>inscripciones@escuelaprimaria.edu.ar</p>
-                        <p><strong>Respuesta:</strong> Dentro de 24 horas</p>
-                    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E.E.S.T N°2</h3>
+                    <p>Formando técnicos competentes para el futuro tecnológico del país.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#orientaciones">Orientaciones</a></li>
+                        <li><a href="#proyectos">Proyectos</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p>📍 Av. Tecnológica 1234</p>
+                    <p>📞 +54 11 1234-5678</p>
+                    <p>📧 info@eest2.edu.ar</p>
                 </div>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Escuela Primaria para Adultos. Todos los derechos reservados.</p>
-            <p>Educación de calidad para toda la vida 🎓</p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 E.E.S.T N°2. Todos los derechos reservados.</p>
+            </div>
         </div>
     </footer>
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Fade in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Form submission handling
-        document.getElementById('inscripcionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = new FormData(this);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-            
-            // Simulate form submission
-            alert('¡Gracias por tu interés! Hemos recibido tu pre-inscripción. Te contactaremos en las próximas 24 horas para completar el proceso.\n\nDatos recibidos:\n' + 
-                  'Nombre: ' + data.nombre + '\n' +
-                  'Email: ' + data.email + '\n' +
-                  'Turno: ' + data.turno + '\n' +
-                  'Modalidad: ' + data.modalidad);
-            
-            // Reset form
-            this.reset();
-        });
-
-        // Login button functionality
-        document.querySelector('.login-btn').addEventListener('click', function(e) {
-            if (this.getAttribute('href') === '#login') {
-                e.preventDefault();
-                alert('Funcionalidad de login en desarrollo.\n\nAquí se implementará:\n- Portal de estudiantes\n- Portal de profesores\n- Sistema de gestión administrativa\n- Acceso a calificaciones y material de estudio');
-            }
-        });
-
-        // Header background change on scroll
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(255, 255, 255, 0.98)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-            }
-        });
-
-        // Mobile menu toggle (basic implementation)
-        const mobileMenuBtn = document.createElement('button');
-        mobileMenuBtn.innerHTML = '☰';
-        mobileMenuBtn.style.display = 'none';
-        mobileMenuBtn.style.background = 'none';
-        mobileMenuBtn.style.border = 'none';
-        mobileMenuBtn.style.fontSize = '1.5rem';
-        mobileMenuBtn.style.cursor = 'pointer';
-        mobileMenuBtn.style.color = '#4a5568';
-
-        // Add mobile menu button to header
-        document.querySelector('.header-content').appendChild(mobileMenuBtn);
-
-        // Show/hide mobile menu button based on screen size
-        function checkScreenSize() {
-            const navLinks = document.querySelector('.nav-links');
-            if (window.innerWidth <= 768) {
-                mobileMenuBtn.style.display = 'block';
-                navLinks.style.display = 'none';
-            } else {
-                mobileMenuBtn.style.display = 'none';
-                navLinks.style.display = 'flex';
-            }
-        }
-
-        window.addEventListener('resize', checkScreenSize);
-        checkScreenSize();
-
-        // Mobile menu toggle functionality
-        mobileMenuBtn.addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            if (navLinks.style.display === 'none' || navLinks.style.display === '') {
-                navLinks.style.display = 'flex';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '100%';
-                navLinks.style.left = '0';
-                navLinks.style.right = '0';
-                navLinks.style.background = 'white';
-                navLinks.style.padding = '1rem';
-                navLinks.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            } else {
-                navLinks.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="js/main.js"></script>
 </body>
 </html>
