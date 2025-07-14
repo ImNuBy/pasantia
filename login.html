@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Login - E.E.S.T N°2</title>
+</head>
+<body>
+    <a href="index.html" class="back-home" title="Volver al inicio">
+        ←
+    </a>
+
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">ET</div>
+            <h1 class="login-title">Iniciar Sesión</h1>
+            <p class="login-subtitle">E.E.S.T N°2 - Portal Educativo</p>
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="role-selector">
+                <div class="role-grid">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="alumno" class="role-input" checked>
+                        <div class="role-card">
+                            <span class="role-icon">🎓</span>
+                            <div class="role-name">Alumno</div>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="profesor" class="role-input">
+                        <div class="role-card">
+                            <span class="role-icon">👨‍🏫</span>
+                            <div class="role-name">Profesor</div>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="directivo" class="role-input">
+                        <div class="role-card">
+                            <span class="role-icon">👔</span>
+                            <div class="role-name">Directivo</div>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="administrador" class="role-input">
+                        <div class="role-card">
+                            <span class="role-icon">⚙️</span>
+                            <div class="role-name">Administrador</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="usuario" class="form-label">Usuario / Email</label>
+                <input type="text" id="usuario" name="usuario" class="form-input" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="password-group">
+                    <input type="password" id="password" name="password" class="form-input" required autocomplete="current-password">
+                    <button type="button" class="password-toggle" id="passwordToggle">
+                        👁️
+                    </button>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember" name="remember" class="checkbox-input">
+                <label for="remember" class="checkbox-label">Recordar sesión</label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="form-links">
+            <a href="#" class="form-link" id="forgotPassword">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const passwordInput = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
+
+        // Password visibility toggle
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form validation
+        function validateForm(formData) {
+            const errors = {};
+            
+            // Usuario validation
+            if (!formData.usuario || formData.usuario.trim().length < 3) {
+                errors.usuario = 'El usuario debe tener al menos 3 caracteres';
+            }
+            
+            // Password validation
+            if (!formData.password || formData.password.length < 6) {
+                errors.password = 'La contraseña debe tener al menos 6 caracteres';
+            }
+            
+            return errors;
+        }
+
+        // Show field error
+        function showFieldError(fieldName, message) {
+            const field = document.getElementById(fieldName);
+            const formGroup = field.closest('.form-group');
+            
+            // Remove existing error
+            const existingError = formGroup.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `⚠️ ${message}`;
+            
+            formGroup.appendChild(errorDiv);
+            field.classList.add('error');
+        }
+
+        // Clear field errors
+        function clearFieldErrors() {
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(error => error.remove());
+            
+            const errorInputs = document.querySelectorAll('.form-input.error');
+            errorInputs.forEach(input => input.classList.remove('error'));
+        }
+
+        // Show success message
+        function showSuccessMessage(role, usuario) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `✅ Bienvenido/a! Redirigiendo al panel de ${role}...`;
+            
+            loginForm.insertBefore(successDiv, loginForm.firstChild);
+            
+            // Simulate redirect after 2 seconds
+            setTimeout(() => {
+                redirectToPanel(role, usuario);
+            }, 2000);
+        }
+
+        // Redirect to appropriate panel
+        function redirectToPanel(role, usuario) {
+            const panels = {
+                alumno: 'panel-alumno.html',
+                profesor: 'panel-profesor.html',
+                directivo: 'panel-directivo.html',
+                administrador: 'panel-admin.html'
+            };
+            
+            // Store user data in sessionStorage
+            const userData = {
+                role: role,
+                usuario: usuario,
+                loginTime: new Date().toISOString()
+            };
+            
+            sessionStorage.setItem('userData', JSON.stringify(userData));
+            
+            // For demo purposes, show alert
+            alert(`Redirigiendo al panel de ${role}\nUsuario: ${usuario}\n\nEn un sitio real, esto redirigiría a: ${panels[role]}`);
+            
+            // In a real application, you would do:
+            // window.location.href = panels[role];
+        }
+
+        // Form submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            clearFieldErrors();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Validate form
+            const errors = validateForm(data);
+            
+            if (Object.keys(errors).length > 0) {
+                // Show errors
+                for (const [field, message] of Object.entries(errors)) {
+                    showFieldError(field, message);
+                }
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Demo credentials for each role
+                const validCredentials = {
+                    alumno: { usuario: 'alumno', password: '123456' },
+                    profesor: { usuario: 'profesor', password: '123456' },
+                    directivo: { usuario: 'directivo', password: '123456' },
+                    administrador: { usuario: 'admin', password: '123456' }
+                };
+                
+                const roleCredentials = validCredentials[data.role];
+                
+                if (data.usuario === roleCredentials.usuario && data.password === roleCredentials.password) {
+                    // Success
+                    showSuccessMessage(data.role, data.usuario);
+                } else {
+                    // Error
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    
+                    showFieldError('password', 'Usuario o contraseña incorrectos');
+                    
+                    // For demo, show valid credentials
+                    setTimeout(() => {
+                        alert(`Credenciales de prueba para ${data.role}:\nUsuario: ${roleCredentials.usuario}\nContraseña: ${roleCredentials.password}`);
+                    }, 1000);
+                }
+            }, 1500);
+        });
+
+        // Forgot password functionality
+        forgotPasswordLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const role = document.querySelector('input[name="role"]:checked').value;
+            
+            alert(`Funcionalidad de recuperación de contraseña para ${role}\n\nEn un sitio real, esto enviaría un email de recuperación o redirigiría a una página de recuperación.`);
+        });
+
+        // Demo credentials info
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const demoInfo = document.createElement('div');
+                demoInfo.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: rgba(0,0,0,0.8);
+                    color: white;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    max-width: 250px;
+                    z-index: 1000;
+                    animation: slideIn 0.5s ease;
+                `;
+                demoInfo.innerHTML = `
+                    <strong>Demo - Credenciales de prueba:</strong><br>
+                    Todos los roles: <br>
+                    Usuario: [rol] (ej: alumno)<br>
+                    Contraseña: 123456
+                `;
+                
+                document.body.appendChild(demoInfo);
+                
+                // Remove after 8 seconds
+                setTimeout(() => {
+                    demoInfo.style.animation = 'slideOut 0.5s ease';
+                    setTimeout(() => demoInfo.remove(), 500);
+                }, 8000);
+            }, 2000);
+        });
+
+        // Keyboard accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearFieldErrors();
+            }
+        });
+
+        // Auto-focus first input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('usuario').focus();
+        });
+    </script>
+</body>
+</html>

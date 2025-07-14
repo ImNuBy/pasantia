@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Horarios Escolares</title>
+    <link rel="stylesheet" href="css/horarios.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📅 Horario de Clases</h1>
+            <div class="student-info">
+                <div class="info-item"><strong>Estudiante:</strong> María González</div>
+                <div class="info-item"><strong>Curso:</strong> 6° Grado</div>
+                <div class="info-item"><strong>Año:</strong> 2025</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <label for="dayFilter">Filtrar por día:</label>
+                <select id="dayFilter">
+                    <option value="all">Todos</option>
+                    <option value="lunes">Lunes</option>
+                    <option value="martes">Martes</option>
+                    <option value="miercoles">Miércoles</option>
+                    <option value="jueves">Jueves</option>
+                    <option value="viernes">Viernes</option>
+                </select>
+            </div>
+
+            <div class="grades-table">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Día</th>
+                            <th>Hora</th>
+                            <th>Materia</th>
+                            <th>Aula</th>
+                            <th>Profesor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const scheduleData = [
+            { day: 'lunes', hour: '08:00 - 09:00', subject: 'Lengua y Literatura', room: 'Aula 1', teacher: 'Prof. Torres' },
+            { day: 'lunes', hour: '09:00 - 10:00', subject: 'Matemáticas', room: 'Aula 2', teacher: 'Prof. López' },
+            { day: 'martes', hour: '10:00 - 11:00', subject: 'Ciencias Sociales', room: 'Aula 3', teacher: 'Prof. Suárez' },
+            { day: 'miercoles', hour: '08:00 - 09:00', subject: 'Educación Física', room: 'Gimnasio', teacher: 'Prof. Díaz' },
+            { day: 'jueves', hour: '09:00 - 10:00', subject: 'Inglés', room: 'Aula 4', teacher: 'Prof. Smith' },
+            { day: 'viernes', hour: '10:00 - 11:00', subject: 'Informática', room: 'Sala de Comp.', teacher: 'Prof. Vera' },
+            { day: 'viernes', hour: '11:00 - 12:00', subject: 'Educación Artística', room: 'Taller', teacher: 'Prof. Aranda' }
+        ];
+
+        function renderSchedule() {
+            const tbody = document.getElementById('scheduleBody');
+            const dayFilter = document.getElementById('dayFilter').value;
+            tbody.innerHTML = '';
+
+            let filtered = scheduleData;
+            if (dayFilter !== 'all') {
+                filtered = scheduleData.filter(item => item.day === dayFilter);
+            }
+
+            filtered.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${capitalize(item.day)}</td>
+                    <td>${item.hour}</td>
+                    <td>${item.subject}</td>
+                    <td>${item.room}</td>
+                    <td>${item.teacher}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function capitalize(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        document.getElementById('dayFilter').addEventListener('change', renderSchedule);
+        renderSchedule();
+    </script>
+</body>
+</html>

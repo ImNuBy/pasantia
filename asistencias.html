@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Asistencias</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sistema de Asistencias</h1>
+            <p>Escuela Primaria para Adultos</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('report')">Reportar Ausencia</button>
+            <button class="nav-tab" onclick="showSection('attendance')">Marcar Asistencia</button>
+            <button class="nav-tab" onclick="showSection('history')">Historial</button>
+            <button class="nav-tab" onclick="showSection('stats')">Estadísticas</button>
+        </div>
+
+        <div class="content">
+            <!-- Sección Reportar Ausencia -->
+            <div id="report" class="section active">
+                <h2>Reportar Ausencia</h2>
+                <div class="user-selector">
+                    <label for="reportUser">Tipo de Usuario:</label>
+                    <select id="reportUser">
+                        <option value="student">Estudiante</option>
+                        <option value="teacher">Docente</option>
+                    </select>
+                </div>
+
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label for="reportDate">Fecha de Ausencia:</label>
+                        <input type="date" id="reportDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reportSubject">Materia:</label>
+                        <select id="reportSubject" required>
+                            <option value="">Seleccionar materia</option>
+                            <option value="lengua">Lengua y Literatura</option>
+                            <option value="matematicas">Matemáticas</option>
+                            <option value="sociales">Ciencias Sociales</option>
+                            <option value="naturales">Ciencias Naturales</option>
+                            <option value="fisica">Educación Física</option>
+                            <option value="artistica">Educación Artística</option>
+                            <option value="ingles">Inglés</option>
+                            <option value="informatica">Informática</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reportReason">Motivo de la Ausencia:</label>
+                        <select id="reportReason" required>
+                            <option value="">Seleccionar motivo</option>
+                            <option value="enfermedad">Enfermedad</option>
+                            <option value="familiar">Asunto familiar</option>
+                            <option value="laboral">Compromiso laboral</option>
+                            <option value="personal">Asunto personal</option>
+                            <option value="transporte">Problemas de transporte</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reportComments">Comentarios adicionales:</label>
+                        <textarea id="reportComments" placeholder="Detalles adicionales sobre la ausencia..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Reportar Ausencia</button>
+                </form>
+            </div>
+
+            <!-- Sección Marcar Asistencia -->
+            <div id="attendance" class="section">
+                <h2>Marcar Asistencia</h2>
+                <div class="user-selector">
+                    <label for="attendanceUser">Tipo de Usuario:</label>
+                    <select id="attendanceUser">
+                        <option value="teacher">Docente</option>
+                        <option value="student">Estudiante</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="attendanceDate">Fecha:</label>
+                    <input type="date" id="attendanceDate" required>
+                </div>
+
+                <div class="attendance-grid" id="attendanceGrid">
+                    <!-- Se genera dinámicamente -->
+                </div>
+
+                <button onclick="saveAttendance()" class="btn btn-success" style="margin-top: 20px;">Guardar Asistencia</button>
+            </div>
+
+            <!-- Sección Historial -->
+            <div id="history" class="section">
+                <h2>Historial de Asistencias</h2>
+                
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="historyUser">Tipo de Usuario:</label>
+                        <select id="historyUser" onchange="loadHistory()">
+                            <option value="student">Estudiante</option>
+                            <option value="teacher">Docente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="historySubject">Materia:</label>
+                        <select id="historySubject" onchange="loadHistory()">
+                            <option value="">Todas las materias</option>
+                            <option value="lengua">Lengua y Literatura</option>
+                            <option value="matematicas">Matemáticas</option>
+                            <option value="sociales">Ciencias Sociales</option>
+                            <option value="naturales">Ciencias Naturales</option>
+                            <option value="fisica">Educación Física</option>
+                            <option value="artistica">Educación Artística</option>
+                            <option value="ingles">Inglés</option>
+                            <option value="informatica">Informática</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="historyMonth">Mes:</label>
+                        <select id="historyMonth" onchange="loadHistory()">
+                            <option value="">Todos los meses</option>
+                            <option value="2024-01">Enero 2024</option>
+                            <option value="2024-02">Febrero 2024</option>
+                            <option value="2024-03">Marzo 2024</option>
+                            <option value="2024-04">Abril 2024</option>
+                            <option value="2024-05">Mayo 2024</option>
+                            <option value="2024-06">Junio 2024</option>
+                            <option value="2024-07">Julio 2024</option>
+                            <option value="2024-08">Agosto 2024</option>
+                            <option value="2024-09">Septiembre 2024</option>
+                            <option value="2024-10">Octubre 2024</option>
+                            <option value="2024-11">Noviembre 2024</option>
+                            <option value="2024-12">Diciembre 2024</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="history-table" id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Materia</th>
+                            <th>Estado</th>
+                            <th>Motivo</th>
+                            <th>Comentarios</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <!-- Se genera dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sección Estadísticas -->
+            <div id="stats" class="section">
+                <h2>Estadísticas de Asistencia</h2>
+                
+                <div class="user-selector">
+                    <label for="statsUser">Tipo de Usuario:</label>
+                    <select id="statsUser" onchange="loadStats()">
+                        <option value="student">Estudiante</option>
+                        <option value="teacher">Docente</option>
+                    </select>
+                </div>
+
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Se genera dinámicamente -->
+                </div>
+
+                <div class="form-group">
+                    <label for="statsSubject">Ver estadísticas por materia:</label>
+                    <select id="statsSubject" onchange="loadSubjectStats()">
+                        <option value="">Seleccionar materia</option>
+                        <option value="lengua">Lengua y Literatura</option>
+                        <option value="matematicas">Matemáticas</option>
+                        <option value="sociales">Ciencias Sociales</option>
+                        <option value="naturales">Ciencias Naturales</option>
+                        <option value="fisica">Educación Física</option>
+                        <option value="artistica">Educación Artística</option>
+                        <option value="ingles">Inglés</option>
+                        <option value="informatica">Informática</option>
+                    </select>
+                </div>
+
+                <div id="subjectStatsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        let attendanceData = [
+            { date: '2024-07-01', subject: 'matematicas', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-02', subject: 'lengua', status: 'absent', reason: 'enfermedad', comments: 'Gripe' },
+            { date: '2024-07-03', subject: 'sociales', status: 'late', reason: 'transporte', comments: 'Demora en el transporte' },
+            { date: '2024-07-04', subject: 'naturales', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-05', subject: 'fisica', status: 'absent', reason: 'laboral', comments: 'Reunión importante' },
+            { date: '2024-07-08', subject: 'artistica', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-09', subject: 'ingles', status: 'late', reason: 'personal', comments: 'Cita médica' },
+            { date: '2024-07-10', subject: 'informatica', status: 'present', reason: '', comments: '' }
+        ];
+
+        let currentAttendance = {};
+
+        const subjects = {
+            'lengua': 'Lengua y Literatura',
+            'matematicas': 'Matemáticas',
+            'sociales': 'Ciencias Sociales',
+            'naturales': 'Ciencias Naturales',
+            'fisica': 'Educación Física',
+            'artistica': 'Educación Artística',
+            'ingles': 'Inglés',
+            'informatica': 'Informática'
+        };
+
+        // Mostrar sección
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'attendance') {
+                generateAttendanceGrid();
+            } else if (sectionId === 'history') {
+                loadHistory();
+            } else if (sectionId === 'stats') {
+                loadStats();
+            }
+        }
+
+        // Generar grid de asistencia
+        function generateAttendanceGrid() {
+            const grid = document.getElementById('attendanceGrid');
+            grid.innerHTML = '';
+
+            Object.entries(subjects).forEach(([key, name]) => {
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.innerHTML = `
+                    <h3>${name}</h3>
+                    <p>Marcar asistencia para hoy</p>
+                    <div class="attendance-buttons">
+                        <button class="btn-present" onclick="markAttendance('${key}', 'present')">Presente</button>
+                        <button class="btn-absent" onclick="markAttendance('${key}', 'absent')">Ausente</button>
+                        <button class="btn-late" onclick="markAttendance('${key}', 'late')">Tardanza</button>
+                    </div>
+                    <div id="status-${key}" style="margin-top: 10px; font-weight: bold;"></div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Marcar asistencia
+        function markAttendance(subject, status) {
+            currentAttendance[subject] = status;
+            const statusDiv = document.getElementById(`status-${subject}`);
+            const statusText = status === 'present' ? 'Presente' : status === 'absent' ? 'Ausente' : 'Tardanza';
+            const statusColor = status === 'present' ? '#27ae60' : status === 'absent' ? '#e74c3c' : '#f39c12';
+            
+            statusDiv.innerHTML = `<span style="color: ${statusColor};">✓ ${statusText}</span>`;
+        }
+
+        // Guardar asistencia
+        function saveAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            if (!date) {
+                alert('Por favor selecciona una fecha');
+                return;
+            }
+
+            Object.entries(currentAttendance).forEach(([subject, status]) => {
+                attendanceData.push({
+                    date: date,
+                    subject: subject,
+                    status: status,
+                    reason: status !== 'present' ? 'Marcado por docente' : '',
+                    comments: ''
+                });
+            });
+
+            alert('Asistencia guardada exitosamente');
+            currentAttendance = {};
+            generateAttendanceGrid();
+        }
+
+        // Cargar historial
+        function loadHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            const subjectFilter = document.getElementById('historySubject').value;
+            const monthFilter = document.getElementById('historyMonth').value;
+            
+            let filteredData = attendanceData;
+            
+            if (subjectFilter) {
+                filteredData = filteredData.filter(item => item.subject === subjectFilter);
+            }
+            
+            if (monthFilter) {
+                filteredData = filteredData.filter(item => item.date.startsWith(monthFilter));
+            }
+
+            tbody.innerHTML = '';
+            
+            filteredData.forEach(item => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${item.status}`;
+                const statusText = item.status === 'present' ? 'Presente' : item.status === 'absent' ? 'Ausente' : 'Tardanza';
+                
+                row.innerHTML = `
+                    <td>${new Date(item.date).toLocaleDateString('es-ES')}</td>
+                    <td>${subjects[item.subject]}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${item.reason || '-'}</td>
+                    <td>${item.comments || '-'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Cargar estadísticas
+        function loadStats() {
+            const statsGrid = document.getElementById('statsGrid');
+            
+            const totalClasses = attendanceData.length;
+            const presentCount = attendanceData.filter(item => item.status === 'present').length;
+            const absentCount = attendanceData.filter(item => item.status === 'absent').length;
+            const lateCount = attendanceData.filter(item => item.status === 'late').length;
+            
+            const attendanceRate = totalClasses > 0 ? ((presentCount + lateCount) / totalClasses * 100).toFixed(1) : 0;
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #3498db;">${totalClasses}</div>
+                    <div class="stat-label">Total de Clases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #27ae60;">${presentCount}</div>
+                    <div class="stat-label">Presentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #e74c3c;">${absentCount}</div>
+                    <div class="stat-label">Ausentes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #f39c12;">${lateCount}</div>
+                    <div class="stat-label">Tardanzas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #9b59b6;">${attendanceRate}%</div>
+                    <div class="stat-label">Porcentaje de Asistencia</div>
+                </div>
+            `;
+        }
+
+        // Cargar estadísticas por materia
+        function loadSubjectStats() {
+            const subject = document.getElementById('statsSubject').value;
+            const container = document.getElementById('subjectStatsContainer');
+            
+            if (!subject) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const subjectData = attendanceData.filter(item => item.subject === subject);
+            const present = subjectData.filter(item => item.status === 'present').length;
+            const absent = subjectData.filter(item => item.status === 'absent').length;
+            const late = subjectData.filter(item => item.status === 'late').length;
+            const total = subjectData.length;
+            const rate = total > 0 ? ((present + late) / total * 100).toFixed(1) : 0;
+            
+            container.innerHTML = `
+                <div class="stats-grid" style="margin-top: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #3498db;">${total}</div>
+                        <div class="stat-label">${subjects[subject]} - Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #27ae60;">${present}</div>
+                        <div class="stat-label">Presentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #e74c3c;">${absent}</div>
+                        <div class="stat-label">Ausentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #f39c12;">${late}</div>
+                        <div class="stat-label">Tardanzas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #9

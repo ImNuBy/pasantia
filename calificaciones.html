@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Calificaciones</title>
+    <link rel="stylesheet" href="css/calificaciones.css">
+    </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Mis Calificaciones</h1>
+            <div class="student-info">
+                <div class="info-item">
+                    <strong>Estudiante:</strong> María González
+                </div>
+                <div class="info-item">
+                    <strong>Curso:</strong> 6° Grado
+                </div>
+                <div class="info-item">
+                    <strong>Período:</strong> 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <h3>Promedio General</h3>
+                    <div class="number" id="generalAverage">8.2</div>
+                    <div>Muy Bueno</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Materias Aprobadas</h3>
+                    <div class="number" id="approvedSubjects">7</div>
+                    <div>de 8 materias</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Mejor Calificación</h3>
+                    <div class="number">9.5</div>
+                    <div>Educación Física</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Asistencia</h3>
+                    <div class="number">92%</div>
+                    <div>Muy Buena</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="filter-group">
+                    <label for="periodFilter">Período:</label>
+                    <select id="periodFilter">
+                        <option value="all">Todos los períodos</option>
+                        <option value="1trim">1° Trimestre</option>
+                        <option value="2trim">2° Trimestre</option>
+                        <option value="3trim">3° Trimestre</option>
+                    </select>
+
+                    <label for="subjectFilter">Materia:</label>
+                    <select id="subjectFilter">
+                        <option value="all">Todas las materias</option>
+                        <option value="lengua">Lengua y Literatura</option>
+                        <option value="matematicas">Matemáticas</option>
+                        <option value="ciencias-sociales">Ciencias Sociales</option>
+                        <option value="ciencias-naturales">Ciencias Naturales</option>
+                        <option value="educacion-fisica">Educación Física</option>
+                        <option value="educacion-artistica">Educación Artística</option>
+                        <option value="ingles">Inglés</option>
+                        <option value="informatica">Informática</option>
+                    </select>
+                </div>
+
+                <button class="download-btn" onclick="downloadReport()">
+                    📄 Descargar Boleta
+                </button>
+            </div>
+
+            <div class="grades-table">
+                <table id="gradesTable">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Exámenes</th>
+                            <th>Trabajos Prácticos</th>
+                            <th>Participación</th>
+                            <th>Promedio</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradesTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para descarga -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📄 Descarga Exitosa</h2>
+            <p>Tu boleta de calificaciones se ha descargado correctamente.</p>
+            <p><strong>Archivo:</strong> Boleta_Maria_González_2025.pdf</p>
+            <button class="download-btn" onclick="closeModal()" style="margin-top: 20px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+    <script>
+        // Datos de ejemplo
+        const gradesData = [
+            {
+                subject: 'Lengua y Literatura',
+                id: 'lengua',
+                exams: [8.5, 7.8, 8.2],
+                practicalWork: [9.0, 8.5, 8.8],
+                participation: [9.5, 9.0, 9.2],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Matemáticas',
+                id: 'matematicas',
+                exams: [7.0, 7.5, 8.0],
+                practicalWork: [7.5, 8.0, 8.2],
+                participation: [8.0, 8.5, 8.8],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Ciencias Sociales',
+                id: 'ciencias-sociales',
+                exams: [8.8, 9.0, 8.5],
+                practicalWork: [9.2, 8.8, 9.0],
+                participation: [9.0, 9.5, 9.2],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Ciencias Naturales',
+                id: 'ciencias-naturales',
+                exams: [7.5, 8.0, 7.8],
+                practicalWork: [8.2, 8.5, 8.0],
+                participation: [8.5, 8.8, 8.2],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Educación Física',
+                id: 'educacion-fisica',
+                exams: [9.5, 9.2, 9.8],
+                practicalWork: [9.8, 9.5, 9.6],
+                participation: [10.0, 9.8, 9.9],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Educación Artística',
+                id: 'educacion-artistica',
+                exams: [8.0, 8.5, 8.2],
+                practicalWork: [9.0, 8.8, 8.5],
+                participation: [9.5, 9.0, 9.2],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Inglés',
+                id: 'ingles',
+                exams: [6.5, 7.0, 7.2],
+                practicalWork: [7.5, 7.8, 8.0],
+                participation: [8.0, 8.2, 8.5],
+                periods: ['1trim', '2trim', '3trim']
+            },
+            {
+                subject: 'Informática',
+                id: 'informatica',
+                exams: [8.5, 8.8, 9.0],
+                practicalWork: [9.2, 9.0, 9.5],
+                participation: [9.0, 9.5, 9.8],
+                periods: ['1trim', '2trim', '3trim']
+            }
+        ];
+
+        function calculateAverage(grades) {
+            const sum = grades.reduce((a, b) => a + b, 0);
+            return (sum / grades.length).toFixed(1);
+        }
+
+        function getGradeClass(grade) {
+            if (grade >= 9) return 'excelente';
+            if (grade >= 8) return 'muy-bueno';
+            if (grade >= 7) return 'bueno';
+            if (grade >= 6) return 'regular';
+            return 'insuficiente';
+        }
+
+        function getGradeText(grade) {
+            if (grade >= 9) return 'Excelente';
+            if (grade >= 8) return 'Muy Bueno';
+            if (grade >= 7) return 'Bueno';
+            if (grade >= 6) return 'Regular';
+            return 'Insuficiente';
+        }
+
+        function renderGradesTable() {
+            const tbody = document.getElementById('gradesTableBody');
+            const periodFilter = document.getElementById('periodFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            
+            tbody.innerHTML = '';
+            
+            let filteredData = gradesData;
+            
+            if (subjectFilter !== 'all') {
+                filteredData = gradesData.filter(item => item.id === subjectFilter);
+            }
+            
+            filteredData.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Calcular promedios
+                const examAvg = parseFloat(calculateAverage(item.exams));
+                const practicalAvg = parseFloat(calculateAverage(item.practicalWork));
+                const participationAvg = parseFloat(calculateAverage(item.participation));
+                const totalAvg = parseFloat(calculateAverage([examAvg, practicalAvg, participationAvg]));
+                
+                row.innerHTML = `
+                    <td><strong>${item.subject}</strong></td>
+                    <td><span class="grade ${getGradeClass(examAvg)}">${examAvg}</span></td>
+                    <td><span class="grade ${getGradeClass(practicalAvg)}">${practicalAvg}</span></td>
+                    <td><span class="grade ${getGradeClass(participationAvg)}">${participationAvg}</span></td>
+                    <td class="average-column"><span class="grade ${getGradeClass(totalAvg)}">${totalAvg}</span></td>
+                    <td><strong>${totalAvg >= 6 ? '✅ Aprobado' : '❌ Desaprobado'}</strong></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            updateSummaryCards();
+        }
+
+        function updateSummaryCards() {
+            const totalAverages = gradesData.map(item => {
+                const examAvg = parseFloat(calculateAverage(item.exams));
+                const practicalAvg = parseFloat(calculateAverage(item.practicalWork));
+                const participationAvg = parseFloat(calculateAverage(item.participation));
+                return parseFloat(calculateAverage([examAvg, practicalAvg, participationAvg]));
+            });
+            
+            const generalAverage = calculateAverage(totalAverages);
+            const approvedCount = totalAverages.filter(avg => avg >= 6).length;
+            
+            document.getElementById('generalAverage').textContent = generalAverage;
+            document.getElementById('approvedSubjects').textContent = approvedCount;
+        }
+
+        function downloadReport() {
+            // Simular descarga de boleta
+            document.getElementById('downloadModal').style.display = 'block';
+            
+            // En una implementación real, aquí generarías y descargarías el PDF
+            // Por ejemplo: window.open('generate-report.php', '_blank');
+        }
+
+        function closeModal() {
+            document.getElementById('downloadModal').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('periodFilter').addEventListener('change', renderGradesTable);
+        document.getElementById('subjectFilter').addEventListener('change', renderGradesTable);
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('downloadModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Inicializar tabla
+        renderGradesTable();
+    </script>
+</body>
+</html>

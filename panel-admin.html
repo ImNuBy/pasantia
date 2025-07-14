@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - E.E.S.T N°2</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/panel.css">
+</head>
+<body>
+    <div class="panel-container">
+        <header class="panel-header">
+            <div class="header-content">
+                <div class="header-info">
+                    <h1>Panel de Administración</h1>
+                    <p>E.E.S.T N°2 - Sistema de Gestión</p>
+                </div>
+                <div class="user-info">
+                    <span id="user-welcome">Cargando...</span>
+                    <div class="user-details">
+                        <div>Acceso completo al sistema</div>
+                    </div>
+                    <a href="#" onclick="logout()" class="logout-btn">Cerrar Sesión</a>
+                </div>
+            </div>
+        </header>
+        
+        <nav class="panel-nav">
+            <ul class="nav-list">
+                <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('usuarios')">Usuarios</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('estadisticas')">Estadísticas</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('contactos')">Contactos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('configuracion')">Configuración</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('logs')">Logs</a></li>
+            </ul>
+        </nav>
+        
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="panel-section">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Total Usuarios</h3>
+                    <div class="stat-number" id="total-usuarios">0</div>
+                    <div class="stat-description">Usuarios activos</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Estudiantes</h3>
+                    <div class="stat-number" id="total-estudiantes">0</div>
+                    <div class="stat-description">Estudiantes registrados</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Profesores</h3>
+                    <div class="stat-number" id="total-profesores">0</div>
+                    <div class="stat-description">Profesores activos</div>
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Contactos Pendientes</h3>
+                    <div class="stat-number" id="contactos-pendientes">0</div>
+                    <div class="stat-description">Requieren atención</div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div class="data-table">
+                    <h3 class="table-header">Últimos Registros</h3>
+                    <div class="table-content">
+                        <div id="ultimos-registros" class="loading">
+                            Cargando registros...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <h3 class="table-header">Actividad del Sistema</h3>
+                    <div class="table-content">
+                        <div id="actividad-sistema" class="loading">
+                            Cargando actividad...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contenido dinámico -->
+        <div id="dynamic-content"></div>
+    </div>
+
+    <script src="js/panel-admin.js"></script>
+</body>
+</html>

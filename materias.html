@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Materias</title>
+    <link rel="stylesheet" href="css/materias.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📘 Mis Materias</h1>
+            <div class="student-info">
+                <div class="info-item">
+                    <strong>Estudiante:</strong> María González
+                </div>
+                <div class="info-item">
+                    <strong>Curso:</strong> 6° Grado
+                </div>
+                <div class="info-item">
+                    <strong>Año:</strong> 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <div class="filter-group">
+                    <label for="typeFilter">Tipo:</label>
+                    <select id="typeFilter">
+                        <option value="todos">Todas</option>
+                        <option value="anual">Anual</option>
+                        <option value="trimestral">Trimestral</option>
+                    </select>
+                </div>
+
+                <button class="download-btn" onclick="downloadReport()">
+                    📄 Descargar Lista
+                </button>
+            </div>
+
+            <div class="grades-table">
+                <table id="subjectsTable">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Docente</th>
+                            <th>Carga Horaria</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTableBody">
+                        <!-- Se cargan desde JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para descarga -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📄 Descarga Exitosa</h2>
+            <p>Tu lista de materias se ha descargado correctamente.</p>
+            <p><strong>Archivo:</strong> Materias_Maria_González_2025.pdf</p>
+            <button class="download-btn" onclick="closeModal()" style="margin-top: 20px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const materias = [
+            { nombre: "Lengua y Literatura", docente: "Prof. Laura Díaz", horas: "4 hs/sem", tipo: "anual" },
+            { nombre: "Matemáticas", docente: "Prof. Juan Pérez", horas: "5 hs/sem", tipo: "anual" },
+            { nombre: "Ciencias Sociales", docente: "Prof. Ana Torres", horas: "3 hs/sem", tipo: "trimestral" },
+            { nombre: "Ciencias Naturales", docente: "Prof. Diego López", horas: "3 hs/sem", tipo: "trimestral" },
+            { nombre: "Educación Física", docente: "Prof. Karina Gómez", horas: "2 hs/sem", tipo: "anual" },
+            { nombre: "Inglés", docente: "Prof. Clara Nuñez", horas: "2 hs/sem", tipo: "anual" },
+            { nombre: "Informática", docente: "Prof. Matías Franco", horas: "2 hs/sem", tipo: "trimestral" },
+            { nombre: "Educación Artística", docente: "Prof. Cecilia Ríos", horas: "2 hs/sem", tipo: "anual" }
+        ];
+
+        function renderSubjectsTable() {
+            const tbody = document.getElementById('subjectsTableBody');
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filtered = typeFilter === 'todos' ? materias : materias.filter(m => m.tipo === typeFilter);
+
+            filtered.forEach(m => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${m.nombre}</strong></td>
+                    <td>${m.docente}</td>
+                    <td>${m.horas}</td>
+                    <td>${m.tipo.charAt(0).toUpperCase() + m.tipo.slice(1)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function downloadReport() {
+            document.getElementById('downloadModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('downloadModal').style.display = 'none';
+        }
+
+        document.getElementById('typeFilter').addEventListener('change', renderSubjectsTable);
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('downloadModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Inicializa tabla al cargar
+        renderSubjectsTable();
+    </script>
+</body>
+</html>

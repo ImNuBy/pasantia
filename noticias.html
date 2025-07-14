@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias Escolares</title>
+    <link rel="stylesheet" href="css/noticias.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 Noticias de la Escuela</h1>
+            <div class="student-info">
+                <div class="info-item">
+                    <strong>Estudiante:</strong> María González
+                </div>
+                <div class="info-item">
+                    <strong>Curso:</strong> 6° Grado
+                </div>
+                <div class="info-item">
+                    <strong>Año:</strong> 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <div class="filter-group">
+                    <label for="categoryFilter">Categoría:</label>
+                    <select id="categoryFilter">
+                        <option value="todas">Todas</option>
+                        <option value="eventos">Eventos</option>
+                        <option value="avisos">Avisos</option>
+                        <option value="academico">Académico</option>
+                        <option value="deportes">Deportes</option>
+                    </select>
+                </div>
+
+                <button class="download-btn" onclick="downloadReport()">
+                    📄 Descargar Noticias
+                </button>
+            </div>
+
+            <div class="grades-table">
+                <table id="newsTable">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Fecha</th>
+                            <th>Categoría</th>
+                            <th>Resumen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="newsTableBody">
+                        <!-- Se carga dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>📄 Descarga Exitosa</h2>
+            <p>La lista de noticias se descargó correctamente.</p>
+            <p><strong>Archivo:</strong> Noticias_Escuela_2025.pdf</p>
+            <button class="download-btn" onclick="closeModal()" style="margin-top: 20px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const noticias = [
+            {
+                titulo: "Acto del 25 de Mayo",
+                fecha: "2025-05-25",
+                categoria: "eventos",
+                resumen: "Los alumnos participaron del acto patrio con representaciones culturales y música en vivo."
+            },
+            {
+                titulo: "Entrega de boletines",
+                fecha: "2025-06-10",
+                categoria: "avisos",
+                resumen: "Se entregarán los boletines del primer trimestre el viernes 14 de junio."
+            },
+            {
+                titulo: "Olimpíadas de Matemática",
+                fecha: "2025-07-01",
+                categoria: "academico",
+                resumen: "Tres estudiantes representarán a la escuela en las Olimpíadas Regionales."
+            },
+            {
+                titulo: "Campeonato intercolegial",
+                fecha: "2025-06-20",
+                categoria: "deportes",
+                resumen: "Nuestro equipo de fútbol se clasificó a la final del torneo intercolegial zonal."
+            },
+            {
+                titulo: "Charla de Educación Ambiental",
+                fecha: "2025-04-17",
+                categoria: "academico",
+                resumen: "Se realizó una charla sobre el cuidado del ambiente con participación de ONG locales."
+            }
+        ];
+
+        function renderNewsTable() {
+            const tbody = document.getElementById('newsTableBody');
+            const filter = document.getElementById('categoryFilter').value;
+
+            tbody.innerHTML = '';
+
+            const filteredNews = filter === 'todas' ? noticias : noticias.filter(n => n.categoria === filter);
+
+            filteredNews.forEach(n => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${n.titulo}</strong></td>
+                    <td>${n.fecha}</td>
+                    <td>${n.categoria.charAt(0).toUpperCase() + n.categoria.slice(1)}</td>
+                    <td>${n.resumen}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function downloadReport() {
+            document.getElementById('downloadModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('downloadModal').style.display = 'none';
+        }
+
+        document.getElementById('categoryFilter').addEventListener('change', renderNewsTable);
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('downloadModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Inicializar
+        renderNewsTable();
+    </script>
+</body>
+</html>

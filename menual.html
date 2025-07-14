@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu - Estudiante</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+     /* Estilo adicional para el botón E.E.S.T N2 */
+       #schoolButton {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          padding: 10px 20px;
+          background-color: white;
+          color: black;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          z-index: 100;
+          font-size: 16px;
+          font-weight: bold;
+          text-decoration: none;
+       }
+        #schoolButton:hover {
+          background-color: #ddd;
+        }
+        
+        /* Estilo para información del usuario */
+        #userInfo {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          padding: 10px 15px;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          border-radius: 5px;
+          z-index: 100;
+          font-size: 14px;
+        }
+        
+        #logoutBtn {
+          background-color: #ff4444;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          margin-left: 10px;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 12px;
+        }
+        
+        #logoutBtn:hover {
+          background-color: #cc0000;
+        }
+    </style>
+  </head>
+  <body>
+   <!-- Botón E.E.S.T N2 -->
+   <a href="index.html" id="schoolButton">EPA 703</a>
+   
+   <!-- Información del usuario -->
+   <div id="userInfo">
+     <span>👨‍🎓 Estudiante: <span id="userName">Cargando...</span></span>
+     <button id="logoutBtn" onclick="logout()">Cerrar Sesión</button>
+   </div>
+   
+   <!--Menu -->
+    <ul class="menu">
+      <div class="menuToggle"><ion-icon name="add-outline"></ion-icon></div>
+      <li style="--i: 0; --clr: #ff2972">
+        <a href="home.html" title="Inicio"><ion-icon name="home-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 1; --clr: #fee800">
+        <a href="#" title="Mis Calificaciones"><ion-icon name="school-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 2; --clr: #04fc43">
+        <a href="#" title="Mis Asistencias"><ion-icon name="calendar-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 3; --clr: #fe00f1">
+        <a href="#" title="Horarios"><ion-icon name="time-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 4; --clr: #00b0fe">
+        <a href="#" title="Materias"><ion-icon name="book-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 5; --clr: #fea600">
+        <a href="#" title="Proyectos"><ion-icon name="construct-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 6; --clr: #a529ff">
+        <a href="#" title="Mi Perfil"><ion-icon name="person-outline"></ion-icon></a>
+      </li>
+      <li style="--i: 7; --clr: #01bdab">
+        <a href="#" title="Noticias"><ion-icon name="newspaper-outline"></ion-icon></a>
+      </li>
+    </ul>
+    
+    <script>
+      // Verificar autenticación al cargar la página
+      document.addEventListener('DOMContentLoaded', function() {
+        verificarAutenticacion();
+        cargarInfoUsuario();
+      });
+      
+      function verificarAutenticacion() {
+        const sessionToken = localStorage.getItem('sessionToken');
+        const userRole = localStorage.getItem('userRole');
+        
+        if (!sessionToken || userRole !== 'alumno') {
+          // Si no hay sesión o no es alumno, redirigir al login
+          window.location.href = 'Login.html';
+          return;
+        }
+      }
+      
+      function cargarInfoUsuario() {
+        const userName = localStorage.getItem('userName');
+        if (userName) {
+          document.getElementById('userName').textContent = userName;
+        }
+      }
+      
+      function logout() {
+        // Limpiar localStorage
+        localStorage.removeItem('sessionToken');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userName');
+        
+        // Limpiar sessionStorage
+        sessionStorage.clear();
+        
+        // Llamar al backend para limpiar la sesión del servidor
+        fetch('forms/auth.php?action=logout', {
+          method: 'GET'
+        }).then(() => {
+          window.location.href = 'Login.html';
+        }).catch(() => {
+          // Si falla la llamada al servidor, redirigir de todas formas
+          window.location.href = 'Login.html';
+        });
+      }
+    </script>
+    
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script>
+      let menuToggle = document.querySelector(".menuToggle");
+      let menu = document.querySelector(".menu");
+      menuToggle.onclick = function () {
+        menu.classList.toggle("active");
+      };
+    </script>
+  </body>
+  <style>
+    * {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: #161616;
+      }
+      .menu {
+        position: relative;
+        width: 260px;
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .menu li {
+        position: absolute;
+        left: 0;
+        list-style: none;
+        transform: rotate(0deg) translateX(100px);
+        transform-origin: 130px;
+        transition: 0.5s;
+        transition-delay: calc(0.1s * var(--i));
+      }
+      .menu.active li {
+        transform: rotate(calc(360deg / 8 * var(--i)));
+      }
+      .menu a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        text-decoration: none;
+        font-size: 22px;
+        border-radius: 50%;
+        transform: rotate(calc(360deg / -8 * var(--i)));
+        transition: 1s;
+        color: transparent;
+        transition-delay: 0.5s;
+        filter: drop-shadow(0 0 2px var(--clr));
+      }
+      .menu.active a {
+        color: var(--clr);
+      }
+      .menu a::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--clr);
+        transform: rotate(calc(90deg * var(--i))) translate(0, 25px);
+        transition: width 0.5s, height 0.5s, transform 0.5s;
+        transition-delay: 0.5s, 1s, 1.5s;
+      }
+      .menu.active a::before {
+        width: 50px;
+        height: 50px;
+        background: #161616;
+        border: 2px solid var(--clr);
+        transform: rotate(calc(0 * var(--i)));
+        transition: transform 0.5s, height 0.5s, width 0.5s;
+        transition-delay: 0.5s, 1.5s, 1.5s;
+        border-radius: 10px;
+        filter: drop-shadow(0 0 5px var(--clr));
+        rotate: 135deg;
+      }
+      .menu.active li:hover a::before {
+        background: var(--clr);
+      }
+      .menu.active li:hover a ion-icon {
+        color: #161616;
+      }
+      
+      .menuToggle {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 32px;
+        transition: 1.5s;
+      }
+      .menu.active .menuToggle {
+        transform: rotate(315deg);
+      }
+  </style>
+</html>
