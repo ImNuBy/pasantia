@@ -1,8 +1,8 @@
 
-class StudentPanel {
+class ProfesorPanel {
     constructor() {
         this.currentSection = 'dashboard';
-        this.studentData = null;
+        this.profesorData = null;
         this.init();
     }
     
@@ -10,20 +10,19 @@ class StudentPanel {
         // Wait for auth check
         await window.authManager.checkSession();
         
-        // Verify student role
-        if (!window.authManager.hasRole('estudiante')) {
+        // Verify profesor role
+        if (!window.authManager.hasRole('profesor')) {
             alert('No tienes permisos para acceder a este panel');
             window.location.href = 'login.html';
             return;
         }
         
-        this.loadStudentData();
+        this.loadProfesorData();
         this.setupEventListeners();
         this.showSection('dashboard');
     }
     
     setupEventListeners() {
-        // Navigation clicks
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -33,18 +32,18 @@ class StudentPanel {
         });
     }
     
-    async loadStudentData() {
+    async loadProfesorData() {
         try {
-            const response = await fetch('api/student-data.php');
+            const response = await fetch('api/profesor-data.php');
             const result = await response.json();
             
             if (result.success) {
-                this.studentData = result.data;
+                this.profesorData = result.data;
                 this.updateDashboard();
-                this.updateStudentInfo();
+                this.updateProfesorInfo();
             } else {
                 console.error('Error cargando datos:', result.error);
-                this.showError('Error al cargar los datos del estudiante');
+                this.showError('Error al cargar los datos del profesor');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -52,87 +51,67 @@ class StudentPanel {
         }
     }
     
-    updateStudentInfo() {
-        if (!this.studentData || !this.studentData.estudiante) return;
+    updateProfesorInfo() {
+        if (!this.profesorData || !this.profesorData.profesor) return;
         
-        const student = this.studentData.estudiante;
+        const profesor = this.profesorData.profesor;
         
-        // Update course info
-        const cursoElement = document.getElementById('user-curso');
-        if (cursoElement) {
-            cursoElement.textContent = student.curso_nombre || 'No asignado';
+        // Update legajo
+        const legajoElement = document.getElementById('user-legajo');
+        if (legajoElement) {
+            legajoElement.textContent = profesor.legajo || 'No asignado';
         }
         
-        // Update orientation
-        const orientacionElement = document.getElementById('orientacion');
-        if (orientacionElement) {
-            orientacionElement.textContent = student.orientacion_nombre || 'No asignada';
+        // Update especialidad
+        const especialidadElement = document.getElementById('user-especialidad');
+        if (especialidadElement) {
+            especialidadElement.textContent = profesor.especialidad || 'No especificada';
         }
     }
     
     updateDashboard() {
-        if (!this.studentData) return;
+        if (!this.profesorData) return;
         
-        // Update próximas evaluaciones
-        document.getElementById('proximas-evaluaciones').textContent = '0';
+        document.getElementById('total-cursos').textContent = this.profesorData.cursos?.length || 0;
+        document.getElementById('total-estudiantes').textContent = this.profesorData.total_estudiantes || 0;
+        document.getElementById('calificaciones-pendientes').textContent = this.profesorData.calificaciones_pendientes || 0;
         
-        // Calculate promedio general
-        if (this.studentData.calificaciones && this.studentData.calificaciones.length > 0) {
-            const notas = this.studentData.calificaciones
-                .map(c => parseFloat(c.nota))
-                .filter(n => !isNaN(n));
-            
-            if (notas.length > 0) {
-                const promedio = notas.reduce((a, b) => a + b, 0) / notas.length;
-                document.getElementById('promedio-general').textContent = promedio.toFixed(1);
-            }
+        // Calculate promedio if available
+        if (this.profesorData.promedio_general) {
+            document.getElementById('promedio-cursos').textContent = this.profesorData.promedio_general;
         }
         
-        // Calculate asistencia del mes
-        if (this.studentData.asistencias && this.studentData.asistencias.length > 0) {
-            const totalAsistencia = this.studentData.asistencias.reduce((acc, curr) => 
-                acc + parseFloat(curr.porcentaje_asistencia), 0
-            ) / this.studentData.asistencias.length;
-            document.getElementById('asistencia-mes').textContent = totalAsistencia.toFixed(0) + '%';
-        }
-        
-        // Update recent activity
         this.updateRecentActivity();
     }
     
     updateRecentActivity() {
-        const container = document.getElementById('actividad-reciente');
+        const container = document.getElementById('actividad-profesor');
         
-        if (!this.studentData.calificaciones || this.studentData.calificaciones.length === 0) {
+        if (!this.profesorData.actividad_reciente || this.profesorData.actividad_reciente.length === 0) {
             container.innerHTML = '<p>No hay actividad reciente registrada.</p>';
             return;
         }
-        
-        // Show últimas 5 calificaciones
-        const recentGrades = this.studentData.calificaciones
-            .sort((a, b) => new Date(b.fecha_evaluacion) - new Date(a.fecha_evaluacion))
-            .slice(0, 5);
         
         let html = `
             <table>
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Materia</th>
                         <th>Tipo</th>
-                        <th>Nota</th>
+                        <th>Curso</th>
+                        <th>Detalles</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         
-        recentGrades.forEach(grade => {
+        this.profesorData.actividad_reciente.forEach(activity => {
             html += `
                 <tr>
-                    <td>${this.formatDate(grade.fecha_evaluacion)}</td>
-                    <td>${grade.materia}</td>
-                    <td>${grade.tipo_evaluacion}</td>
-                    <td>${grade.nota || 'Pendiente'}</td>
+                    <td>${this.formatDate(activity.fecha)}</td>
+                    <td>${activity.tipo}</td>
+                    <td>${activity.curso}</td>
+                    <td>${activity.detalles}</td>
                 </tr>
             `;
         });
@@ -159,10 +138,8 @@ class StudentPanel {
             section.style.display = 'none';
         });
         
-        // Show selected section
         if (sectionName === 'dashboard') {
             document.getElementById('dashboard').style.display = 'block';
-            this.updateDashboard();
         } else {
             this.loadSection(sectionName);
         }
@@ -175,13 +152,12 @@ class StudentPanel {
         container.innerHTML = '<div class="loading">Cargando...</div>';
         
         try {
-            const response = await fetch(`sections/student-${sectionName}.html`);
+            const response = await fetch(`sections/profesor-${sectionName}.html`);
             const html = await response.text();
             container.innerHTML = html;
             
-            // Initialize section-specific functionality
-            if (window[`init${this.capitalize(sectionName)}`]) {
-                window[`init${this.capitalize(sectionName)}`](this.studentData);
+            if (window[`initProfesor${this.capitalize(sectionName)}`]) {
+                window[`initProfesor${this.capitalize(sectionName)}`](this.profesorData);
             }
         } catch (error) {
             console.error('Error loading section:', error);
@@ -207,12 +183,11 @@ class StudentPanel {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.studentPanel = new StudentPanel();
+    window.profesorPanel = new ProfesorPanel();
 });
 
-// Global function for navigation (backward compatibility)
 function showSection(sectionName) {
-    if (window.studentPanel) {
-        window.studentPanel.showSection(sectionName);
+    if (window.profesorPanel) {
+        window.profesorPanel.showSection(sectionName);
     }
 }

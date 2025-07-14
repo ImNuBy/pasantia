@@ -1,0 +1,598 @@
+
+<div class="panel-section" style="display: block;">
+    <div class="data-table">
+        <h3 class="table-header">Mi Perfil</h3>
+        <div class="table-content">
+            <div class="profile-grid" style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem; margin-bottom: 2rem;">
+                <div class="profile-photo">
+                    <div class="photo-placeholder" style="width: 150px; height: 150px; border-radius: 50%; background: var(--light-bg); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--text-light); border: 3px solid var(--accent-color);">
+                        👤
+                    </div>
+                    <button class="btn" style="margin-top: 1rem; width: 100%;" onclick="changePhoto()">Cambiar Foto</button>
+                </div>
+                <div class="profile-summary">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Información Personal</h3>
+                    <div id="profile-summary-content" class="loading">
+                        Cargando información...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-tabs">
+                <div class="tab-buttons" style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid var(--light-bg);">
+                    <button class="tab-btn active" onclick="showProfileTab('datos')" data-tab="datos">Datos Personales</button>
+                    <button class="tab-btn" onclick="showProfileTab('academico')" data-tab="academico">Información Académica</button>
+                    <button class="tab-btn" onclick="showProfileTab('contacto')" data-tab="contacto">Datos de Contacto</button>
+                    <button class="tab-btn" onclick="showProfileTab('tutor')" data-tab="tutor">Información del Tutor</button>
+                </div>
+                
+                <div id="profile-tab-content">
+                    <!-- Contenido de pestañas se carga aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-light);
+    border-bottom: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.tab-btn:hover {
+    color: var(--accent-color);
+}
+
+.tab-btn.active {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.form-control:disabled {
+    background-color: var(--light-bg);
+    color: var(--text-light);
+}
+
+.info-card {
+    background: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.info-value {
+    color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .tab-buttons {
+        flex-direction: column;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+</style>
+
+<script>
+let currentProfileData = null;
+
+function initPerfil(studentData) {
+    loadProfileData();
+    showProfileTab('datos');
+}
+
+async function loadProfileData() {
+    try {
+        const response = await fetch('api/student-profile.php');
+        const result = await response.json();
+        
+        if (result.success) {
+            currentProfileData = result.data;
+            displayProfileSummary(result.data);
+        } else {
+            document.getElementById('profile-summary-content').innerHTML = 
+                '<div class="error-message">Error al cargar el perfil</div>';
+        }
+    } catch (error) {
+        document.getElementById('profile-summary-content').innerHTML = 
+            '<div class="error-message">Error de conexión</div>';
+    }
+}
+
+function displayProfileSummary(data) {
+    document.getElementById('profile-summary-content').innerHTML = `
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">Nombre Completo:</span>
+                <span class="info-value">${data.nombre} ${data.apellido}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">${data.email}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Legajo:</span>
+                <span class="info-value">${data.legajo || 'No asignado'}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado:</span>
+                <span class="info-value success">${data.estado || 'Activo'}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Curso:</span>
+                <span class="info-value">${data.curso || 'No asignado'}</span>
+            </div>
+        </div>
+    `;
+}
+
+function showProfileTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    
+    const content = document.getElementById('profile-tab-content');
+    
+    if (!currentProfileData) {
+        content.innerHTML = '<div class="error-message">No se pudieron cargar los datos</div>';
+        return;
+    }
+    
+    switch(tab) {
+        case 'datos':
+            content.innerHTML = `
+                <form id="datos-form" onsubmit="updateDatosPersonales(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" name="nombre" class="form-control" value="${currentProfileData.nombre || ''}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido:</label>
+                            <input type="text" name="apellido" class="form-control" value="${currentProfileData.apellido || ''}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>DNI:</label>
+                            <input type="text" name="dni" class="form-control" value="${currentProfileData.dni || ''}" placeholder="Ingresa tu DNI">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Nacimiento:</label>
+                            <input type="date" name="fecha_nacimiento" class="form-control" value="${currentProfileData.fecha_nacimiento || ''}">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Dirección:</label>
+                            <textarea name="direccion" class="form-control" rows="3" placeholder="Ingresa tu dirección completa">${currentProfileData.direccion || ''}</textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Actualizar Datos Personales</button>
+                </form>
+            `;
+            break;
+            
+        case 'academico':
+            content.innerHTML = `
+                <div class="academic-info">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Información Académica</h4>
+                    <div class="info-card">
+                        <div class="info-row">
+                            <span class="info-label">Curso Actual:</span>
+                            <span class="info-value">${currentProfileData.curso || 'No asignado'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Orientación:</span>
+                            <span class="info-value">${currentProfileData.orientacion || 'No asignada'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fecha de Ingreso:</span>
+                            <span class="info-value">${formatDate(currentProfileData.fecha_ingreso) || 'No registrada'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Estado Académico:</span>
+                            <span class="info-value success">${currentProfileData.estado || 'Activo'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Legajo:</span>
+                            <span class="info-value">${currentProfileData.legajo || 'No asignado'}</span>
+                        </div>
+                    </div>
+                    
+                    <h5 style="color: var(--primary-color); margin: 2rem 0 1rem 0;">Estadísticas Académicas</h5>
+                    <div id="academic-stats" class="loading">Cargando estadísticas...</div>
+                </div>
+            `;
+            loadAcademicStats();
+            break;
+            
+        case 'contacto':
+            content.innerHTML = `
+                <form id="contacto-form" onsubmit="updateContacto(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" name="email" class="form-control" value="${currentProfileData.email || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono:</label>
+                            <input type="tel" name="telefono" class="form-control" value="${currentProfileData.telefono || ''}" placeholder="Ej: +54 11 1234-5678">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Actualizar Datos de Contacto</button>
+                </form>
+            `;
+            break;
+            
+        case 'tutor':
+            content.innerHTML = `
+                <form id="tutor-form" onsubmit="updateTutor(event)">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1rem;">Información del Tutor/Responsable</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nombre del Tutor:</label>
+                            <input type="text" name="tutor_nombre" class="form-control" value="${currentProfileData.tutor_nombre || ''}" placeholder="Nombre completo del tutor">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono del Tutor:</label>
+                            <input type="tel" name="tutor_telefono" class="form-control" value="${currentProfileData.tutor_telefono || ''}" placeholder="Teléfono de contacto">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Email del Tutor:</label>
+                            <input type="email" name="tutor_email" class="form-control" value="${currentProfileData.tutor_email || ''}" placeholder="Email del tutor">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Actualizar Datos del Tutor</button>
+                </form>
+            `;
+            break;
+    }
+}
+
+async function loadAcademicStats() {
+    try {
+        const response = await fetch('api/student-academic-stats.php');
+        const result = await response.json();
+        
+        if (result.success) {
+            const stats = result.data;
+            document.getElementById('academic-stats').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.materias_cursando || 0}</div>
+                        <div class="stat-description">Materias Cursando</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.promedio_historico || 'N/A'}</div>
+                        <div class="stat-description">Promedio Histórico</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.materias_aprobadas || 0}</div>
+                        <div class="stat-description">Materias Aprobadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.porcentaje_asistencia || 0}%</div>
+                        <div class="stat-description">Asistencia Promedio</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            document.getElementById('academic-stats').innerHTML = 
+                '<div class="error-message">Error al cargar estadísticas académicas</div>';
+        }
+    } catch (error) {
+        document.getElementById('academic-stats').innerHTML = 
+            '<div class="error-message">Error de conexión</div>';
+    }
+}
+
+async function updateDatosPersonales(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('api/student-update-profile.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                section: 'datos_personales',
+                data: data
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccessMessage('Datos actualizados correctamente');
+            loadProfileData(); // Recargar datos
+        } else {
+            showErrorMessage(result.error);
+        }
+    } catch (error) {
+        showErrorMessage('Error de conexión');
+    }
+}
+
+async function updateContacto(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('api/student-update-profile.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                section: 'contacto',
+                data: data
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccessMessage('Datos de contacto actualizados correctamente');
+            loadProfileData(); // Recargar datos
+        } else {
+            showErrorMessage(result.error);
+        }
+    } catch (error) {
+        showErrorMessage('Error de conexión');
+    }
+}
+
+async function updateTutor(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('api/student-update-profile.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                section: 'tutor',
+                data: data
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showSuccessMessage('Datos del tutor actualizados correctamente');
+            loadProfileData(); // Recargar datos
+        } else {
+            showErrorMessage(result.error);
+        }
+    } catch (error) {
+        showErrorMessage('Error de conexión');
+    }
+}
+
+function changePhoto() {
+    alert('Funcionalidad de cambio de foto en desarrollo');
+}
+
+function showSuccessMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'success-message';
+    messageDiv.textContent = message;
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '20px';
+    messageDiv.style.right = '20px';
+    messageDiv.style.zIndex = '10000';
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        document.body.removeChild(messageDiv);
+    }, 3000);
+}
+
+function showErrorMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'error-message';
+    messageDiv.textContent = message;
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '20px';
+    messageDiv.style.right = '20px';
+    messageDiv.style.zIndex = '10000';
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+        document.body.removeChild(messageDiv);
+    }, 5000);
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-AR');
+}
+</script>
+
+// =============================================================================
+// ARCHIVO: api/student-update-profile.php
+// API para actualizar perfil del estudiante
+// =============================================================================
+
+<?php
+header('Content-Type: application/json');
+require_once '../config/config.php';
+require_once '../config/database.php';
+require_once '../classes/Session.php';
+require_once '../classes/Security.php';
+
+Session::requireLogin();
+Session::requireRole(['estudiante']);
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Método no permitido']);
+    exit;
+}
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input || !isset($input['section']) || !isset($input['data'])) {
+        throw new Exception('Datos inválidos');
+    }
+    
+    $db = Database::getInstance()->getConnection();
+    $userId = $_SESSION['user_id'];
+    $section = $input['section'];
+    $data = $input['data'];
+    
+    // Sanitizar datos
+    foreach ($data as $key => $value) {
+        $data[$key] = Security::sanitizeInput($value);
+    }
+    
+    $db->beginTransaction();
+    
+    switch ($section) {
+        case 'datos_personales':
+            // Update usuarios table
+            $sql = "UPDATE usuarios SET dni = :dni, fecha_nacimiento = :fecha_nacimiento, direccion = :direccion 
+                    WHERE id = :user_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([
+                'dni' => $data['dni'] ?: null,
+                'fecha_nacimiento' => $data['fecha_nacimiento'] ?: null,
+                'direccion' => $data['direccion'] ?: null,
+                'user_id' => $userId
+            ]);
+            break;
+            
+        case 'contacto':
+            // Validate email
+            if (!Security::validateEmail($data['email'])) {
+                throw new Exception('Email inválido');
+            }
+            
+            // Update usuarios table
+            $sql = "UPDATE usuarios SET email = :email, telefono = :telefono WHERE id = :user_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([
+                'email' => $data['email'],
+                'telefono' => $data['telefono'] ?: null,
+                'user_id' => $userId
+            ]);
+            break;
+            
+        case 'tutor':
+            // Update estudiantes table
+            $sql = "UPDATE estudiantes SET tutor_nombre = :tutor_nombre, tutor_telefono = :tutor_telefono, 
+                           tutor_email = :tutor_email 
+                    WHERE usuario_id = :user_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute([
+                'tutor_nombre' => $data['tutor_nombre'] ?: null,
+                'tutor_telefono' => $data['tutor_telefono'] ?: null,
+                'tutor_email' => $data['tutor_email'] ?: null,
+                'user_id' => $userId
+            ]);
+            break;
+            
+        default:
+            throw new Exception('Sección inválida');
+    }
+    
+    $db->commit();
+    
+    echo json_encode([
+        'success' => true,
+        'message' => 'Perfil actualizado correctamente'
+    ]);
+    
+} catch (Exception $e) {
+    $db->rollBack();
+    http_response_code(400);
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage()
+    ]);
+}
+?>

@@ -1,8 +1,8 @@
 
-class StudentPanel {
+class SecretarioPanel {
     constructor() {
         this.currentSection = 'dashboard';
-        this.studentData = null;
+        this.secretarioData = null;
         this.init();
     }
     
@@ -10,20 +10,19 @@ class StudentPanel {
         // Wait for auth check
         await window.authManager.checkSession();
         
-        // Verify student role
-        if (!window.authManager.hasRole('estudiante')) {
+        // Verify secretario role
+        if (!window.authManager.hasRole('secretario')) {
             alert('No tienes permisos para acceder a este panel');
             window.location.href = 'login.html';
             return;
         }
         
-        this.loadStudentData();
+        this.loadSecretarioData();
         this.setupEventListeners();
         this.showSection('dashboard');
     }
     
     setupEventListeners() {
-        // Navigation clicks
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -33,18 +32,17 @@ class StudentPanel {
         });
     }
     
-    async loadStudentData() {
+    async loadSecretarioData() {
         try {
-            const response = await fetch('api/student-data.php');
+            const response = await fetch('api/secretario-data.php');
             const result = await response.json();
             
             if (result.success) {
-                this.studentData = result.data;
+                this.secretarioData = result.data;
                 this.updateDashboard();
-                this.updateStudentInfo();
             } else {
                 console.error('Error cargando datos:', result.error);
-                this.showError('Error al cargar los datos del estudiante');
+                this.showError('Error al cargar los datos');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -52,92 +50,78 @@ class StudentPanel {
         }
     }
     
-    updateStudentInfo() {
-        if (!this.studentData || !this.studentData.estudiante) return;
-        
-        const student = this.studentData.estudiante;
-        
-        // Update course info
-        const cursoElement = document.getElementById('user-curso');
-        if (cursoElement) {
-            cursoElement.textContent = student.curso_nombre || 'No asignado';
-        }
-        
-        // Update orientation
-        const orientacionElement = document.getElementById('orientacion');
-        if (orientacionElement) {
-            orientacionElement.textContent = student.orientacion_nombre || 'No asignada';
-        }
-    }
-    
     updateDashboard() {
-        if (!this.studentData) return;
+        if (!this.secretarioData) return;
         
-        // Update próximas evaluaciones
-        document.getElementById('proximas-evaluaciones').textContent = '0';
+        document.getElementById('total-estudiantes').textContent = this.secretarioData.total_estudiantes || 0;
+        document.getElementById('total-profesores').textContent = this.secretarioData.total_profesores || 0;
+        document.getElementById('consultas-pendientes').textContent = this.secretarioData.consultas_pendientes || 0;
+        document.getElementById('inscripciones-mes').textContent = this.secretarioData.inscripciones_mes || 0;
         
-        // Calculate promedio general
-        if (this.studentData.calificaciones && this.studentData.calificaciones.length > 0) {
-            const notas = this.studentData.calificaciones
-                .map(c => parseFloat(c.nota))
-                .filter(n => !isNaN(n));
-            
-            if (notas.length > 0) {
-                const promedio = notas.reduce((a, b) => a + b, 0) / notas.length;
-                document.getElementById('promedio-general').textContent = promedio.toFixed(1);
-            }
-        }
-        
-        // Calculate asistencia del mes
-        if (this.studentData.asistencias && this.studentData.asistencias.length > 0) {
-            const totalAsistencia = this.studentData.asistencias.reduce((acc, curr) => 
-                acc + parseFloat(curr.porcentaje_asistencia), 0
-            ) / this.studentData.asistencias.length;
-            document.getElementById('asistencia-mes').textContent = totalAsistencia.toFixed(0) + '%';
-        }
-        
-        // Update recent activity
         this.updateRecentActivity();
+        this.updatePendingTasks();
     }
     
     updateRecentActivity() {
         const container = document.getElementById('actividad-reciente');
         
-        if (!this.studentData.calificaciones || this.studentData.calificaciones.length === 0) {
+        if (!this.secretarioData.actividad_reciente || this.secretarioData.actividad_reciente.length === 0) {
             container.innerHTML = '<p>No hay actividad reciente registrada.</p>';
             return;
         }
-        
-        // Show últimas 5 calificaciones
-        const recentGrades = this.studentData.calificaciones
-            .sort((a, b) => new Date(b.fecha_evaluacion) - new Date(a.fecha_evaluacion))
-            .slice(0, 5);
         
         let html = `
             <table>
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Materia</th>
                         <th>Tipo</th>
-                        <th>Nota</th>
+                        <th>Descripción</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
         
-        recentGrades.forEach(grade => {
+        this.secretarioData.actividad_reciente.forEach(activity => {
             html += `
                 <tr>
-                    <td>${this.formatDate(grade.fecha_evaluacion)}</td>
-                    <td>${grade.materia}</td>
-                    <td>${grade.tipo_evaluacion}</td>
-                    <td>${grade.nota || 'Pendiente'}</td>
+                    <td>${this.formatDate(activity.fecha)}</td>
+                    <td><span class="badge">${activity.tipo}</span></td>
+                    <td>${activity.descripcion}</td>
                 </tr>
             `;
         });
         
         html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+    
+    updatePendingTasks() {
+        const container = document.getElementById('tareas-pendientes');
+        
+        if (!this.secretarioData.tareas_pendientes || this.secretarioData.tareas_pendientes.length === 0) {
+            container.innerHTML = '<p>No hay tareas pendientes.</p>';
+            return;
+        }
+        
+        let html = '<ul style="list-style: none; padding: 0;">';
+        
+        this.secretarioData.tareas_pendientes.forEach(task => {
+            const priorityClass = task.prioridad === 'alta' ? 'error' : 
+                                task.prioridad === 'media' ? 'warning' : 'success';
+            
+            html += `
+                <li style="padding: 0.75rem; margin-bottom: 0.5rem; background: var(--light-bg); border-radius: 6px; border-left: 4px solid var(--${priorityClass === 'error' ? 'error' : priorityClass === 'warning' ? 'warning' : 'success'}-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${task.descripcion}</span>
+                        <span class="badge ${priorityClass}">${task.prioridad}</span>
+                    </div>
+                    <small style="color: var(--text-light);">Fecha límite: ${this.formatDate(task.fecha_limite)}</small>
+                </li>
+            `;
+        });
+        
+        html += '</ul>';
         container.innerHTML = html;
     }
     
@@ -159,10 +143,8 @@ class StudentPanel {
             section.style.display = 'none';
         });
         
-        // Show selected section
         if (sectionName === 'dashboard') {
             document.getElementById('dashboard').style.display = 'block';
-            this.updateDashboard();
         } else {
             this.loadSection(sectionName);
         }
@@ -175,13 +157,12 @@ class StudentPanel {
         container.innerHTML = '<div class="loading">Cargando...</div>';
         
         try {
-            const response = await fetch(`sections/student-${sectionName}.html`);
+            const response = await fetch(`sections/secretario-${sectionName}.html`);
             const html = await response.text();
             container.innerHTML = html;
             
-            // Initialize section-specific functionality
-            if (window[`init${this.capitalize(sectionName)}`]) {
-                window[`init${this.capitalize(sectionName)}`](this.studentData);
+            if (window[`initSecretario${this.capitalize(sectionName)}`]) {
+                window[`initSecretario${this.capitalize(sectionName)}`](this.secretarioData);
             }
         } catch (error) {
             console.error('Error loading section:', error);
@@ -207,12 +188,11 @@ class StudentPanel {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.studentPanel = new StudentPanel();
+    window.secretarioPanel = new SecretarioPanel();
 });
 
-// Global function for navigation (backward compatibility)
 function showSection(sectionName) {
-    if (window.studentPanel) {
-        window.studentPanel.showSection(sectionName);
+    if (window.secretarioPanel) {
+        window.secretarioPanel.showSection(sectionName);
     }
 }

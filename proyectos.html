@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📁 Proyectos Escolares</title>
+    <link rel="stylesheet" href="css/proyectos.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 Proyectos Escolares</h1>
+            <div class="student-info">
+                <div class="info-item"><strong>Estudiante:</strong> María González</div>
+                <div class="info-item"><strong>Curso:</strong> 6° Grado</div>
+                <div class="info-item"><strong>Año:</strong> 2025</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls">
+                <label for="subjectFilter">Filtrar por materia:</label>
+                <select id="subjectFilter">
+                    <option value="all">Todas</option>
+                    <option value="ciencias">Ciencias</option>
+                    <option value="arte">Arte</option>
+                    <option value="lengua">Lengua</option>
+                    <option value="historia">Historia</option>
+                </select>
+            </div>
+
+            <div class="grades-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Materia</th>
+                            <th>Descripción</th>
+                            <th>Entrega</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projects = [
+            { title: "Energías Renovables", subject: "ciencias", description: "Investigación sobre fuentes limpias de energía.", delivery: "10/06/2025", status: "✅ Entregado" },
+            { title: "Collage Creativo", subject: "arte", description: "Trabajo artístico en grupo con materiales reciclados.", delivery: "05/05/2025", status: "✅ Entregado" },
+            { title: "Cuento Fantástico", subject: "lengua", description: "Escritura de un cuento con temática libre.", delivery: "20/04/2025", status: "❌ Pendiente" },
+            { title: "Línea de Tiempo", subject: "historia", description: "Elaborar línea del tiempo de los pueblos originarios.", delivery: "30/05/2025", status: "✅ Entregado" },
+            { title: "Experimento Casero", subject: "ciencias", description: "Proyecto práctico sobre reacciones químicas.", delivery: "15/06/2025", status: "❌ Pendiente" }
+        ];
+
+        function renderProjects() {
+            const tbody = document.getElementById("projectsBody");
+            const filter = document.getElementById("subjectFilter").value;
+            tbody.innerHTML = "";
+
+            const filtered = filter === "all" ? projects : projects.filter(p => p.subject === filter);
+
+            filtered.forEach(project => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td><strong>${project.title}</strong></td>
+                    <td>${capitalize(project.subject)}</td>
+                    <td>${project.description}</td>
+                    <td>${project.delivery}</td>
+                    <td>${project.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function capitalize(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
+
+        document.getElementById("subjectFilter").addEventListener("change", renderProjects);
+        renderProjects();
+    </script>
+</body>
+</html>
