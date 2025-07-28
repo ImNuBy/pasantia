@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Asistencias</title>
-</head>
+    <link rel="stylesheet" href="css/asistencias.css">
+    </head>
 <body>
     <div class="container">
         <div class="header">
@@ -15,6 +16,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showSection('report')">Reportar Ausencia</button>
             <button class="nav-tab" onclick="showSection('attendance')">Marcar Asistencia</button>
+            <button class="nav-tab" onclick="showSection('table')">Tabla de Asistencias</button>
             <button class="nav-tab" onclick="showSection('history')">Historial</button>
             <button class="nav-tab" onclick="showSection('stats')">Estadísticas</button>
         </div>
@@ -95,6 +97,81 @@
                 </div>
 
                 <button onclick="saveAttendance()" class="btn btn-success" style="margin-top: 20px;">Guardar Asistencia</button>
+            </div>
+
+            <!-- Sección Tabla de Asistencias -->
+            <div id="table" class="section">
+                <h2>Tabla de Asistencias</h2>
+                
+                <div class="user-selector">
+                    <label for="tableUser">Tipo de Usuario:</label>
+                    <select id="tableUser" onchange="loadAttendanceTable()">
+                        <option value="student">Estudiante</option>
+                        <option value="teacher">Docente</option>
+                    </select>
+                </div>
+
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="tableMonth">Mes:</label>
+                        <select id="tableMonth" onchange="loadAttendanceTable()">
+                            <option value="2024-07">Julio 2024</option>
+                            <option value="2024-06">Junio 2024</option>
+                            <option value="2024-05">Mayo 2024</option>
+                            <option value="2024-04">Abril 2024</option>
+                            <option value="2024-03">Marzo 2024</option>
+                            <option value="2024-02">Febrero 2024</option>
+                            <option value="2024-01">Enero 2024</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tableSubject">Materia:</label>
+                        <select id="tableSubject" onchange="loadAttendanceTable()">
+                            <option value="">Todas las materias</option>
+                            <option value="lengua">Lengua y Literatura</option>
+                            <option value="matematicas">Matemáticas</option>
+                            <option value="sociales">Ciencias Sociales</option>
+                            <option value="naturales">Ciencias Naturales</option>
+                            <option value="fisica">Educación Física</option>
+                            <option value="artistica">Educación Artística</option>
+                            <option value="ingles">Inglés</option>
+                            <option value="informatica">Informática</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabla de asistencias estilo calendario -->
+                <div id="attendanceTableContainer">
+                    <table class="history-table" id="attendanceTable">
+                        <thead id="attendanceTableHead">
+                            <!-- Se genera dinámicamente -->
+                        </thead>
+                        <tbody id="attendanceTableBody">
+                            <!-- Se genera dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Leyenda -->
+                <div style="margin-top: 20px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: #27ae60; border-radius: 4px;"></div>
+                        <span>Presente</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: #e74c3c; border-radius: 4px;"></div>
+                        <span>Ausente</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: #f39c12; border-radius: 4px;"></div>
+                        <span>Tardanza</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 20px; height: 20px; background: #ecf0f1; border: 1px solid #bdc3c7; border-radius: 4px;"></div>
+                        <span>Sin datos</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Sección Historial -->
@@ -198,7 +275,7 @@
     </div>
 
     <script>
-        // Datos de ejemplo
+        // Datos de ejemplo más completos
         let attendanceData = [
             { date: '2024-07-01', subject: 'matematicas', status: 'present', reason: '', comments: '' },
             { date: '2024-07-02', subject: 'lengua', status: 'absent', reason: 'enfermedad', comments: 'Gripe' },
@@ -207,7 +284,15 @@
             { date: '2024-07-05', subject: 'fisica', status: 'absent', reason: 'laboral', comments: 'Reunión importante' },
             { date: '2024-07-08', subject: 'artistica', status: 'present', reason: '', comments: '' },
             { date: '2024-07-09', subject: 'ingles', status: 'late', reason: 'personal', comments: 'Cita médica' },
-            { date: '2024-07-10', subject: 'informatica', status: 'present', reason: '', comments: '' }
+            { date: '2024-07-10', subject: 'informatica', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-11', subject: 'matematicas', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-12', subject: 'lengua', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-15', subject: 'sociales', status: 'absent', reason: 'familiar', comments: 'Asunto familiar urgente' },
+            { date: '2024-07-16', subject: 'naturales', status: 'late', reason: 'transporte', comments: 'Problemas con el transporte público' },
+            { date: '2024-07-17', subject: 'fisica', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-18', subject: 'artistica', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-19', subject: 'ingles', status: 'present', reason: '', comments: '' },
+            { date: '2024-07-22', subject: 'informatica', status: 'absent', reason: 'enfermedad', comments: 'Dolor de cabeza fuerte' }
         ];
 
         let currentAttendance = {};
@@ -237,6 +322,8 @@
 
             if (sectionId === 'attendance') {
                 generateAttendanceGrid();
+            } else if (sectionId === 'table') {
+                loadAttendanceTable();
             } else if (sectionId === 'history') {
                 loadHistory();
             } else if (sectionId === 'stats') {
@@ -247,20 +334,39 @@
         // Generar grid de asistencia
         function generateAttendanceGrid() {
             const grid = document.getElementById('attendanceGrid');
+            const selectedDate = document.getElementById('attendanceDate').value;
             grid.innerHTML = '';
 
+            if (!selectedDate) {
+                grid.innerHTML = '<p style="text-align: center; color: #6c757d; font-size: 1.1em;">Por favor selecciona una fecha para marcar asistencia</p>';
+                return;
+            }
+
             Object.entries(subjects).forEach(([key, name]) => {
+                // Verificar si ya existe asistencia para esta fecha y materia
+                const existingAttendance = attendanceData.find(item => 
+                    item.date === selectedDate && item.subject === key
+                );
+
                 const card = document.createElement('div');
                 card.className = 'subject-card';
                 card.innerHTML = `
                     <h3>${name}</h3>
-                    <p>Marcar asistencia para hoy</p>
+                    <p>Fecha: ${new Date(selectedDate).toLocaleDateString('es-ES')}</p>
                     <div class="attendance-buttons">
-                        <button class="btn-present" onclick="markAttendance('${key}', 'present')">Presente</button>
-                        <button class="btn-absent" onclick="markAttendance('${key}', 'absent')">Ausente</button>
-                        <button class="btn-late" onclick="markAttendance('${key}', 'late')">Tardanza</button>
+                        <button class="btn-present ${existingAttendance?.status === 'present' ? 'active' : ''}" 
+                                onclick="markAttendance('${key}', 'present')">Presente</button>
+                        <button class="btn-absent ${existingAttendance?.status === 'absent' ? 'active' : ''}" 
+                                onclick="markAttendance('${key}', 'absent')">Ausente</button>
+                        <button class="btn-late ${existingAttendance?.status === 'late' ? 'active' : ''}" 
+                                onclick="markAttendance('${key}', 'late')">Tardanza</button>
                     </div>
-                    <div id="status-${key}" style="margin-top: 10px; font-weight: bold;"></div>
+                    <div id="status-${key}" style="margin-top: 10px; font-weight: bold;">
+                        ${existingAttendance ? 
+                            `<span style="color: ${existingAttendance.status === 'present' ? '#27ae60' : existingAttendance.status === 'absent' ? '#e74c3c' : '#f39c12'};">
+                                ✓ ${existingAttendance.status === 'present' ? 'Presente' : existingAttendance.status === 'absent' ? 'Ausente' : 'Tardanza'}
+                            </span>` : ''}
+                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -268,12 +374,48 @@
 
         // Marcar asistencia
         function markAttendance(subject, status) {
+            const selectedDate = document.getElementById('attendanceDate').value;
+            if (!selectedDate) {
+                alert('Por favor selecciona una fecha');
+                return;
+            }
+
+            // Buscar si ya existe un registro para esta fecha y materia
+            const existingIndex = attendanceData.findIndex(item => 
+                item.date === selectedDate && item.subject === subject
+            );
+
+            if (existingIndex !== -1) {
+                // Actualizar registro existente
+                attendanceData[existingIndex].status = status;
+                attendanceData[existingIndex].reason = status !== 'present' ? 'Marcado por docente' : '';
+            } else {
+                // Crear nuevo registro
+                attendanceData.push({
+                    date: selectedDate,
+                    subject: subject,
+                    status: status,
+                    reason: status !== 'present' ? 'Marcado por docente' : '',
+                    comments: ''
+                });
+            }
+
             currentAttendance[subject] = status;
             const statusDiv = document.getElementById(`status-${subject}`);
             const statusText = status === 'present' ? 'Presente' : status === 'absent' ? 'Ausente' : 'Tardanza';
             const statusColor = status === 'present' ? '#27ae60' : status === 'absent' ? '#e74c3c' : '#f39c12';
             
             statusDiv.innerHTML = `<span style="color: ${statusColor};">✓ ${statusText}</span>`;
+
+            // Actualizar botones activos
+            const buttons = document.querySelectorAll(`#attendanceGrid .subject-card button`);
+            buttons.forEach(btn => {
+                if (btn.parentElement.parentElement.querySelector('h3').textContent === subjects[subject]) {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            event.target.classList.add('active');
         }
 
         // Guardar asistencia
@@ -284,19 +426,102 @@
                 return;
             }
 
-            Object.entries(currentAttendance).forEach(([subject, status]) => {
-                attendanceData.push({
-                    date: date,
-                    subject: subject,
-                    status: status,
-                    reason: status !== 'present' ? 'Marcado por docente' : '',
-                    comments: ''
-                });
-            });
+            if (Object.keys(currentAttendance).length === 0) {
+                alert('No hay cambios para guardar');
+                return;
+            }
 
-            alert('Asistencia guardada exitosamente');
-            currentAttendance = {};
-            generateAttendanceGrid();
+            // Mostrar mensaje de confirmación
+            const confirmMessage = `¿Confirmas guardar la asistencia para el ${new Date(date).toLocaleDateString('es-ES')}?`;
+            if (confirm(confirmMessage)) {
+                // Mostrar mensaje de éxito
+                const successMessage = document.createElement('div');
+                successMessage.className = 'success-message';
+                successMessage.innerHTML = `✓ Asistencia guardada exitosamente para ${new Date(date).toLocaleDateString('es-ES')}`;
+                
+                const grid = document.getElementById('attendanceGrid');
+                grid.parentNode.insertBefore(successMessage, grid);
+                
+                // Limpiar estado temporal
+                currentAttendance = {};
+                
+                // Remover mensaje después de 3 segundos
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 3000);
+            }
+        }
+
+        // Cargar tabla de asistencias
+        function loadAttendanceTable() {
+            const month = document.getElementById('tableMonth').value;
+            const subjectFilter = document.getElementById('tableSubject').value;
+            
+            // Generar días del mes
+            const [year, monthNum] = month.split('-');
+            const daysInMonth = new Date(year, monthNum, 0).getDate();
+            const dates = [];
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                dates.push(`${year}-${monthNum}-${i.toString().padStart(2, '0')}`);
+            }
+            
+            // Filtrar materias
+            const materiasToShow = subjectFilter ? [subjectFilter] : Object.keys(subjects);
+            
+            // Generar cabecera
+            const tableHead = document.getElementById('attendanceTableHead');
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Materia</th>';
+            
+            dates.forEach(date => {
+                const day = new Date(date).getDate();
+                headerRow.innerHTML += `<th>${day}</th>`;
+            });
+            
+            tableHead.innerHTML = '';
+            tableHead.appendChild(headerRow);
+            
+            // Generar cuerpo de la tabla
+            const tableBody = document.getElementById('attendanceTableBody');
+            tableBody.innerHTML = '';
+            
+            materiasToShow.forEach(materia => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td style="font-weight: bold; background: #f8f9fa;">${subjects[materia]}</td>`;
+                
+                dates.forEach(date => {
+                    const attendance = attendanceData.find(item => 
+                        item.date === date && item.subject === materia
+                    );
+                    
+                    let cellContent = '';
+                    let cellStyle = 'text-align: center; padding: 8px;';
+                    
+                    if (attendance) {
+                        const statusColors = {
+                            'present': '#27ae60',
+                            'absent': '#e74c3c',
+                            'late': '#f39c12'
+                        };
+                        const statusSymbols = {
+                            'present': '✓',
+                            'absent': '✗',
+                            'late': '⚠'
+                        };
+                        
+                        cellContent = statusSymbols[attendance.status];
+                        cellStyle += `background: ${statusColors[attendance.status]}; color: white; font-weight: bold;`;
+                    } else {
+                        cellContent = '-';
+                        cellStyle += 'background: #ecf0f1; color: #7f8c8d;';
+                    }
+                    
+                    row.innerHTML += `<td style="${cellStyle}">${cellContent}</td>`;
+                });
+                
+                tableBody.appendChild(row);
+            });
         }
 
         // Cargar historial
@@ -404,4 +629,57 @@
                         <div class="stat-label">Tardanzas</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" style="color: #9
+                        <div class="stat-number" style="color: #9b59b6;">${rate}%</div>
+                        <div class="stat-label">Porcentaje de Asistencia</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Reportar ausencia
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('reportDate').value;
+            const subject = document.getElementById('reportSubject').value;
+            const reason = document.getElementById('reportReason').value;
+            const comments = document.getElementById('reportComments').value;
+            
+            attendanceData.push({
+                date: date,
+                subject: subject,
+                status: 'absent',
+                reason: reason,
+                comments: comments
+            });
+            
+            // Mostrar mensaje de éxito
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.innerHTML = '✓ Ausencia reportada exitosamente';
+            
+            const form = document.getElementById('reportForm');
+            form.parentNode.insertBefore(successMessage, form);
+            
+            // Limpiar formulario
+            form.reset();
+            
+            // Remover mensaje después de 3 segundos
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        });
+
+        // Inicializar fechas y eventos
+        document.getElementById('attendanceDate').valueAsDate = new Date();
+        document.getElementById('reportDate').valueAsDate = new Date();
+        
+        // Agregar evento para actualizar grid cuando cambie la fecha
+        document.getElementById('attendanceDate').addEventListener('change', generateAttendanceGrid);
+
+        // Cargar datos iniciales
+        generateAttendanceGrid();
+        loadHistory();
+        loadStats();
+        loadAttendanceTable();
+    

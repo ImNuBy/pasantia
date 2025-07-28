@@ -3,198 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escuela Primaria para Adultos</title>
+    <title>EPA 703 - Escuela Primaria para Adultos</title>
+    <meta name="description" content="Escuela Primaria para Adultos N°703. Nunca es tarde para aprender. Horarios flexibles, metodología adaptada y apoyo integral.">
+    <meta name="keywords" content="escuela primaria adultos, educación adultos, alfabetización, terminación primaria, Buenos Aires">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="EPA 703 - Escuela Primaria para Adultos">
+    <meta property="og:description" content="Nunca es tarde para aprender. Educación primaria para adultos con horarios flexibles.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://epa703.edu.ar">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
     <!-- Header -->
     <header class="header" id="header">
         <nav class="navbar">
-            <div class="nav-container">
+            <div class="nav-container container">
                 <div class="nav-logo">
-                    <h1>Escuela Primaria</h1>
+                    <h1>EPA 703</h1>
                 </div>
                 <ul class="nav-menu" id="nav-menu">
-                    <li class="nav-item">
-                        <a href="#inicio" class="nav-link active">INICIO</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#nosotros" class="nav-link">NOSOTROS</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#programa" class="nav-link">PROGRAMA</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#proyectos" class="nav-link">ACTIVIDADES</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#contacto" class="nav-link">CONTACTO</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="login.html" class="nav-link login-btn">INICIAR SESION</a>
-                    </li>
+                    <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+                    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+                    <li><a href="#ciclos" class="nav-link">Ciclos</a></li>
+                    <li><a href="#programas" class="nav-link">Programas</a></li>
+                    <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                    <li><a href="login.html" class="nav-link login-btn">Iniciar Sesión</a></li>
                 </ul>
-                <div class="nav-toggle" id="nav-toggle">
+                <button class="nav-toggle" id="nav-toggle" aria-label="Abrir menú">
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
-                </div> 
+                </button>
             </div>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <section id="inicio" class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-background"></div>
-        <div class="hero-content">
-            <div class="container">
-                <h1 class="hero-title">Escuela Primaria</h1>
-                <h2 class="hero-subtitle">Para Personas Adultas</h2>
-                <p class="hero-description">
-                    Brindamos oportunidades educativas para jóvenes y adultos que desean finalizar sus estudios primarios.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#nosotros" class="btn btn-primary">Conocer Más</a>
-                    <a href="#programa" class="btn btn-secondary">Ver el Programa</a>
+        <div class="hero-content animate-fade-in-up">
+            <div class="hero-badge">
+                Más de 50 años formando adultos
+            </div>
+            <h1 class="hero-title">
+                Nunca es tarde para <br>
+                <span style="color: var(--accent-color);">aprender</span>
+            </h1>
+            <p class="hero-subtitle">
+                Escuela Primaria para Adultos N°703
+            </p>
+            <p class="hero-description">
+                Ofrecemos educación primaria de calidad para adultos con horarios flexibles, 
+                metodología adaptada y apoyo integral. Tu futuro comienza aquí.
+            </p>
+            <div class="hero-buttons">
+                <a href="#contacto" class="btn btn-primary btn-large">
+                    Inscribirse Ahora
+                    <span>→</span>
+                </a>
+                <a href="login.html" class="btn btn-secondary btn-large">
+                    Portal Estudiantes
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">2000+</span>
+                    <span class="hero-stat-label">Graduados</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">50+</span>
+                    <span class="hero-stat-label">Años de experiencia</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">95%</span>
+                    <span class="hero-stat-label">Tasa de éxito</span>
                 </div>
             </div>
         </div>
-        <div class="scroll-indicator">
+        <div class="scroll-indicator" onclick="document.getElementById('nosotros').scrollIntoView()">
             <div class="scroll-arrow"></div>
         </div>
     </section>
 
     <!-- Nosotros Section -->
-    <section id="nosotros" class="section nosotros">
+    <section id="nosotros" class="section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Sobre Nosotros</h2>
-                <p class="section-subtitle">Educando con compromiso y empatía</p>
+                <div class="section-badge">Quiénes Somos</div>
+                <h2 class="section-title">Comprometidos con tu educación</h2>
+                <p class="section-subtitle">
+                    Somos una institución educativa especializada en brindar oportunidades 
+                    de aprendizaje para adultos, con un enfoque integral y personalizado.
+                </p>
             </div>
-            <div class="nosotros-grid">
-                <div class="nosotros-card">
-                    <h3>Nuestra Historia</h3>
-                    <p>Desde hace más de 30 años acompañamos a personas adultas en su camino educativo, ayudándoles a completar sus estudios primarios.</p>
+            <div class="grid grid-3">
+                <div class="card animate-fade-in-up">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Nuestra Misión</h3>
+                    <p class="card-description">
+                        Brindar educación primaria de calidad a adultos, con metodología 
+                        flexible y adaptada a sus necesidades, promoviendo su desarrollo 
+                        personal y social.
+                    </p>
                 </div>
-                <div class="nosotros-card">
-                    <h3>Nuestra Misión</h3>
-                    <p>Ofrecer una educación inclusiva, flexible y de calidad que se adapte a las necesidades de nuestros estudiantes adultos.</p>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="card-icon">👥</div>
+                    <h3 class="card-title">Nuestra Comunidad</h3>
+                    <p class="card-description">
+                        Más de 2000 adultos han completado sus estudios primarios con nosotros, 
+                        logrando mejores oportunidades laborales y continuando sus estudios secundarios.
+                    </p>
                 </div>
-                <div class="nosotros-card">
-                    <h3>Nuestros Valores</h3>
-                    <p>Respeto, igualdad, superación personal y aprendizaje a lo largo de la vida.</p>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="card-icon">⏰</div>
+                    <h3 class="card-title">Horarios Flexibles</h3>
+                    <p class="card-description">
+                        Entendemos que nuestros estudiantes trabajan y tienen responsabilidades 
+                        familiares, por eso ofrecemos horarios de tarde y noche que se adaptan 
+                        a tu rutina.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Programa Section -->
-    <section id="programa" class="section programa">
+    <!-- Ciclos Section -->
+    <section id="ciclos" class="section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Programa Educativo</h2>
-                <p class="section-subtitle">Materias y contenidos principales</p>
+                <div class="section-badge">Educación Adaptada</div>
+                <h2 class="section-title">Ciclos Educativos</h2>
+                <p class="section-subtitle">
+                    Programas diseñados para diferentes niveles de conocimiento, 
+                    desde alfabetización inicial hasta preparación para secundaria.
+                </p>
             </div>
-            <div class="orientaciones-grid">
-                <div class="orientacion-card">
-                    <h3>Lengua y Literatura</h3>
-                    <p>Comprensión lectora, producción de textos, expresión oral y análisis de obras.</p>
+            <div class="grid grid-3">
+                <div class="card animate-slide-in-left">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Alfabetización</h3>
+                    <p class="card-description">
+                        Ideal para adultos sin escolaridad previa. Aprenderás lectoescritura 
+                        y cálculo básico en un ambiente comprensivo y motivador.
+                    </p>
+                    <ul class="card-list">
+                        <li>Lectoescritura Inicial</li>
+                        <li>Cálculo Básico</li>
+                        <li>Educación Cívica</li>
+                        <li>Conocimiento del Medio</li>
+                        <li>Habilidades Sociales</li>
+                    </ul>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Duración:</strong> 6 meses</span>
+                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+                    </div>
                 </div>
-                <div class="orientacion-card">
-                    <h3>Matemática</h3>
-                    <p>Números, operaciones, geometría, fracciones, problemas y lógica.</p>
+                <div class="card animate-slide-in-left" style="animation-delay: 0.1s;">
+                    <div class="card-icon">📖</div>
+                    <h3 class="card-title">Primer Ciclo</h3>
+                    <p class="card-description">
+                        Equivalente a 1°, 2° y 3° grado. Construye bases sólidas de 
+                        conocimiento en todas las áreas fundamentales.
+                    </p>
+                    <ul class="card-list">
+                        <li>Lengua y Literatura</li>
+                        <li>Matemática</li>
+                        <li>Ciencias Naturales</li>
+                        <li>Ciencias Sociales</li>
+                        <li>Educación Artística</li>
+                    </ul>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Duración:</strong> 1 año</span>
+                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+                    </div>
                 </div>
-                <div class="orientacion-card">
-                    <h3>Ciencias Sociales y Naturales</h3>
-                    <p>Historia, geografía, ciudadanía, el cuerpo humano, medio ambiente y más.</p>
+                <div class="card animate-slide-in-left" style="animation-delay: 0.2s;">
+                    <div class="card-icon">🎓</div>
+                    <h3 class="card-title">Segundo Ciclo</h3>
+                    <p class="card-description">
+                        Equivalente a 4°, 5° y 6° grado. Consolida tus conocimientos 
+                        y prepárate para continuar con la educación secundaria.
+                    </p>
+                    <ul class="card-list">
+                        <li>Lengua y Literatura Avanzada</li>
+                        <li>Matemática Aplicada</li>
+                        <li>Ciencias Naturales</li>
+                        <li>Ciencias Sociales</li>
+                        <li>Educación Artística</li>
+                        <li>Educación Física</li>
+                    </ul>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Duración:</strong> 1 año</span>
+                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Actividades Section -->
-    <section id="proyectos" class="section proyectos">
+    <!-- Programas Section -->
+    <section id="programas" class="section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Actividades Escolares</h2>
-                <p class="section-subtitle">Espacios de aprendizaje e integración</p>
+                <div class="section-badge">Modalidades Flexibles</div>
+                <h2 class="section-title">Programas Especiales</h2>
+                <p class="section-subtitle">
+                    Diferentes modalidades para adaptarse a tu estilo de vida y necesidades específicas.
+                </p>
             </div>
-            <div class="proyectos-grid">
-                <div class="proyecto-card">
-                    <h3>Taller de Alfabetización Digital</h3>
-                    <p>Uso básico de computadoras, correo electrónico y herramientas digitales.</p>
+            <div class="grid grid-2">
+                <div class="card animate-fade-in-up">
+                    <div class="card-icon">🚀</div>
+                    <h3 class="card-title">Terminación Acelerada</h3>
+                    <p class="card-description">
+                        Programa intensivo para adultos que quieren completar la educación 
+                        primaria de manera rápida y eficiente, sin comprometer la calidad educativa.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial y Semipresencial</span>
+                    </div>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Duración:</strong> 10 meses</span>
+                        <span class="card-meta-item"><strong>Requisitos:</strong> +18 años</span>
+                    </div>
                 </div>
-                <div class="proyecto-card">
-                    <h3>Huerta Escolar</h3>
-                    <p>Actividades prácticas para aprender sobre el cuidado del ambiente y la alimentación saludable.</p>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="card-icon">💻</div>
+                    <h3 class="card-title">Educación a Distancia</h3>
+                    <p class="card-description">
+                        Modalidad semipresencial ideal para personas que trabajan y no pueden 
+                        asistir regularmente. Combina clases presenciales con material digital.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Modalidad:</strong> Semipresencial</span>
+                    </div>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Duración:</strong> 12 meses</span>
+                        <span class="card-meta-item"><strong>Requisitos:</strong> +18 años, conocimientos básicos</span>
+                    </div>
                 </div>
-                <div class="proyecto-card">
-                    <h3>Encuentros Culturales</h3>
-                    <p>Charlas, salidas educativas y celebraciones que promueven la participación comunitaria.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios Section -->
+    <section id="servicios" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Apoyo Integral</div>
+                <h2 class="section-title">Servicios Adicionales</h2>
+                <p class="section-subtitle">
+                    Brindamos apoyo completo para asegurar tu éxito académico y personal.
+                </p>
+            </div>
+            <div class="grid grid-4">
+                <div class="card animate-fade-in-up">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Orientación Vocacional</h3>
+                    <p class="card-description">
+                        Asesoramiento profesional para planificar tu futuro educativo 
+                        y laboral después de completar la primaria.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Horario:</strong> Mar y Jue 14:00-18:00</span>
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="card-icon">🧠</div>
+                    <h3 class="card-title">Apoyo Psicopedagógico</h3>
+                    <p class="card-description">
+                        Acompañamiento especializado para superar dificultades 
+                        de aprendizaje y desarrollar estrategias efectivas.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Horario:</strong> Lun a Vie 16:00-20:00</span>
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="card-icon">🔧</div>
+                    <h3 class="card-title">Talleres de Capacitación</h3>
+                    <p class="card-description">
+                        Cursos prácticos de oficios y habilidades laborales 
+                        para complementar tu formación académica.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Horario:</strong> Sábados 8:00-12:00</span>
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Biblioteca Digital</h3>
+                    <p class="card-description">
+                        Acceso a material de estudio, computadoras e internet 
+                        para apoyar tu proceso de aprendizaje.
+                    </p>
+                    <div class="card-meta">
+                        <span class="card-meta-item"><strong>Horario:</strong> Lun a Vie 18:00-22:00</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contacto Section -->
-    <section id="contacto" class="section contacto">
+    <section id="contacto" class="section contact-section">
         <div class="container">
             <div class="section-header">
+                <div class="section-badge">Comienza Hoy</div>
                 <h2 class="section-title">Contacto</h2>
-                <p class="section-subtitle">Estamos para ayudarte</p>
+                <p class="section-subtitle">
+                    Estamos aquí para ayudarte a dar el primer paso hacia tu futuro educativo.
+                </p>
             </div>
-            <div class="contacto-grid">
-                <div class="contacto-info">
-                    <div class="info-item">
-                        <div class="info-icon">📍</div>
-                        <div class="info-content">
-                            <h3>Dirección</h3>
-                            <p>Av. Educativa 1234<br>CABA, Buenos Aires<br>Argentina</p>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📍</div>
+                            <h3 class="info-card-title">Ubicación</h3>
+                        </div>
+                        <div class="info-card-content">
+                            <p>
+                                Av. Educación 1234<br>
+                                Ciudad Educativa, Buenos Aires<br>
+                                Argentina (C1234ABC)
+                            </p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">📞</div>
-                        <div class="info-content">
-                            <h3>Teléfono</h3>
-                            <p>+54 11 1234-5678</p>
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📞</div>
+                            <h3 class="info-card-title">Teléfono</h3>
+                        </div>
+                        <div class="info-card-content">
+                            <p>
+                                Principal: +54 11 1234-5678<br>
+                                Secundario: +54 11 8765-4321<br>
+                                WhatsApp: +54 9 11 1234-5678
+                            </p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">📧</div>
-                        <div class="info-content">
-                            <h3>Email</h3>
-                            <p>info@escuelaprimaria.edu.ar</p>
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">📧</div>
+                            <h3 class="info-card-title">Email</h3>
+                        </div>
+                        <div class="info-card-content">
+                            <p>
+                                <strong>Información:</strong> info@epa703.edu.ar<br>
+                                <strong>Inscripciones:</strong> inscripciones@epa703.edu.ar<br>
+                                <strong>Secretaría:</strong> secretaria@epa703.edu.ar<br><br>
+                                <a href="login.html" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
+                                    🔐 Acceder al Sistema →
+                                </a>
+                            </p>
                         </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-icon">🕒</div>
-                        <div class="info-content">
-                            <h3>Horarios</h3>
-                            <p>Lunes a Viernes: 8:00 - 18:00</p>
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <div class="info-card-icon">🕒</div>
+                            <h3 class="info-card-title">Horarios</h3>
+                        </div>
+                        <div class="info-card-content">
+                            <p>
+                                <strong>Clases:</strong><br>
+                                Lunes a Viernes: 18:00 - 22:00<br>
+                                Sábados: 8:00 - 12:00<br><br>
+                                <strong>Atención administrativa:</strong><br>
+                                Lunes a Viernes: 14:00 - 22:00
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="contacto-form">
+                <div class="contact-form">
+                    <h3 style="margin-bottom: var(--spacing-lg); color: var(--primary-color);">
+                        Envíanos tu consulta
+                    </h3>
                     <form id="contactForm">
                         <div class="form-group">
-                            <label for="nombre">Nombre completo</label>
-                            <input type="text" id="nombre" name="nombre" required>
+                            <label for="nombre" class="form-label">Nombre Completo *</label>
+                            <input type="text" id="nombre" name="nombre" class="form-input" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                            <label for="email" class="form-label">Correo Electrónico *</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
                         </div>
                         <div class="form-group">
-                            <label for="telefono">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" class="form-input">
                         </div>
                         <div class="form-group">
-                            <label for="mensaje">Mensaje</label>
-                            <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+                            <label for="edad" class="form-label">Edad</label>
+                            <input type="number" id="edad" name="edad" class="form-input" min="18" max="99">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-full">Enviar Mensaje</button>
+                        <div class="form-group">
+                            <label for="consulta" class="form-label">Tipo de Consulta *</label>
+                            <select id="consulta" name="consulta" class="form-input" required>
+                                <option value="">Seleccionar tipo de consulta</option>
+                                <option value="inscripcion">Información sobre inscripción</option>
+                                <option value="ciclos">Consulta sobre ciclos educativos</option>
+                                <option value="horarios">Consulta sobre horarios</option>
+                                <option value="requisitos">Requisitos de ingreso</option>
+                                <option value="certificados">Trámite de certificados</option>
+                                <option value="becas">Información sobre becas</option>
+                                <option value="general">Consulta general</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensaje" class="form-label">Mensaje *</label>
+                            <textarea id="mensaje" name="mensaje" class="form-input form-textarea" rows="5" required placeholder="Cuéntanos sobre tu situación y cómo podemos ayudarte..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Enviar Consulta
+                            <span>→</span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -206,32 +433,179 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>Escuela Primaria</h3>
-                    <p>Una nueva oportunidad para terminar tus estudios y seguir creciendo.</p>
+                    <h3>EPA 703</h3>
+                    <p>
+                        Escuela Primaria para Adultos comprometida con la educación 
+                        inclusiva y la formación integral. Más de 50 años transformando 
+                        vidas a través de la educación.
+                    </p>
                 </div>
                 <div class="footer-section">
-                    <h4>Enlaces Rápidos</h4>
+                    <h4>Enlaces Útiles</h4>
                     <ul>
                         <li><a href="#inicio">Inicio</a></li>
                         <li><a href="#nosotros">Nosotros</a></li>
-                        <li><a href="#programa">Programa</a></li>
-                        <li><a href="#proyectos">Actividades</a></li>
+                        <li><a href="#ciclos">Ciclos Educativos</a></li>
+                        <li><a href="#programas">Programas</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
                         <li><a href="#contacto">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul>
+                        <li><a href="#requisitos">Requisitos de Ingreso</a></li>
+                        <li><a href="#calendario">Calendario Académico</a></li>
+                        <li><a href="#becas">Becas y Ayudas</a></li>
+                        <li><a href="#reglamento">Reglamento</a></li>
+                        <li><a href="#certificados">Certificados</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
                     <h4>Contacto</h4>
-                    <p>📍 Av. Educativa 1234</p>
+                    <p>📍 Av. Educación 1234, Buenos Aires</p>
                     <p>📞 +54 11 1234-5678</p>
-                    <p>📧 info@escuelaprimaria.edu.ar</p>
+                    <p>📧 info@epa703.edu.ar</p>
+                    <p>🕒 Lun a Vie: 18:00 - 22:00</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 Escuela Primaria para Adultos. Todos los derechos reservados.</p>
+                <p>&copy; 2024 EPA 703 - Escuela Primaria para Adultos. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <script src="js/main.js"></script>
+    <script>
+        // Navegación mejorada
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.getElementById('header');
+            const navToggle = document.getElementById('nav-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Mobile menu toggle
+            navToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+            
+            // Close mobile menu when clicking on a link
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navMenu.classList.remove('active');
+                    navToggle.classList.remove('active');
+                });
+            });
+            
+            // Active navigation highlighting
+            const sections = document.querySelectorAll('section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, {
+                threshold: 0.3
+            });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Smooth scrolling
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        const headerHeight = header.offsetHeight;
+                        const targetPosition = targetSection.offsetTop - headerHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Form handling
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const submitButton = this.querySelector('button[type="submit"]');
+                
+                // Show loading state
+                submitButton.classList.add('loading');
+                submitButton.textContent = 'Enviando...';
+                
+                // Simulate form submission
+                setTimeout(() => {
+                    showNotification('Mensaje enviado correctamente. Te contactaremos pronto.', 'success');
+                    contactForm.reset();
+                    
+                    // Reset button
+                    submitButton.classList.remove('loading');
+                    submitButton.innerHTML = 'Enviar Consulta <span>→</span>';
+                }, 2000);
+            });
+            
+            // Notification system
+            function showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 5000);
+            }
+            
+            // Animate elements on scroll
+            const animateElements = document.querySelectorAll('.animate-fade-in-up, .animate-slide-in-left');
+            const animateObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animateElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+                animateObserver.observe(element);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -216,3 +216,25 @@ function showSection(sectionName) {
         window.studentPanel.showSection(sectionName);
     }
 }
+// Al final del archivo panel-alumno.js, agregar:
+
+// Auto-ejecutar cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📱 Panel alumno iniciando...');
+    
+    // Verificar que el auth manager esté listo
+    if (window.authManager && window.authManager.userData) {
+        console.log('✅ AuthManager listo, inicializando panel...');
+        if (window.studentPanel) {
+            window.studentPanel.init();
+        }
+    } else {
+        console.log('⏳ Esperando AuthManager...');
+        // Reintentar después de 1 segundo
+        setTimeout(() => {
+            if (window.studentPanel) {
+                window.studentPanel.init();
+            }
+        }, 1000);
+    }
+});

@@ -1,0 +1,146 @@
+
+<div class="panel-section" style="display: block;">
+    <div class="data-table">
+        <h3 class="table-header">Mis Calificaciones</h3>
+        <div class="table-content">
+            <div class="filters" style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <select id="materia-filter" onchange="filterCalificaciones()">
+                    <option value="">Todas las materias</option>
+                </select>
+                <select id="periodo-filter" onchange="filterCalificaciones()">
+                    <option value="">Todos los períodos</option>
+                    <option value="1er_cuatrimestre">1er Cuatrimestre</option>
+                    <option value="2do_cuatrimestre">2do Cuatrimestre</option>
+                    <option value="anual">Anual</option>
+                </select>
+                <button class="btn btn-secondary" onclick="exportCalificaciones()">Exportar PDF</button>
+            </div>
+            <div id="calificaciones-content" class="loading">
+                Cargando calificaciones...
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function initCalificaciones(studentData) {
+    if (!studentData || !studentData.calificaciones) {
+        document.getElementById('calificaciones-content').innerHTML = 
+            '<p>No hay calificaciones registradas.</p>';
+        return;
+    }
+    
+    const calificaciones = studentData.calificaciones;
+    
+    // Populate materia filter
+    const materias = [...new Set(calificaciones.map(c => c.materia))];
+    const materiaFilter = document.getElementById('materia-filter');
+    materiaFilter.innerHTML = '<option value="">Todas las materias</option>';
+    materias.forEach(materia => {
+        const option = document.createElement('option');
+        option.value = materia;
+        option.textContent = materia;
+        materiaFilter.appendChild(option);
+    });
+    
+    // Display calificaciones
+    displayCalificaciones(calificaciones);
+}
+
+function displayCalificaciones(calificaciones) {
+    const container = document.getElementById('calificaciones-content');
+    
+    if (calificaciones.length === 0) {
+        container.innerHTML = '<p>No hay calificaciones que coincidan con los filtros.</p>';
+        return;
+    }
+    
+    let html = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Materia</th>
+                    <th>Tipo de Evaluación</th>
+                    <th>Nota</th>
+                    <th>Fecha</th>
+                    <th>Período</th>
+                    <th>Profesor</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    calificaciones.forEach(cal => {
+        const nota = parseFloat(cal.nota);
+        const notaClass = !isNaN(nota) ? (nota >= 7 ? 'success' : nota >= 4 ? 'warning' : 'error') : '';
+        html += `
+            <tr>
+                <td>${cal.materia}</td>
+                <td>${cal.tipo_evaluacion.replace('_', ' ')}</td>
+                <td class="${notaClass}">${cal.nota || 'Pendiente'}</td>
+                <td>${formatDate(cal.fecha_evaluacion)}</td>
+                <td>${cal.periodo.replace('_', ' ')}</td>
+                <td>${cal.profesor}</td>
+            </tr>
+        `;
+    });
+    
+    html += '</tbody></table>';
+    
+    // Add statistics
+    const notas = calificaciones.map(c => parseFloat(c.nota)).filter(n => !isNaN(n));
+    if (notas.length > 0) {
+        const promedio = notas.reduce((a, b) => a + b, 0) / notas.length;
+        const aprobadas = notas.filter(n => n >= 4).length;
+        
+        html += `
+            <div style="margin-top: 2rem; padding: 1rem; background: var(--light-bg); border-radius: var(--border-radius);">
+                <h4>Estadísticas</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div>
+                        <strong>Promedio:</strong> ${promedio.toFixed(2)}
+                    </div>
+                    <div>
+                        <strong>Evaluaciones aprobadas:</strong> ${aprobadas} de ${notas.length}
+                    </div>
+                    <div>
+                        <strong>Porcentaje de aprobación:</strong> ${((aprobadas / notas.length) * 100).toFixed(1)}%
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function filterCalificaciones() {
+    const materiaFilter = document.getElementById('materia-filter').value;
+    const periodoFilter = document.getElementById('periodo-filter').value;
+    
+    if (!window.studentPanel || !window.studentPanel.studentData) return;
+    
+    let filteredCalificaciones = window.studentPanel.studentData.calificaciones;
+    
+    if (materiaFilter) {
+        filteredCalificaciones = filteredCalificaciones.filter(c => c.materia === materiaFilter);
+    }
+    
+    if (periodoFilter) {
+        filteredCalificaciones = filteredCalificaciones.filter(c => c.periodo === periodoFilter);
+    }
+    
+    displayCalificaciones(filteredCalificaciones);
+}
+
+function exportCalificaciones() {
+    // Placeholder for PDF export functionality
+    alert('Funcionalidad de exportación en desarrollo');
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-AR');
+}
+</script>

@@ -1,15 +1,433 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Estudiante - E.E.S.T N°2</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/panel.css">
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2d5aa0;
+            --accent-color: #4299e1;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --white: #ffffff;
+            --light-bg: #f7fafc;
+            --success-color: #48bb78;
+            --error-color: #e53e3e;
+            --warning-color: #ed8936;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #e2e8f0;
+            border-top: 6px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .panel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .panel-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-info h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .header-info p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-info span {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-details {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .panel-nav {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 1rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            border-right: 1px solid #e2e8f0;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: var(--light-bg);
+            color: var(--accent-color);
+        }
+
+        .nav-link.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            text-align: center;
+            border-top: 4px solid var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-content {
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: var(--light-bg);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        tr:hover {
+            background: var(--light-bg);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .loading-mini {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .success { color: var(--success-color); font-weight: 600; }
+        .error { color: var(--error-color); font-weight: 600; }
+        .warning { color: var(--warning-color); font-weight: 600; }
+
+        .panel-section {
+            display: none;
+        }
+
+        .panel-section.active {
+            display: block;
+        }
+
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .material-card {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            transition: var(--transition);
+        }
+
+        .material-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .material-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .material-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .material-link:hover {
+            background: var(--light-bg);
+            padding-left: 0.5rem;
+        }
+
+        .material-link:last-child {
+            border-bottom: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 400px;
+        }
+
+        .notification.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .notification.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .panel-container {
+                padding: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .user-info {
+                text-align: center;
+            }
+            
+            .nav-list {
+                flex-direction: column;
+            }
+            
+            .nav-link {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .nav-item:last-child .nav-link {
+                border-bottom: none;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.9rem;
+                overflow-x: auto;
+                display: block;
+                white-space: nowrap;
+            }
+            
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="panel-container">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Cargando panel de estudiante...</p>
+    </div>
+
+    <div class="panel-container" style="display: none;" id="main-content">
         <header class="panel-header">
             <div class="header-content">
                 <div class="header-info">
@@ -22,24 +440,24 @@
                         <div>Legajo: <span id="user-legajo">--</span></div>
                         <div>Curso: <span id="user-curso">--</span></div>
                     </div>
-                    <a href="#" onclick="logout()" class="logout-btn">Cerrar Sesión</a>
+                    <button onclick="logout()" class="logout-btn">Cerrar Sesión</button>
                 </div>
             </div>
         </header>
         
         <nav class="panel-nav">
             <ul class="nav-list">
-                <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('calificaciones')">Calificaciones</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('asistencia')">Asistencia</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('horarios')">Horarios</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('materiales')">Materiales</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('perfil')">Mi Perfil</a></li>
+                <li class="nav-item"><a class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('calificaciones')">Calificaciones</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('asistencia')">Asistencia</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('horarios')">Horarios</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('materiales')">Materiales</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('perfil')">Mi Perfil</a></li>
             </ul>
         </nav>
         
         <!-- Dashboard Section -->
-        <section id="dashboard" class="panel-section">
+        <section id="dashboard" class="panel-section active">
             <div class="dashboard-grid">
                 <div class="stat-card">
                     <h3>Próximas Evaluaciones</h3>
@@ -70,22 +488,752 @@
                 <h3 class="table-header">Actividad Reciente</h3>
                 <div class="table-content">
                     <div id="actividad-reciente" class="loading">
-                        Cargando actividad reciente...
+                        <div class="loading-mini"></div>
+                        <span>Cargando actividad reciente...</span>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- Contenido dinámico para otras secciones -->
-        <div id="dynamic-content"></div>
-    </div>
-    
-    <!-- Loading overlay -->
-    <div id="loading-overlay" class="loading-overlay" style="display: none;">
-        <div class="loading-spinner"></div>
-        <p>Cargando...</p>
+        <!-- Calificaciones Section -->
+        <section id="calificaciones" class="panel-section">
+            <div class="data-table">
+                <h3 class="table-header">Mis Calificaciones</h3>
+                <div class="table-content">
+                    <div id="calificaciones-content" class="loading">
+                        <div class="loading-mini"></div>
+                        <span>Cargando calificaciones...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Asistencia Section -->
+        <section id="asistencia" class="panel-section">
+            <div class="data-table">
+                <h3 class="table-header">Mi Asistencia</h3>
+                <div class="table-content">
+                    <div id="asistencia-content" class="loading">
+                        <div class="loading-mini"></div>
+                        <span>Cargando asistencias...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Horarios Section -->
+        <section id="horarios" class="panel-section">
+            <div class="data-table">
+                <h3 class="table-header">Horarios de Clases</h3>
+                <div class="table-content">
+                    <div id="horarios-content" class="loading">
+                        <div class="loading-mini"></div>
+                        <span>Cargando horarios...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Materiales Section -->
+        <section id="materiales" class="panel-section">
+            <div class="data-table">
+                <h3 class="table-header">Materiales de Estudio</h3>
+                <div class="table-content">
+                    <div id="materiales-content" class="loading">
+                        <div class="loading-mini"></div>
+                        <span>Cargando materiales...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Perfil Section -->
+        <section id="perfil" class="panel-section">
+            <div class="data-table">
+                <h3 class="table-header">Mi Perfil</h3>
+                <div class="table-content">
+                    <div id="perfil-content" class="loading">
+                        <div class="loading-mini"></div>
+                        <span>Cargando perfil...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <script src="js/panel-alumno.js"></script>
+    <script>
+        class AuthManager {
+            constructor() {
+                this.token = localStorage.getItem('auth_token');
+                this.user = JSON.parse(localStorage.getItem('user_data') || 'null');
+                this.apiBase = '/api'; // Cambiar según tu configuración
+            }
+
+            async login(email, password) {
+                try {
+                    const response = await fetch(`${this.apiBase}/login.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.token = data.token;
+                        this.user = data.user;
+                        localStorage.setItem('auth_token', this.token);
+                        localStorage.setItem('user_data', JSON.stringify(this.user));
+                        return { success: true, user: this.user };
+                    } else {
+                        return { success: false, message: data.message };
+                    }
+                } catch (error) {
+                    console.error('Error en login:', error);
+                    return { success: false, message: 'Error de conexión' };
+                }
+            }
+
+            async validateSession() {
+                if (!this.token) {
+                    return { valid: false };
+                }
+
+                try {
+                    const response = await fetch(`${this.apiBase}/validate-session.php`, {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.user = data.user;
+                        localStorage.setItem('user_data', JSON.stringify(this.user));
+                        return { valid: true, user: this.user };
+                    } else {
+                        this.logout();
+                        return { valid: false };
+                    }
+                } catch (error) {
+                    console.error('Error validando sesión:', error);
+                    return { valid: false };
+                }
+            }
+
+            async logout() {
+                try {
+                    if (this.token) {
+                        await fetch(`${this.apiBase}/logout.php`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${this.token}`
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error en logout:', error);
+                } finally {
+                    this.token = null;
+                    this.user = null;
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('user_data');
+                    window.location.href = 'login.html';
+                }
+            }
+
+            isAuthenticated() {
+                return this.token && this.user;
+            }
+
+            hasRole(role) {
+                return this.user && this.user.tipo_usuario === role;
+            }
+
+            getAuthHeaders() {
+                return {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                };
+            }
+        }
+
+        class StudentPanel {
+            constructor() {
+                this.authManager = new AuthManager();
+                this.currentSection = 'dashboard';
+                this.studentData = null;
+                this.apiBase = '/api';
+                this.init();
+            }
+            
+            async init() {
+                console.log('📱 Inicializando panel de estudiante...');
+                
+                // Verificar autenticación
+                const sessionValid = await this.authManager.validateSession();
+                
+                if (!sessionValid.valid) {
+                    this.showError('Sesión inválida. Redirigiendo al login...');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                    return;
+                }
+
+                // Verificar que sea estudiante
+                if (!this.authManager.hasRole('estudiante')) {
+                    this.showError('No tienes permisos para acceder a este panel');
+                    setTimeout(() => {
+                        this.authManager.logout();
+                    }, 2000);
+                    return;
+                }
+
+                await this.loadStudentData();
+                this.setupEventListeners();
+                this.hideLoading();
+            }
+            
+            setupEventListeners() {
+                // Navigation clicks
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const onclick = e.target.getAttribute('onclick');
+                        if (onclick) {
+                            const section = onclick.match(/'([^']+)'/)[1];
+                            this.showSection(section);
+                        }
+                    });
+                });
+            }
+
+            hideLoading() {
+                const overlay = document.getElementById('loading-overlay');
+                const content = document.getElementById('main-content');
+                
+                overlay.style.display = 'none';
+                content.style.display = 'block';
+            }
+            
+            async loadStudentData() {
+                try {
+                    console.log('📊 Cargando datos del estudiante...');
+                    
+                    const response = await fetch(`${this.apiBase}/student-data.php`, {
+                        headers: this.authManager.getAuthHeaders()
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.studentData = result.data;
+                        console.log('✅ Datos del estudiante cargados:', this.studentData);
+                        this.updateUserInfo();
+                        this.updateDashboard();
+                        this.loadRecentActivity();
+                    } else {
+                        throw new Error(result.message || 'Error desconocido');
+                    }
+                } catch (error) {
+                    console.error('❌ Error cargando datos del estudiante:', error);
+                    this.showError('Error al cargar los datos: ' + error.message);
+                }
+            }
+            
+            updateUserInfo() {
+                if (!this.studentData || !this.studentData.estudiante) return;
+                
+                const student = this.studentData.estudiante;
+                console.log('🔄 Actualizando información del estudiante:', student);
+                
+                // Update welcome message
+                const welcomeElement = document.getElementById('user-welcome');
+                if (welcomeElement) {
+                    welcomeElement.textContent = `Bienvenido, ${student.nombre} ${student.apellido}`;
+                }
+                
+                // Update legajo
+                const legajoElement = document.getElementById('user-legajo');
+                if (legajoElement && student.legajo) {
+                    legajoElement.textContent = student.legajo;
+                }
+                
+                // Update course info
+                const cursoElement = document.getElementById('user-curso');
+                if (cursoElement) {
+                    cursoElement.textContent = student.curso_nombre || 'No asignado';
+                }
+                
+                // Update orientation
+                const orientacionElement = document.getElementById('orientacion');
+                if (orientacionElement) {
+                    orientacionElement.textContent = student.orientacion_nombre || 'No asignada';
+                }
+            }
+            
+            updateDashboard() {
+                if (!this.studentData) return;
+                
+                console.log('📊 Actualizando dashboard...');
+                
+                // Update próximas evaluaciones
+                const proximasEval = this.studentData.proximas_evaluaciones || [];
+                document.getElementById('proximas-evaluaciones').textContent = proximasEval.length;
+                
+                // Calculate promedio general
+                if (this.studentData.calificaciones && this.studentData.calificaciones.length > 0) {
+                    const notas = this.studentData.calificaciones
+                        .map(c => parseFloat(c.nota))
+                        .filter(n => !isNaN(n));
+                    
+                    if (notas.length > 0) {
+                        const promedio = notas.reduce((a, b) => a + b, 0) / notas.length;
+                        document.getElementById('promedio-general').textContent = promedio.toFixed(1);
+                        console.log('📈 Promedio calculado:', promedio.toFixed(1));
+                    } else {
+                        document.getElementById('promedio-general').textContent = 'S/N';
+                    }
+                } else {
+                    document.getElementById('promedio-general').textContent = 'S/N';
+                }
+                
+                // Calculate asistencia del mes
+                if (this.studentData.asistencias && this.studentData.asistencias.length > 0) {
+                    const totalAsistencia = this.studentData.asistencias.reduce((acc, curr) => 
+                        acc + parseFloat(curr.porcentaje_asistencia), 0
+                    ) / this.studentData.asistencias.length;
+                    document.getElementById('asistencia-mes').textContent = totalAsistencia.toFixed(0) + '%';
+                    console.log('📋 Asistencia calculada:', totalAsistencia.toFixed(0) + '%');
+                } else {
+                    document.getElementById('asistencia-mes').textContent = 'S/D';
+                }
+            }
+            
+            loadRecentActivity() {
+                const container = document.getElementById('actividad-reciente');
+                
+                if (!this.studentData.calificaciones || this.studentData.calificaciones.length === 0) {
+                    container.innerHTML = '<p>No hay actividad reciente registrada.</p>';
+                    return;
+                }
+                
+                // Show últimas 5 calificaciones
+                const recentGrades = this.studentData.calificaciones
+                    .sort((a, b) => new Date(b.fecha_evaluacion) - new Date(a.fecha_evaluacion))
+                    .slice(0, 5);
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Materia</th>
+                                <th>Evaluación</th>
+                                <th>Nota</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                recentGrades.forEach(grade => {
+                    const nota = parseFloat(grade.nota);
+                    const notaClass = !isNaN(nota) ? (nota >= 7 ? 'success' : nota >= 4 ? 'warning' : 'error') : '';
+                    
+                    html += `
+                        <tr>
+                            <td>${this.formatDate(grade.fecha_evaluacion)}</td>
+                            <td>${grade.materia}</td>
+                            <td>${grade.evaluacion_titulo}</td>
+                            <td class="${notaClass}">${grade.nota || 'Pendiente'}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+                
+                console.log('✅ Actividad reciente actualizada');
+            }
+            
+            showSection(sectionName) {
+                console.log('🔄 Cambiando a sección:', sectionName);
+                
+                // Update navigation
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Find the clicked link and make it active
+                const clickedLink = Array.from(document.querySelectorAll('.nav-link'))
+                    .find(link => {
+                        const onclick = link.getAttribute('onclick');
+                        return onclick && onclick.includes(sectionName);
+                    });
+                if (clickedLink) {
+                    clickedLink.classList.add('active');
+                }
+                
+                // Hide all sections
+                document.querySelectorAll('.panel-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show selected section
+                const targetSection = document.getElementById(sectionName);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Load section-specific data
+                    if (sectionName === 'calificaciones') {
+                        this.loadCalificaciones();
+                    } else if (sectionName === 'asistencia') {
+                        this.loadAsistencia();
+                    } else if (sectionName === 'horarios') {
+                        this.loadHorarios();
+                    } else if (sectionName === 'materiales') {
+                        this.loadMateriales();
+                    } else if (sectionName === 'perfil') {
+                        this.loadPerfil();
+                    }
+                }
+                
+                this.currentSection = sectionName;
+            }
+            
+            loadCalificaciones() {
+                const container = document.getElementById('calificaciones-content');
+                
+                if (!this.studentData.calificaciones || this.studentData.calificaciones.length === 0) {
+                    container.innerHTML = '<p>No hay calificaciones registradas.</p>';
+                    return;
+                }
+                
+                const calificaciones = this.studentData.calificaciones;
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Evaluación</th>
+                                <th>Tipo</th>
+                                <th>Nota</th>
+                                <th>Fecha</th>
+                                <th>Período</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                calificaciones.forEach(cal => {
+                    const nota = parseFloat(cal.nota);
+                    const notaClass = !isNaN(nota) ? (nota >= 7 ? 'success' : nota >= 4 ? 'warning' : 'error') : '';
+                    
+                    html += `
+                        <tr>
+                            <td>${cal.materia}</td>
+                            <td>${cal.evaluacion_titulo}</td>
+                            <td>${cal.tipo_evaluacion.replace('_', ' ')}</td>
+                            <td class="${notaClass}">${cal.nota || 'Pendiente'}</td>
+                            <td>${this.formatDate(cal.fecha_evaluacion)}</td>
+                            <td>${cal.periodo}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+            
+            loadAsistencia() {
+                const container = document.getElementById('asistencia-content');
+                
+                if (!this.studentData.asistencias || this.studentData.asistencias.length === 0) {
+                    container.innerHTML = '<p>No hay registros de asistencia.</p>';
+                    return;
+                }
+                
+                const asistencias = this.studentData.asistencias;
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Total Clases</th>
+                                <th>Presentes</th>
+                                <th>Ausentes</th>
+                                <th>Tardanzas</th>
+                                <th>% Asistencia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                asistencias.forEach(asist => {
+                    const porcentaje = parseFloat(asist.porcentaje_asistencia);
+                    const estadoClass = porcentaje >= 75 ? 'success' : porcentaje >= 50 ? 'warning' : 'error';
+                    
+                    html += `
+                        <tr>
+                            <td>${asist.materia}</td>
+                            <td>${asist.total_clases}</td>
+                            <td class="success">${asist.presentes}</td>
+                            <td class="error">${asist.ausentes}</td>
+                            <td class="warning">${asist.tardanzas}</td>
+                            <td class="${estadoClass}">${porcentaje.toFixed(1)}%</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+            
+            async loadHorarios() {
+                const container = document.getElementById('horarios-content');
+                container.innerHTML = '<div class="loading"><div class="loading-mini"></div><span>Cargando horarios...</span></div>';
+                
+                try {
+                    const response = await fetch(`${this.apiBase}/student-schedule.php`, {
+                        headers: this.authManager.getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.data.length > 0) {
+                        this.renderSchedule(result.data, container);
+                    } else {
+                        container.innerHTML = '<p>No hay horarios disponibles.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error cargando horarios:', error);
+                    container.innerHTML = '<div class="error-message">Error al cargar horarios</div>';
+                }
+            }
+            
+            renderSchedule(horarios, container) {
+                // Organizar horarios por día y hora
+                const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+                const horas = [...new Set(horarios.map(h => h.hora_inicio))].sort();
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                ${dias.map(dia => `<th>${dia.charAt(0).toUpperCase() + dia.slice(1)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                horas.forEach(hora => {
+                    html += `<tr><td><strong>${hora.substring(0, 5)}</strong></td>`;
+                    
+                    dias.forEach(dia => {
+                        const materia = horarios.find(h => h.dia_semana === dia && h.hora_inicio === hora);
+                        html += `<td>${materia ? materia.materia : ''}</td>`;
+                    });
+                    
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+            
+            loadMateriales() {
+                const container = document.getElementById('materiales-content');
+                
+                if (!this.studentData.materiales || this.studentData.materiales.length === 0) {
+                    container.innerHTML = '<p>No hay materiales disponibles.</p>';
+                    return;
+                }
+                
+                // Agrupar materiales por materia
+                const materialesPorMateria = {};
+                this.studentData.materiales.forEach(material => {
+                    if (!materialesPorMateria[material.materia]) {
+                        materialesPorMateria[material.materia] = [];
+                    }
+                    materialesPorMateria[material.materia].push(material);
+                });
+                
+                let html = '<div class="materials-grid">';
+                
+                Object.keys(materialesPorMateria).forEach(materia => {
+                    html += `
+                        <div class="material-card">
+                            <h4>${materia}</h4>
+                    `;
+                    
+                    materialesPorMateria[materia].forEach(material => {
+                        const icon = this.getMaterialIcon(material.tipo_material);
+                        html += `
+                            <a href="${material.archivo_url}" class="material-link" target="_blank">
+                                ${icon} ${material.titulo}
+                            </a>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+            
+            getMaterialIcon(tipo) {
+                const icons = {
+                    'apunte': '📄',
+                    'libro': '📚',
+                    'video': '🎥',
+                    'software': '💻',
+                    'link': '🔗',
+                    'ejercicio': '📝'
+                };
+                return icons[tipo] || '📎';
+            }
+            
+            async loadPerfil() {
+                const container = document.getElementById('perfil-content');
+                container.innerHTML = '<div class="loading"><div class="loading-mini"></div><span>Cargando perfil...</span></div>';
+                
+                try {
+                    const response = await fetch(`${this.apiBase}/student-profile.php`, {
+                        headers: this.authManager.getAuthHeaders()
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        const perfil = result.data;
+                        
+                        container.innerHTML = `
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                                <div>
+                                    <h4>Información Personal</h4>
+                                    <p><strong>Nombre:</strong> ${perfil.nombre} ${perfil.apellido}</p>
+                                    <p><strong>Email:</strong> ${perfil.email}</p>
+                                    <p><strong>Teléfono:</strong> ${perfil.telefono || 'No registrado'}</p>
+                                    <p><strong>DNI:</strong> ${perfil.dni || 'No registrado'}</p>
+                                    <p><strong>Fecha de Nacimiento:</strong> ${this.formatDate(perfil.fecha_nacimiento) || 'No registrada'}</p>
+                                    <p><strong>Dirección:</strong> ${perfil.direccion || 'No registrada'}</p>
+                                </div>
+                                <div>
+                                    <h4>Información Académica</h4>
+                                    <p><strong>Legajo:</strong> ${perfil.legajo || 'No asignado'}</p>
+                                    <p><strong>Curso:</strong> ${perfil.curso || 'No asignado'}</p>
+                                    <p><strong>Orientación:</strong> ${perfil.orientacion || 'No asignada'}</p>
+                                    <p><strong>Estado:</strong> <span class="success">${perfil.estado_academico || 'Activo'}</span></p>
+                                    <p><strong>Fecha de Ingreso:</strong> ${this.formatDate(perfil.fecha_ingreso) || 'No registrada'}</p>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                                <h4>Información de Contacto de Emergencia</h4>
+                                <p><strong>Tutor:</strong> ${perfil.tutor_nombre || 'No registrado'}</p>
+                                <p><strong>Teléfono del Tutor:</strong> ${perfil.tutor_telefono || 'No registrado'}</p>
+                                <p><strong>Email del Tutor:</strong> ${perfil.tutor_email || 'No registrado'}</p>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = '<div class="error-message">Error al cargar el perfil</div>';
+                    }
+                } catch (error) {
+                    container.innerHTML = '<div class="error-message">Error de conexión</div>';
+                    console.error('Error cargando perfil:', error);
+                }
+            }
+            
+            formatDate(dateString) {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('es-AR');
+            }
+            
+            showNotification(message, type = 'success') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+            
+            showError(message) {
+                console.error('🚨 Error en panel:', message);
+                this.showNotification(message, 'error');
+            }
+        }
+
+        // Global functions
+        function showSection(sectionName) {
+            if (window.studentPanel) {
+                window.studentPanel.showSection(sectionName);
+            }
+        }
+
+        function logout() {
+            if (window.studentPanel && window.studentPanel.authManager) {
+                if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                    window.studentPanel.authManager.logout();
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 DOM cargado, inicializando panel...');
+            window.studentPanel = new StudentPanel();
+        });
+
+        // Handle errors globally
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error global:', e.error);
+            if (window.studentPanel) {
+                window.studentPanel.showNotification('Ha ocurrido un error. Por favor, recarga la página.', 'error');
+            }
+        });
+
+        // Handle network status
+        window.addEventListener('online', function() {
+            console.log('🌐 Conexión restaurada');
+            if (window.studentPanel) {
+                window.studentPanel.showNotification('Conexión restaurada', 'success');
+            }
+        });
+
+        window.addEventListener('offline', function() {
+            console.log('📴 Sin conexión');
+            if (window.studentPanel) {
+                window.studentPanel.showNotification('Sin conexión a internet', 'warning');
+            }
+        });
+    </script>
 </body>
 </html>
