@@ -528,46 +528,328 @@
                 observer.observe(section);
             });
             
-            // Smooth scrolling
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-                    if (targetSection) {
-                        const headerHeight = header.offsetHeight;
-                        const targetPosition = targetSection.offsetTop - headerHeight;
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
+            // Smooth scrolling (excluir botón de login)
+navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+        // Solo aplicar smooth scroll a enlaces con anclas (#)
+        const href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-            });
+            }
+        }
+        // Si no es un enlace con ancla (como login.html), permitir navegación normal
+    });
+});
+           // REEMPLAZAR todo el bloque de "Form handling" en index.html con este código:
+
+// Form handling - VERSIÓN CORREGIDA
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        console.log('Formulario interceptado correctamente');
+        
+        // Limpiar errores anteriores
+        clearFormErrors();
+        
+        // Recolectar datos del formulario
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        console.log('Datos del formulario:', data);
+        
+        // Validar campos requeridos
+        let isValid = true;
+        
+        if (!data.nombre || data.nombre.trim().length < 2) {
+            showFieldError('nombre', 'El nombre debe tener al menos 2 caracteres');
+            isValid = false;
+        }
+        
+        if (!data.email || !isValidEmail(data.email)) {
+            showFieldError('email', 'Ingresa un email válido');
+            isValid = false;
+        }
+        
+        if (!data.consulta) {
+            showFieldError('consulta', 'Selecciona un tipo de consulta');
+            isValid = false;
+        }
+        
+        if (!data.mensaje || data.mensaje.trim().length < 10) {
+            showFieldError('mensaje', 'El mensaje debe tener al menos 10 caracteres');
+            isValid = false;
+        }
+        
+        // Si la validación pasa, enviar formulario
+        if (isValid) {
+            submitForm(data);
+        } else {
+            console.log('Validación falló');
+        }
+    });
+}
+
+// Función para validar email
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Mostrar errores en campos
+function showFieldError(fieldName, message) {
+    const field = document.getElementById(fieldName);
+    if (!field) return;
+    
+    const formGroup = field.closest('.form-group');
+    
+    // Remover error existente
+    const existingError = formGroup.querySelector('.error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Agregar mensaje de error
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.color = '#e53e3e';
+    errorDiv.style.fontSize = '0.9rem';
+    errorDiv.style.marginTop = '0.5rem';
+    errorDiv.textContent = message;
+    
+    formGroup.appendChild(errorDiv);
+    field.style.borderColor = '#e53e3e';
+}
+
+// Limpiar errores del formulario
+function clearFormErrors() {
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(error => error.remove());
+    
+    const inputs = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
+    inputs.forEach(input => {
+        input.style.borderColor = '#e2e8f0';
+    });
+}
+
+// Función principal de envío del formulario
+async function submitForm(data) {
+    const submitButton = document.querySelector('#contactForm button[type="submit"]');
+    const originalContent = submitButton.innerHTML;
+    
+    try {
+        // Mostrar estado de carga
+        submitButton.innerHTML = `
+            <span style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <span style="animation: spin 1s linear infinite;">⏳</span>
+                Enviando consulta...
+            </span>
+        `;
+        submitButton.disabled = true;
+        
+        console.log('Enviando datos al servidor...');
+        
+        // Enviar datos al servidor PHP
+        const response = await fetch('forms/contact.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        console.log('Respuesta del servidor:', response.status, response.statusText);
+        
+        // Verificar si la respuesta es válida
+        if (!response.ok) {
+            throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
+        }
+        
+        // Parsear respuesta JSON
+        const result = await response.json();
+        console.log('Resultado parseado:', result);
+        
+        if (result.success) {
+            // Éxito - mostrar mensaje y limpiar formulario
+            showSuccessMessage(result.message);
+            document.getElementById('contactForm').reset();
+            clearFormErrors();
             
-            // Form handling
-            const contactForm = document.getElementById('contactForm');
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(this);
-                const submitButton = this.querySelector('button[type="submit"]');
-                
-                // Show loading state
-                submitButton.classList.add('loading');
-                submitButton.textContent = 'Enviando...';
-                
-                // Simulate form submission
-                setTimeout(() => {
-                    showNotification('Mensaje enviado correctamente. Te contactaremos pronto.', 'success');
-                    contactForm.reset();
-                    
-                    // Reset button
-                    submitButton.classList.remove('loading');
-                    submitButton.innerHTML = 'Enviar Consulta <span>→</span>';
-                }, 2000);
-            });
+            // Scroll suave hacia arriba para mostrar notificación
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             
+        } else {
+            // Error del servidor con mensaje específico
+            throw new Error(result.error || 'Error desconocido del servidor');
+        }
+        
+    } catch (error) {
+        console.error('Error al enviar formulario:', error);
+        
+        // Determinar mensaje de error apropiado
+        let errorMessage = 'Error de conexión. Verifica tu internet e intenta nuevamente.';
+        
+        if (error.message.includes('Error del servidor')) {
+            errorMessage = 'Error del servidor. Intenta nuevamente en unos minutos.';
+        } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+            errorMessage = 'Sin conexión a internet. Verifica tu conexión.';
+        } else if (error.message.length > 0 && error.message.length < 200) {
+            // Usar mensaje de error específico si es razonable
+            errorMessage = error.message;
+        }
+        
+        showErrorMessage(errorMessage);
+        
+    } finally {
+        // Restaurar botón original
+        submitButton.innerHTML = originalContent;
+        submitButton.disabled = false;
+    }
+}
+
+// Mostrar mensaje de éxito
+function showSuccessMessage(message = 'Mensaje enviado correctamente') {
+    // Remover notificaciones existentes
+    removeExistingNotifications();
+    
+    const notification = document.createElement('div');
+    notification.className = 'success-notification';
+    notification.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);
+            transform: translateX(120%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        ">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div style="font-size: 24px; flex-shrink: 0;">✅</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">¡Consulta enviada!</div>
+                    <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animar entrada
+    setTimeout(() => {
+        notification.firstElementChild.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto-remover después de 6 segundos
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.firstElementChild.style.transform = 'translateX(120%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 400);
+        }
+    }, 6000);
+}
+
+// Mostrar mensaje de error
+function showErrorMessage(message) {
+    // Remover notificaciones existentes
+    removeExistingNotifications();
+    
+    const notification = document.createElement('div');
+    notification.className = 'error-notification';
+    notification.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(229, 62, 62, 0.3);
+            transform: translateX(120%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        ">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div style="font-size: 24px; flex-shrink: 0;">⚠️</div>
+                <div>
+                    <div style="font-weight: 600; margin-bottom: 4px;">Error al enviar</div>
+                    <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+                </div>
+                <button onclick="this.closest('div.error-notification').remove()" style="
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    flex-shrink: 0;
+                    padding: 0;
+                    margin-left: 8px;
+                ">×</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animar entrada
+    setTimeout(() => {
+        notification.firstElementChild.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Auto-remover después de 8 segundos
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.firstElementChild.style.transform = 'translateX(120%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 400);
+        }
+    }, 8000);
+}
+
+// Remover notificaciones existentes
+function removeExistingNotifications() {
+    const existingNotifications = document.querySelectorAll('.success-notification, .error-notification');
+    existingNotifications.forEach(notification => {
+        notification.remove();
+    });
+}
+
+// Agregar estilos CSS para la animación de carga
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
             // Notification system
             function showNotification(message, type = 'success') {
                 const notification = document.createElement('div');
