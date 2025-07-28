@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo - EPA 703</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="css/dashboard-styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>🎓 EPA 703</h3>
+            <p>Panel Administrativo</p>
+        </div>
+        
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="user-info">
+                <strong><?= htmlspecialchars($_SESSION['nombre'] ?? 'Admin') ?></strong>
+                <small>Administrador</small>
+            </div>
+        </div>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-item active">
+                <a href="dashboard.php" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="consultas.php" class="nav-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>Consultas</span>
+                    <?php if (($stats['consultas']['pendientes'] ?? 0) > 0): ?>
+                    <span class="badge bg-warning"><?= $stats['consultas']['pendientes'] ?></span>
+                    <?php endif; ?>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="usuarios.php" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Usuarios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="cursos.php" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Cursos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="reportes.php" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reportes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="configuracion.php" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <a href="../api/logout.php" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button id="sidebar-toggle" class="btn btn-link">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Dashboard Administrativo</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-stats">
+                    <span class="stat-item">
+                        <i class="fas fa-clock text-primary"></i>
+                        <?= date('d/m/Y H:i') ?>
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <!-- Total Usuarios -->
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= array_sum(array_column($stats['usuarios_por_tipo'], 'total')) ?></h3>
+                        <p>Total Usuarios</p>
+                        <small><?= array_sum(array_column($stats['usuarios_por_tipo'], 'activos')) ?> activos</small>
+                    </div>
+                </div>
+
+                <!-- Estudiantes -->
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-content">
+                        <?php
+                        $estudiantes = array_filter($stats['usuarios_por_tipo'], function($item) {
+                            return $item['tipo_usuario'] === 'estudiante';
+                        });
+                        $total_estudiantes = !empty($estudiantes) ? reset($estudiantes)['total'] : 0;
+                        ?>
+                        <h3><?= $total_estudiantes ?></h3>
+                        <p>Estudiantes</p>
+                        <small><?= $stats['estudiantes_por_estado']['activo'] ?? 0 ?> activos</small>
+                    </div>
+                </div>
+
+                <!-- Consultas Pendientes -->
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= $stats['consultas']['pendientes'] ?></h3>
+                        <p>Consultas Pendientes</p>
+                        <small><?= $stats['consultas']['hoy'] ?> recibidas hoy</small>
+                    </div>
+                </div>
+
+                <!-- Inscripciones -->
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= $stats['inscripciones']['pendientes'] ?? 0 ?></h3>
+                        <p>Inscripciones Pendientes</p>
+                        <small><?= $stats['inscripciones']['aprobadas'] ?? 0 ?> aprobadas</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Sections -->
+            <div class="dashboard-grid">
+                <!-- Consultas Pendientes Urgentes -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-exclamation-circle text-warning"></i> Consultas Urgentes</h4>
+                        <a href="consultas.php" class="btn btn-sm btn-outline-primary">Ver Todas</a>
+                    </div>
+                    <div class="section-content">
+                        <?php if (empty($consultas_pendientes)): ?>
+                            <div class="empty-state">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <p>¡Excelente! No hay consultas pendientes urgentes</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="consultas-list">
+                                <?php foreach (array_slice($consultas_pendientes, 0, 5) as $consulta): ?>
+                                <div class="consulta-item">
+                                    <div class="consulta-info">
+                                        <strong><?= htmlspecialchars($consulta['nombre']) ?></strong>
+                                        <span class="badge badge-<?= $consulta['tipo_consulta'] === 'inscripcion' ? 'primary' : 'secondary' ?>">
+                                            <?= ucfirst($consulta['tipo_consulta']) ?>
+                                        </span>
+                                    </div>
+                                    <div class="consulta-meta">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i>
+                                            Hace <?= $consulta['horas_pendiente'] ?> horas
+                                        </small>
+                                        <?php if ($consulta['horas_pendiente'] > 24): ?>
+                                            <span class="badge bg-danger ms-2">Urgente</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="consulta-actions">
+                                        <a href="consultas.php?id=<?= $consulta['id'] ?>" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Usuarios Recientes -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-user-plus text-success"></i> Usuarios Recientes</h4>
+                        <a href="usuarios.php" class="btn btn-sm btn-outline-primary">Ver Todos</a>
+                    </div>
+                    <div class="section-content">
+                        <?php if (empty($usuarios_recientes)): ?>
+                            <div class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <p>No hay usuarios registrados recientemente</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="usuarios-list">
+                                <?php foreach (array_slice($usuarios_recientes, 0, 8) as $usuario): ?>
+                                <div class="usuario-item">
+                                    <div class="usuario-avatar">
+                                        <i class="fas fa-<?= getUserIcon($usuario['tipo_usuario']) ?>"></i>
+                                    </div>
+                                    <div class="usuario-info">
+                                        <strong><?= htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']) ?></strong>
+                                        <div class="usuario-meta">
+                                            <span class="badge badge-<?= $usuario['tipo_usuario'] ?>">
+                                                <?= ucfirst($usuario['tipo_usuario']) ?>
+                                            </span>
+                                            <?php if ($usuario['legajo']): ?>
+                                                <small class="text-muted">Legajo: <?= $usuario['legajo'] ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar"></i>
+                                            <?= date('d/m/Y', strtotime($usuario['created_at'])) ?>
+                                        </small>
+                                    </div>
+                                    <div class="usuario-status">
+                                        <span class="status-indicator <?= $usuario['activo'] ? 'active' : 'inactive' ?>"></span>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Actividad Reciente -->
+                <div class="dashboard-section full-width">
+                    <div class="section-header">
+                        <h4><i class="fas fa-history text-info"></i> Actividad Reciente del Sistema</h4>
+                        <div class="section-controls">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="refreshActivity()">
+                                <i class="fas fa-sync"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <?php if (empty($actividad_reciente)): ?>
+                            <div class="empty-state">
+                                <i class="fas fa-chart-line"></i>
+                                <p>No hay actividad reciente registrada</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="timeline">
+                                <?php foreach ($actividad_reciente as $actividad): ?>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker <?= $actividad['tipo'] ?>">
+                                        <i class="fas fa-<?= getActivityIcon($actividad['tipo']) ?>"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <p><?= htmlspecialchars($actividad['descripcion']) ?></p>
+                                        <div class="timeline-meta">
+                                            <span class="badge badge-light"><?= htmlspecialchars($actividad['detalle']) ?></span>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i>
+                                                <?= timeAgo($actividad['fecha']) ?>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Estadísticas Rápidas -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-chart-pie text-primary"></i> Resumen Académico</h4>
+                    </div>
+                    <div class="section-content">
+                        <div class="quick-stats">
+                            <div class="quick-stat-item">
+                                <div class="stat-label">Cursos Activos</div>
+                                <div class="stat-value"><?= $stats['academico']['cursos_activos'] ?></div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-label">Orientaciones</div>
+                                <div class="stat-value"><?= $stats['academico']['total_orientaciones'] ?></div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-label">Profesores</div>
+                                <div class="stat-value">
+                                    <?php
+                                    $profesores = array_filter($stats['usuarios_por_tipo'], function($item) {
+                                        return $item['tipo_usuario'] === 'profesor';
+                                    });
+                                    echo !empty($profesores) ? reset($profesores)['total'] : 0;
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="quick-stat-item">
+                                <div class="stat-label">Graduados</div>
+                                <div class="stat-value"><?= $stats['estudiantes_por_estado']['graduado'] ?? 0 ?></div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-section mt-3">
+                            <div class="progress-item">
+                                <label>Tasa de Aprobación de Inscripciones</label>
+                                <?php
+                                $total_procesadas = ($stats['inscripciones']['aprobadas'] ?? 0) + ($stats['inscripciones']['rechazadas'] ?? 0);
+                                $tasa_aprobacion = $total_procesadas > 0 ? 
+                                    round(($stats['inscripciones']['aprobadas'] ?? 0) / $total_procesadas * 100) : 0;
+                                ?>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: <?= $tasa_aprobacion ?>%">
+                                        <?= $tasa_aprobacion ?>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/dashboard-scripts.js"></script>
+</body>
+</html>

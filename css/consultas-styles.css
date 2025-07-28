@@ -1,0 +1,708 @@
+/* ========================================
+   VARIABLES CSS PARA EPA 703
+   ======================================== */
+:root {
+    --primary-color: #1e3a2e;
+    --secondary-color: #2d5a42;
+    --accent-color: #4a7c59;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --white: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    
+    /* Shadows */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    
+    /* Border radius */
+    --border-radius: 0.375rem;
+    --border-radius-lg: 0.5rem;
+    --border-radius-xl: 1rem;
+    
+    /* Transitions */
+    --transition-base: all 0.3s ease;
+    --transition-fast: all 0.15s ease;
+}
+
+/* ========================================
+   ESTILOS GENERALES
+   ======================================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gray-100);
+    color: var(--gray-800);
+    line-height: 1.6;
+}
+
+/* ========================================
+   NAVBAR PERSONALIZADA
+   ======================================== */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+    font-size: 1.25rem;
+    transition: var(--transition-fast);
+}
+
+.navbar-brand:hover {
+    color: var(--secondary-color) !important;
+    transform: translateY(-1px);
+}
+
+.navbar {
+    box-shadow: var(--shadow-sm);
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.navbar-text {
+    font-weight: 500;
+    color: var(--gray-700) !important;
+}
+
+/* ========================================
+   BOTONES PERSONALIZADOS
+   ======================================== */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(30, 58, 46, 0.25);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: var(--transition-base);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.btn-group-vertical .btn {
+    margin-bottom: 0.25rem;
+    border-radius: var(--border-radius) !important;
+}
+
+.btn-group-vertical .btn:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================================
+   TARJETAS DE ESTADÍSTICAS
+   ======================================== */
+.stats-card {
+    border-left: 4px solid var(--accent-color);
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+    background: var(--white);
+}
+
+.stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-left-color: var(--primary-color);
+}
+
+.stats-card .card-body {
+    padding: 1.5rem;
+}
+
+.stats-card .card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stats-card h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+/* ========================================
+   BADGES Y ESTADOS
+   ======================================== */
+.badge {
+    font-size: 0.8em;
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    border-radius: var(--border-radius);
+    letter-spacing: 0.25px;
+}
+
+.estado-badge {
+    font-size: 0.75em;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Estados específicos */
+.bg-warning .estado-badge,
+.badge.bg-warning {
+    color: var(--gray-800) !important;
+}
+
+.bg-light .estado-badge,
+.badge.bg-light {
+    color: var(--gray-800) !important;
+    border: 1px solid var(--gray-300);
+}
+
+/* ========================================
+   TABLA PERSONALIZADA
+   ======================================== */
+.table {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.table th {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    padding: 1rem 0.75rem;
+    border: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-color: var(--gray-200);
+}
+
+.consulta-row {
+    transition: var(--transition-fast);
+}
+
+.consulta-row:hover {
+    background-color: var(--gray-100) !important;
+    transform: scale(1.005);
+}
+
+.table-responsive {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ========================================
+   MODALES PERSONALIZADOS
+   ======================================== */
+.modal-header {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    border-bottom: none;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: 1.25rem 1.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    background: var(--white);
+}
+
+.modal-footer {
+    background: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    padding: 1rem 1.5rem;
+}
+
+.modal-content {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* ========================================
+   TARJETAS Y CONTENEDORES
+   ======================================== */
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    background: var(--white);
+}
+
+.card:hover {
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    background: var(--white);
+    border-bottom: 2px solid var(--gray-200);
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-header h5 {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--gray-800);
+    font-size: 1.1rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ========================================
+   FORMULARIOS
+   ======================================== */
+.form-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+}
+
+.form-control,
+.form-select {
+    border: 2px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    transition: var(--transition-fast);
+    font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(30, 58, 46, 0.25);
+}
+
+.form-control:hover,
+.form-select:hover {
+    border-color: var(--accent-color);
+}
+
+/* ========================================
+   ALERTAS PERSONALIZADAS
+   ======================================== */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--success-color);
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    color: var(--info-color);
+    border-left: 4px solid var(--info-color);
+}
+
+.alert-light {
+    background-color: var(--gray-100);
+    color: var(--gray-800);
+    border-left: 4px solid var(--gray-400);
+}
+
+/* ========================================
+   ESTADO VACÍO
+   ======================================== */
+.text-center.py-4 {
+    padding: 3rem 1rem !important;
+}
+
+.text-center.py-4 .fa-inbox {
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+}
+
+.text-center.py-4 h5 {
+    color: var(--gray-600);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.text-center.py-4 p {
+    color: var(--gray-500);
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   MENSAJES Y TEXTO
+   ======================================== */
+.mensaje-preview {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    color: var(--gray-600);
+}
+
+small.text-muted {
+    color: var(--gray-500) !important;
+    font-size: 0.8rem;
+}
+
+/* ========================================
+   LINKS
+   ======================================== */
+a.text-decoration-none {
+    color: var(--info-color);
+    transition: var(--transition-fast);
+}
+
+a.text-decoration-none:hover {
+    color: var(--primary-color);
+    text-decoration: underline !important;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0.75rem;
+    }
+    
+    .stats-card .card-body {
+        padding: 1rem;
+    }
+    
+    .stats-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-group-vertical .btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .table td,
+    .table th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.85rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .stats-card .card-title {
+        font-size: 0.8rem;
+    }
+    
+    .btn-group-vertical {
+        width: 100%;
+    }
+    
+    .btn-group-vertical .btn {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .form-control,
+    .form-select {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ========================================
+   ANIMACIONES Y EFECTOS
+   ======================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.stats-card:hover {
+    animation: pulse 0.3s ease-in-out;
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
+
+.alert {
+    animation: slideUp 0.4s ease-out;
+}
+
+/* ========================================
+   UTILIDADES ADICIONALES
+   ======================================== */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-secondary {
+    border-color: var(--secondary-color) !important;
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--gray-300);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   ESTADOS DE HOVER ESPECÍFICOS
+   ======================================== */
+.consulta-row:hover .badge {
+    transform: scale(1.05);
+    transition: var(--transition-fast);
+}
+
+.stats-card:hover .card-title {
+    color: var(--primary-color);
+    transition: var(--transition-fast);
+}
+
+.stats-card:hover h3 {
+    transform: scale(1.05);
+    transition: var(--transition-fast);
+}
+
+/* ========================================
+   PERSONALIZACIÓN DE SCROLLBAR
+   ======================================== */
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: var(--gray-200);
+    border-radius: var(--border-radius);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: var(--border-radius);
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* ========================================
+   DARK MODE SUPPORT (OPCIONAL)
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+    .dark-mode {
+        --gray-100: #1a1a1a;
+        --gray-200: #2d2d2d;
+        --gray-300: #404040;
+        --white: #2d2d2d;
+        --gray-800: #f8f9fa;
+        --gray-700: #e9ecef;
+    }
+    
+    .dark-mode body {
+        background-color: var(--gray-100);
+        color: var(--gray-800);
+    }
+    
+    .dark-mode .card,
+    .dark-mode .table,
+    .dark-mode .modal-body {
+        background-color: var(--white);
+        color: var(--gray-800);
+    }
+    
+    .dark-mode .navbar {
+        background-color: var(--gray-200) !important;
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+    .navbar,
+    .btn,
+    .modal,
+    .card-header .btn,
+    .alert {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    .table th {
+        background-color: #f0f0f0 !important;
+        color: #000 !important;
+    }
+    
+    .badge {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+        background-color: #fff !important;
+    }
+    
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+    }
+    
+    .stats-card {
+        border: 1px solid #000 !important;
+        margin-bottom: 1rem !important;
+    }
+}
