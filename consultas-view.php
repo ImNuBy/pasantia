@@ -1,453 +1,346 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Consultas - EPA 703</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="css/consultas-styles.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">🎓 EPA 703 - Panel Admin</a>
-            <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">
-                    👤 <?= htmlspecialchars($_SESSION['nombre'] ?? 'Admin') ?>
-                </span>
-                <a href="../api/logout.php" class="btn btn-outline-danger btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </a>
-            </div>
-        </div>
-    </nav>
+import React, { useState } from 'react';
+import { Users, BookOpen, Calendar, BarChart3, Settings, Bell, Search, Menu, X, GraduationCap, FileText, UserCheck, TrendingUp } from 'lucide-react';
 
-    <div class="container mt-4">
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <strong>Error:</strong> <?= htmlspecialchars($error) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+const Dashboard = () => {
+  const [activeSection, setActiveSection] = useState('overview');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Datos simulados
+  const stats = {
+    totalStudents: 1247,
+    totalTeachers: 68,
+    totalClasses: 42,
+    attendance: 94.2
+  };
+
+  const recentActivities = [
+    { id: 1, action: 'Nuevo estudiante registrado', user: 'María González', time: '2 min ago' },
+    { id: 2, action: 'Reporte de calificaciones generado', user: 'Prof. Rodríguez', time: '15 min ago' },
+    { id: 3, action: 'Evento escolar programado', user: 'Coordinación', time: '1 hora ago' },
+    { id: 4, action: 'Reunión de padres confirmada', user: 'Secretaría', time: '2 horas ago' }
+  ];
+
+  const upcomingEvents = [
+    { id: 1, title: 'Reunión de Padres 1er Año', date: '2025-08-02', time: '14:00' },
+    { id: 2, title: 'Examen Final Matemáticas', date: '2025-08-05', time: '08:00' },
+    { id: 3, title: 'Acto de Fin de Año', date: '2025-08-15', time: '10:00' },
+    { id: 4, title: 'Inscripciones Ciclo 2026', date: '2025-08-20', time: '09:00' }
+  ];
+
+  const menuItems = [
+    { id: 'overview', label: 'Panel General', icon: BarChart3 },
+    { id: 'students', label: 'Estudiantes', icon: Users },
+    { id: 'teachers', label: 'Profesores', icon: GraduationCap },
+    { id: 'classes', label: 'Clases', icon: BookOpen },
+    { id: 'reports', label: 'Reportes', icon: FileText },
+    { id: 'events', label: 'Eventos', icon: Calendar },
+    { id: 'settings', label: 'Configuración', icon: Settings }
+  ];
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'overview':
+        return (
+          <div className="space-y-6">
+            {/* Estadísticas principales */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Total Estudiantes</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
+                  </div>
+                  <Users className="h-8 w-8 text-blue-600" />
+                </div>
+                <p className="text-xs text-green-600 mt-2">+5.2% vs mes anterior</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Profesores</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.totalTeachers}</p>
+                  </div>
+                  <GraduationCap className="h-8 w-8 text-green-600" />
+                </div>
+                <p className="text-xs text-green-600 mt-2">+2 nuevos este mes</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Clases Activas</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.totalClasses}</p>
+                  </div>
+                  <BookOpen className="h-8 w-8 text-purple-600" />
+                </div>
+                <p className="text-xs text-blue-600 mt-2">3 turnos disponibles</p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Asistencia</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.attendance}%</p>
+                  </div>
+                  <UserCheck className="h-8 w-8 text-orange-600" />
+                </div>
+                <p className="text-xs text-green-600 mt-2">+1.2% vs semana pasada</p>
+              </div>
             </div>
-        <?php endif; ?>
+
+            {/* Actividades recientes y eventos */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Actividades Recientes</h3>
+                <div className="space-y-4">
+                  {recentActivities.map(activity => (
+                    <div key={activity.id} className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                        <p className="text-xs text-gray-500">{activity.user} • {activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Próximos Eventos</h3>
+                <div className="space-y-4">
+                  {upcomingEvents.map(event => (
+                    <div key={event.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{event.title}</p>
+                        <p className="text-xs text-gray-500">{event.time}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-medium text-blue-600">{event.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'students':
+        return (
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Gestión de Estudiantes</h3>
+            <div className="mb-4">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Agregar Estudiante
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Año</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DNI</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Ana María Pérez</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3ro</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">45.123.456</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Activo</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                      <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Carlos González</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5to</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">44.987.654</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">Activo</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button className="text-blue-600 hover:text-blue-900 mr-3">Editar</button>
+                      <button className="text-red-600 hover:text-red-900">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'teachers':
+        return (
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Gestión de Profesores</h3>
+            <div className="mb-4">
+              <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                Agregar Profesor
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="border rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900">Prof. María Rodríguez</h4>
+                <p className="text-sm text-gray-600">Matemáticas</p>
+                <p className="text-xs text-gray-500 mt-2">15 años de experiencia</p>
+                <div className="mt-3">
+                  <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">Titular</span>
+                </div>
+              </div>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900">Prof. Juan López</h4>
+                <p className="text-sm text-gray-600">Historia</p>
+                <p className="text-xs text-gray-500 mt-2">8 años de experiencia</p>
+                <div className="mt-3">
+                  <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Activo</span>
+                </div>
+              </div>
+              <div className="border rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900">Prof. Ana García</h4>
+                <p className="text-sm text-gray-600">Lengua y Literatura</p>
+                <p className="text-xs text-gray-500 mt-2">12 años de experiencia</p>
+                <div className="mt-3">
+                  <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">Titular</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'reports':
+        return (
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Generar Reportes</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                  <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-900">Reporte de Asistencia</p>
+                  <p className="text-xs text-gray-500">Mensual/Semanal</p>
+                </button>
+                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
+                  <TrendingUp className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-900">Rendimiento Académico</p>
+                  <p className="text-xs text-gray-500">Por materia/año</p>
+                </button>
+                <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                  <Users className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <p className="text-sm font-medium text-gray-900">Estadísticas de Matrícula</p>
+                  <p className="text-xs text-gray-500">Inscripciones</p>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {menuItems.find(item => item.id === activeSection)?.label}
+            </h3>
+            <p className="text-gray-600">Sección en desarrollo...</p>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-between h-16 px-6 border-b">
+          <h1 className="text-xl font-bold text-gray-900">EPA 703</h1>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
         
-        <?php if (isset($_GET['success'])): ?>
-            <div class="alert alert-success alert-dismissible fade show">
-                <strong>¡Éxito!</strong> Operación completada correctamente.
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+        <nav className="mt-6">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full flex items-center px-6 py-3 text-left hover:bg-gray-50 transition-colors ${
+                  activeSection === item.id ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : 'text-gray-700'
+                }`}
+              >
+                <Icon className="h-5 w-5 mr-3" />
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
 
-        <!-- Estadísticas -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card stats-card">
-                    <div class="card-body">
-                        <h5 class="card-title">📋 Total Consultas</h5>
-                        <h3 class="text-primary"><?= count($consultas) ?></h3>
-                    </div>
-                </div>
+      {/* Main content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b">
+          <div className="flex items-center justify-between h-16 px-6">
+            <div className="flex items-center">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden mr-4"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Panel de Administración
+              </h2>
             </div>
-            <div class="col-md-3">
-                <div class="card stats-card">
-                    <div class="card-body">
-                        <h5 class="card-title">⏳ Pendientes</h5>
-                        <h3 class="text-warning"><?= $stats['por_estado']['pendiente'] ?? 0 ?></h3>
-                    </div>
-                </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar..."
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <button className="relative p-2 text-gray-400 hover:text-gray-600">
+                <Bell className="h-6 w-6" />
+                <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+              </button>
+              <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-white">AD</span>
+              </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stats-card">
-                    <div class="card-body">
-                        <h5 class="card-title">📝 Inscripciones</h5>
-                        <h3 class="text-info"><?= $stats['inscripciones_pendientes'] ?></h3>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stats-card">
-                    <div class="card-body">
-                        <h5 class="card-title">📅 Hoy</h5>
-                        <h3 class="text-success"><?= $stats['consultas_hoy'] ?></h3>
-                    </div>
-                </div>
-            </div>
-        </div>
+          </div>
+        </header>
 
-        <!-- Filtros -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5><i class="fas fa-filter"></i> Filtros</h5>
-            </div>
-            <div class="card-body">
-                <form method="GET" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Estado</label>
-                        <select name="estado" class="form-select">
-                            <option value="">Todos</option>
-                            <option value="pendiente" <?= $filtro_estado === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
-                            <option value="leido" <?= $filtro_estado === 'leido' ? 'selected' : '' ?>>Leído</option>
-                            <option value="respondido" <?= $filtro_estado === 'respondido' ? 'selected' : '' ?>>Respondido</option>
-                            <option value="cerrado" <?= $filtro_estado === 'cerrado' ? 'selected' : '' ?>>Cerrado</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Tipo</label>
-                        <select name="tipo" class="form-select">
-                            <option value="">Todos</option>
-                            <option value="inscripcion" <?= $filtro_tipo === 'inscripcion' ? 'selected' : '' ?>>Inscripción</option>
-                            <option value="ciclos" <?= $filtro_tipo === 'ciclos' ? 'selected' : '' ?>>Ciclos</option>
-                            <option value="horarios" <?= $filtro_tipo === 'horarios' ? 'selected' : '' ?>>Horarios</option>
-                            <option value="requisitos" <?= $filtro_tipo === 'requisitos' ? 'selected' : '' ?>>Requisitos</option>
-                            <option value="general" <?= $filtro_tipo === 'general' ? 'selected' : '' ?>>General</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Fecha</label>
-                        <input type="date" name="fecha" class="form-control" value="<?= htmlspecialchars($filtro_fecha) ?>">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">&nbsp;</label>
-                        <div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search"></i> Filtrar
-                            </button>
-                            <a href="consultas.php" class="btn btn-outline-secondary">
-                                <i class="fas fa-times"></i> Limpiar
-                            </a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        {/* Main content area */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+          {renderContent()}
+        </main>
+      </div>
 
-        <!-- Tabla de consultas -->
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-list"></i> Consultas (<?= count($consultas) ?>)</h5>
-            </div>
-            <div class="card-body">
-                <?php if (empty($consultas)): ?>
-                    <div class="text-center py-4">
-                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">No hay consultas que mostrar</h5>
-                        <p class="text-muted">Intenta cambiar los filtros para ver más resultados.</p>
-                    </div>
-                <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Tipo</th>
-                                <th>Estado</th>
-                                <th>Inscripción</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($consultas as $consulta): ?>
-                            <tr class="consulta-row">
-                                <td><?= $consulta['id'] ?></td>
-                                <td>
-                                    <small><?= date('d/m/Y H:i', strtotime($consulta['created_at'])) ?></small>
-                                </td>
-                                <td>
-                                    <strong><?= htmlspecialchars($consulta['nombre']) ?></strong>
-                                    <?php if ($consulta['telefono']): ?>
-                                        <br><small class="text-muted">📞 <?= htmlspecialchars($consulta['telefono']) ?></small>
-                                    <?php endif; ?>
-                                    <?php if ($consulta['edad'] > 0): ?>
-                                        <br><small class="text-muted">🎂 <?= $consulta['edad'] ?> años</small>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <a href="mailto:<?= htmlspecialchars($consulta['email']) ?>" class="text-decoration-none">
-                                        <?= htmlspecialchars($consulta['email']) ?>
-                                    </a>
-                                </td>
-                                <td>
-                                    <?php
-                                    $tipos_consulta = [
-                                        'inscripcion' => ['🎓 Inscripción', 'primary'],
-                                        'ciclos' => ['📚 Ciclos', 'info'],
-                                        'horarios' => ['🕒 Horarios', 'warning'],
-                                        'requisitos' => ['📋 Requisitos', 'secondary'],
-                                        'certificados' => ['📜 Certificados', 'success'],
-                                        'becas' => ['💰 Becas', 'dark'],
-                                        'general' => ['💬 General', 'light']
-                                    ];
-                                    $tipo_info = $tipos_consulta[$consulta['tipo_consulta']] ?? ['❓ Otro', 'secondary'];
-                                    ?>
-                                    <span class="badge bg-<?= $tipo_info[1] ?> estado-badge">
-                                        <?= $tipo_info[0] ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php
-                                    $estados = [
-                                        'pendiente' => ['⏳ Pendiente', 'warning'],
-                                        'leido' => ['👁️ Leído', 'info'],
-                                        'respondido' => ['✅ Respondido', 'success'],
-                                        'cerrado' => ['🔒 Cerrado', 'secondary']
-                                    ];
-                                    $estado_info = $estados[$consulta['estado']] ?? ['❓ Desconocido', 'secondary'];
-                                    ?>
-                                    <span class="badge bg-<?= $estado_info[1] ?> estado-badge">
-                                        <?= $estado_info[0] ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($consulta['inscripcion_id']): ?>
-                                        <?php
-                                        $estados_inscripcion = [
-                                            'pendiente' => ['⏳ Pendiente', 'warning'],
-                                            'aprobada' => ['✅ Aprobada', 'success'],
-                                            'rechazada' => ['❌ Rechazada', 'danger']
-                                        ];
-                                        $inscripcion_info = $estados_inscripcion[$consulta['estado_inscripcion']] ?? ['❓ Sin estado', 'secondary'];
-                                        ?>
-                                        <span class="badge bg-<?= $inscripcion_info[1] ?> estado-badge">
-                                            <?= $inscripcion_info[0] ?>
-                                        </span>
-                                        <?php if ($consulta['estado_inscripcion'] === 'aprobada' && $consulta['usuario_legajo']): ?>
-                                            <br><small class="text-success">📝 Legajo: <?= $consulta['usuario_legajo'] ?></small>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <span class="text-muted">-</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <div class="btn-group-vertical btn-group-sm" role="group">
-                                        <!-- Ver detalles -->
-                                        <button type="button" class="btn btn-outline-primary btn-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalDetalle<?= $consulta['id'] ?>">
-                                            <i class="fas fa-eye"></i> Ver
-                                        </button>
-                                        
-                                        <?php if ($consulta['tipo_consulta'] === 'inscripcion' && !$consulta['inscripcion_id']): ?>
-                                        <!-- Procesar inscripción -->
-                                        <button type="button" class="btn btn-outline-success btn-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalProcesar<?= $consulta['id'] ?>">
-                                            <i class="fas fa-user-plus"></i> Procesar
-                                        </button>
-                                        <?php elseif ($consulta['tipo_consulta'] === 'inscripcion' && $consulta['estado_inscripcion'] === 'pendiente'): ?>
-                                        <!-- Revisar inscripción pendiente -->
-                                        <button type="button" class="btn btn-outline-warning btn-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalProcesar<?= $consulta['id'] ?>">
-                                            <i class="fas fa-edit"></i> Revisar
-                                        </button>
-                                        <?php endif; ?>
-                                        
-                                        <!-- Cambiar estado -->
-                                        <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalEstado<?= $consulta['id'] ?>">
-                                            <i class="fas fa-edit"></i> Estado
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
     </div>
+  );
+};
 
-    <!-- Modales para cada consulta -->
-    <?php foreach ($consultas as $consulta): ?>
-    
-    <!-- Modal de detalles -->
-    <div class="modal fade" id="modalDetalle<?= $consulta['id'] ?>" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-info-circle"></i> Detalles de la Consulta #<?= $consulta['id'] ?>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6><i class="fas fa-user"></i> Información Personal</h6>
-                            <table class="table table-sm">
-                                <tr><td><strong>Nombre:</strong></td><td><?= htmlspecialchars($consulta['nombre']) ?></td></tr>
-                                <tr><td><strong>Email:</strong></td><td><?= htmlspecialchars($consulta['email']) ?></td></tr>
-                                <?php if ($consulta['telefono']): ?>
-                                <tr><td><strong>Teléfono:</strong></td><td><?= htmlspecialchars($consulta['telefono']) ?></td></tr>
-                                <?php endif; ?>
-                                <?php if ($consulta['edad'] > 0): ?>
-                                <tr><td><strong>Edad:</strong></td><td><?= $consulta['edad'] ?> años</td></tr>
-                                <?php endif; ?>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <h6><i class="fas fa-clipboard"></i> Información de la Consulta</h6>
-                            <table class="table table-sm">
-                                <tr><td><strong>Tipo:</strong></td><td><?= ucfirst($consulta['tipo_consulta']) ?></td></tr>
-                                <tr><td><strong>Estado:</strong></td><td><?= ucfirst($consulta['estado']) ?></td></tr>
-                                <tr><td><strong>Fecha:</strong></td><td><?= date('d/m/Y H:i:s', strtotime($consulta['created_at'])) ?></td></tr>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <h6><i class="fas fa-message"></i> Mensaje</h6>
-                    <div class="alert alert-light">
-                        <?= nl2br(htmlspecialchars($consulta['mensaje'])) ?>
-                    </div>
-                    
-                    <?php if ($consulta['inscripcion_id']): ?>
-                    <h6><i class="fas fa-graduation-cap"></i> Estado de Inscripción</h6>
-                    <div class="alert alert-info">
-                        <strong>Estado:</strong> <?= ucfirst($consulta['estado_inscripcion']) ?><br>
-                        <?php if ($consulta['fecha_procesamiento']): ?>
-                        <strong>Procesado:</strong> <?= date('d/m/Y H:i:s', strtotime($consulta['fecha_procesamiento'])) ?><br>
-                        <?php endif; ?>
-                        <?php if ($consulta['curso_asignado_nombre']): ?>
-                        <strong>Curso:</strong> <?= htmlspecialchars($consulta['curso_asignado_nombre']) ?> (<?= ucfirst($consulta['curso_turno']) ?>)<br>
-                        <?php endif; ?>
-                        <?php if ($consulta['usuario_legajo']): ?>
-                        <strong>Legajo asignado:</strong> <?= $consulta['usuario_legajo'] ?><br>
-                        <?php endif; ?>
-                        <?php if ($consulta['admin_observaciones']): ?>
-                        <strong>Observaciones:</strong> <?= htmlspecialchars($consulta['admin_observaciones']) ?>
-                        <?php endif; ?>
-                    </div>
-                    <?php endif; ?>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de procesamiento de inscripción -->
-    <?php if ($consulta['tipo_consulta'] === 'inscripcion'): ?>
-    <div class="modal fade" id="modalProcesar<?= $consulta['id'] ?>" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-user-plus"></i> Procesar Inscripción #<?= $consulta['id'] ?>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Estudiante:</strong> <?= htmlspecialchars($consulta['nombre']) ?></p>
-                    <p><strong>Email:</strong> <?= htmlspecialchars($consulta['email']) ?></p>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <!-- Formulario para aprobar -->
-                            <form method="POST" id="formAprobar<?= $consulta['id'] ?>">
-                                <input type="hidden" name="action" value="aprobar_inscripcion">
-                                <input type="hidden" name="contacto_id" value="<?= $consulta['id'] ?>">
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Asignar a Curso:</label>
-                                    <select name="curso_id" class="form-select" required>
-                                        <option value="">Seleccionar curso...</option>
-                                        <?php foreach ($cursos_disponibles as $curso): ?>
-                                        <option value="<?= $curso['id'] ?>" 
-                                                <?= ($consulta['curso_asignado_id'] == $curso['id']) ? 'selected' : '' ?>>
-                                            <?= htmlspecialchars($curso['nombre']) ?> - 
-                                            <?= $curso['anio'] ?>° <?= $curso['division'] ?> - 
-                                            <?= ucfirst($curso['turno']) ?>
-                                        </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </form>
-                            
-                            <!-- Formulario para rechazar -->
-                            <form method="POST" id="formRechazar<?= $consulta['id'] ?>" style="display: none;">
-                                <input type="hidden" name="action" value="rechazar_inscripcion">
-                                <input type="hidden" name="contacto_id" value="<?= $consulta['id'] ?>">
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">Motivo del rechazo:</label>
-                                    <textarea name="motivo" class="form-control" rows="3" 
-                                              placeholder="Explica el motivo del rechazo..." required></textarea>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" onclick="mostrarFormRechazo(<?= $consulta['id'] ?>)">
-                        <i class="fas fa-times"></i> Rechazar
-                    </button>
-                    <button type="submit" form="formAprobar<?= $consulta['id'] ?>" class="btn btn-success">
-                        <i class="fas fa-check"></i> Aprobar e Inscribir
-                    </button>
-                    <button type="submit" form="formRechazar<?= $consulta['id'] ?>" 
-                            class="btn btn-danger" style="display: none;" id="btnConfirmarRechazo<?= $consulta['id'] ?>">
-                        <i class="fas fa-times"></i> Confirmar Rechazo
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
-    <!-- Modal cambio de estado -->
-    <div class="modal fade" id="modalEstado<?= $consulta['id'] ?>" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-edit"></i> Cambiar Estado #<?= $consulta['id'] ?>
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="action" value="cambiar_estado">
-                        <input type="hidden" name="contacto_id" value="<?= $consulta['id'] ?>">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Nuevo Estado:</label>
-                            <select name="nuevo_estado" class="form-select" required>
-                                <option value="pendiente" <?= $consulta['estado'] === 'pendiente' ? 'selected' : '' ?>>Pendiente</option>
-                                <option value="leido" <?= $consulta['estado'] === 'leido' ? 'selected' : '' ?>>Leído</option>
-                                <option value="respondido" <?= $consulta['estado'] === 'respondido' ? 'selected' : '' ?>>Respondido</option>
-                                <option value="cerrado" <?= $consulta['estado'] === 'cerrado' ? 'selected' : '' ?>>Cerrado</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Notas (opcional):</label>
-                            <textarea name="notas" class="form-control" rows="2" 
-                                      placeholder="Agrega notas sobre este cambio de estado..."></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Actualizar Estado
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <?php endforeach; ?>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/consultas-scrpts.js"></script>
-</body>
-</html>
+export default Dashboard;

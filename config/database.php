@@ -1,285 +1,424 @@
 <?php
 /**
- * Configuración de Base de Datos - EPA 703
- * Adaptado para la base de datos existente
+ * Configuración de Base de Datos EPA 703
+ * Archivo de configuración y conexión a la base de datos
  */
 
-// Configuración de la base de datos existente
+// Configuración de la base de datos
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'epa703');  // Tu base de datos existente
+define('DB_NAME', 'epa703');
 define('DB_USER', 'root');
-define('DB_PASS', '');        // Tu contraseña de MySQL
+define('DB_PASS', '');
+define('DB_CHARSET', 'utf8mb4');
 
-// Configuración de usuario automático
-define('PASSWORD_MIN_LENGTH', 8);
-define('PASSWORD_SPECIAL_CHARS', false); // Simplificado para compatibilidad
+// Configuración de errores
+define('DB_DEBUG', true); // Cambiar a false en producción
 
 /**
- * Función para obtener conexión PDO
+ * Obtener conexión PDO a la base de datos
+ * @return PDO Conexión a la base de datos
+ * @throws Exception Si no se puede conectar
  */
 function getDBConnection() {
-    try {
-        $pdo = new PDO(
-            "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-            DB_USER,
-            DB_PASS,
-            [
+    static $pdo = null;
+    
+    if ($pdo === null) {
+        try {
+            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+            
+            $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
-            ]
-        );
-        return $pdo;
-    } catch (PDOException $e) {
-        error_log("Error de conexión BD: " . $e->getMessage());
-        throw new Exception("Error de conexión a la base de datos");
-    }
-}
-
-/**
- * Generar contraseña temporal simplificada
- */
-function generarPasswordTemporal($longitud = 8) {
-    $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    $password = '';
-    
-    // Al menos una mayúscula
-    $password .= chr(rand(65, 90));
-    
-    // Al menos una minúscula  
-    $password .= chr(rand(97, 122));
-    
-    // Al menos un número
-    $password .= chr(rand(48, 57));
-    
-    // Completar con caracteres aleatorios
-    for ($i = 3; $i < $longitud; $i++) {
-        $password .= $caracteres[rand(0, strlen($caracteres) - 1)];
-    }
-    
-    return str_shuffle($password);
-}
-
-/**
- * Generar próximo legajo
- */
-function generarProximoLegajo() {
-    try {
-        $pdo = getDBConnection();
-        
-        // Obtener el último legajo de la base de datos
-        $stmt = $pdo->query("
-            SELECT legajo 
-            FROM estudiantes 
-            WHERE legajo LIKE 'EST%' 
-            ORDER BY CAST(SUBSTRING(legajo, 4) AS UNSIGNED) DESC 
-            LIMIT 1
-        ");
-        
-        $resultado = $stmt->fetch();
-        
-        if ($resultado) {
-            // Extraer número del legajo existente (EST001 -> 1)
-            $ultimo_numero = intval(substr($resultado['legajo'], 3));
-        } else {
-            $ultimo_numero = 0;
+                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . DB_CHARSET
+            ];
+            
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+            
+            if (DB_DEBUG) {
+                error_log("✅ Conexión a base de datos EPA 703 establecida correctamente");
+            }
+            
+        } catch (PDOException $e) {
+            $error_message = "❌ Error de conexión a la base de datos: " . $e->getMessage();
+            
+            if (DB_DEBUG) {
+                error_log($error_message);
+                throw new Exception($error_message);
+            } else {
+                throw new Exception("Error de conexión a la base de datos");
+            }
         }
-        
-        // Generar próximo legajo
-        $proximo_numero = $ultimo_numero + 1;
-        $legajo = 'EST' . str_pad($proximo_numero, 3, '0', STR_PAD_LEFT);
-        
-        return $legajo;
-        
-    } catch (Exception $e) {
-        error_log("Error generando legajo: " . $e->getMessage());
-        // Fallback: usar timestamp
-        return 'EST' . date('His');
     }
+    
+    return $pdo;
 }
 
 /**
- * Verificar si email ya existe
+ * Verificar si la base de datos está disponible
+ * @return bool True si está disponible, false en caso contrario
  */
-function emailExiste($email) {
+function isDatabaseAvailable() {
     try {
         $pdo = getDBConnection();
-        $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
-        return $stmt->fetch() !== false;
+        $stmt = $pdo->query("SELECT 1");
+        return $stmt !== false;
     } catch (Exception $e) {
-        error_log("Error verificando email: " . $e->getMessage());
         return false;
     }
 }
 
 /**
- * Crear usuario automáticamente usando la estructura existente
+ * Inicializar las tablas si no existen
+ * @return bool True si se inicializó correctamente
  */
-function crearUsuarioAutomatico($datos_inscripcion) {
+function initializeDatabase() {
     try {
         $pdo = getDBConnection();
-        $pdo->beginTransaction();
         
-        // Extraer datos del contacto
-        $nombre_completo = explode(' ', trim($datos_inscripcion['nombre']), 2);
-        $nombre = $nombre_completo[0];
-        $apellido = isset($nombre_completo[1]) ? $nombre_completo[1] : '';
-        $email = $datos_inscripcion['email'];
-        $telefono = $datos_inscripcion['telefono'] ?? '';
+        // Verificar si las tablas principales existen
+        $tables = ['usuarios', 'contactos', 'inscripciones', 'configuracion'];
+        $missing_tables = [];
         
-        // Verificar si el email ya existe
-        if (emailExiste($email)) {
-            throw new Exception("Ya existe un usuario con este email");
+        foreach ($tables as $table) {
+            $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
+            $stmt->execute([$table]);
+            
+            if (!$stmt->fetch()) {
+                $missing_tables[] = $table;
+            }
         }
         
-        // Generar credenciales
-        $password_temporal = generarPasswordTemporal();
-        $password_hash = password_hash($password_temporal, PASSWORD_DEFAULT);
-        $legajo = generarProximoLegajo();
+        if (!empty($missing_tables)) {
+            if (DB_DEBUG) {
+                error_log("⚠️ Tablas faltantes detectadas: " . implode(', ', $missing_tables));
+            }
+            return createMissingTables($pdo, $missing_tables);
+        }
         
-        // Crear usuario en tabla usuarios
-        $stmt = $pdo->prepare("
-            INSERT INTO usuarios (nombre, apellido, email, telefono, tipo_usuario, password_hash, activo, fecha_registro) 
-            VALUES (?, ?, ?, ?, 'estudiante', ?, 1, NOW())
-        ");
-        $stmt->execute([$nombre, $apellido, $email, $telefono, $password_hash]);
+        return true;
         
-        $usuario_id = $pdo->lastInsertId();
+    } catch (Exception $e) {
+        if (DB_DEBUG) {
+            error_log("❌ Error al inicializar base de datos: " . $e->getMessage());
+        }
+        return false;
+    }
+}
+
+/**
+ * Crear tablas faltantes
+ * @param PDO $pdo Conexión a la base de datos
+ * @param array $tables Array de tablas a crear
+ * @return bool True si se crearon correctamente
+ */
+function createMissingTables($pdo, $tables) {
+    $sql_usuarios = "
+        CREATE TABLE IF NOT EXISTS `usuarios` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `nombre` varchar(100) NOT NULL,
+            `apellido` varchar(100) NOT NULL,
+            `email` varchar(255) NOT NULL UNIQUE,
+            `telefono` varchar(20) DEFAULT NULL,
+            `dni` varchar(20) DEFAULT NULL,
+            `fecha_nacimiento` date DEFAULT NULL,
+            `direccion` text DEFAULT NULL,
+            `tipo_usuario` enum('admin','profesor','estudiante','secretario') NOT NULL DEFAULT 'estudiante',
+            `password_hash` varchar(255) NOT NULL,
+            `foto_perfil` varchar(255) DEFAULT NULL,
+            `activo` tinyint(1) NOT NULL DEFAULT 1,
+            `fecha_registro` datetime DEFAULT CURRENT_TIMESTAMP,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `idx_email` (`email`),
+            KEY `idx_tipo_usuario` (`tipo_usuario`),
+            KEY `idx_activo` (`activo`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ";
+    
+    $sql_contactos = "
+        CREATE TABLE IF NOT EXISTS `contactos` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `nombre` varchar(100) NOT NULL,
+            `email` varchar(255) NOT NULL,
+            `telefono` varchar(20) DEFAULT NULL,
+            `asunto` varchar(200) NOT NULL,
+            `mensaje` text NOT NULL,
+            `tipo_consulta` enum('general','inscripcion','academica','administrativa') DEFAULT 'general',
+            `estado` enum('pendiente','respondida','cerrada') DEFAULT 'pendiente',
+            `prioridad` enum('baja','media','alta','urgente') DEFAULT 'media',
+            `respondida_por` int(11) DEFAULT NULL,
+            `fecha_respuesta` datetime DEFAULT NULL,
+            `respuesta` text DEFAULT NULL,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `idx_estado` (`estado`),
+            KEY `idx_tipo_consulta` (`tipo_consulta`),
+            KEY `idx_prioridad` (`prioridad`),
+            KEY `idx_created_at` (`created_at`),
+            KEY `fk_respondida_por` (`respondida_por`),
+            CONSTRAINT `fk_contactos_respondida_por` FOREIGN KEY (`respondida_por`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ";
+    
+    $sql_inscripciones = "
+        CREATE TABLE IF NOT EXISTS `inscripciones` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `usuario_id` int(11) DEFAULT NULL,
+            `nombre` varchar(100) NOT NULL,
+            `apellido` varchar(100) NOT NULL,
+            `email` varchar(255) NOT NULL,
+            `telefono` varchar(20) DEFAULT NULL,
+            `dni` varchar(20) NOT NULL,
+            `fecha_nacimiento` date NOT NULL,
+            `direccion` text NOT NULL,
+            `orientacion_deseada` varchar(100) DEFAULT NULL,
+            `año_ingreso` int(11) NOT NULL,
+            `escuela_procedencia` varchar(200) DEFAULT NULL,
+            `estado_inscripcion` enum('pendiente','aprobada','rechazada','en_revision') DEFAULT 'pendiente',
+            `documentos_completos` tinyint(1) DEFAULT 0,
+            `observaciones` text DEFAULT NULL,
+            `procesada_por` int(11) DEFAULT NULL,
+            `fecha_procesamiento` datetime DEFAULT NULL,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `idx_estado_inscripcion` (`estado_inscripcion`),
+            KEY `idx_año_ingreso` (`año_ingreso`),
+            KEY `idx_dni` (`dni`),
+            KEY `fk_usuario_id` (`usuario_id`),
+            KEY `fk_procesada_por` (`procesada_por`),
+            CONSTRAINT `fk_inscripciones_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
+            CONSTRAINT `fk_inscripciones_procesada_por` FOREIGN KEY (`procesada_por`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ";
+    
+    $sql_configuracion = "
+        CREATE TABLE IF NOT EXISTS `configuracion` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `clave` varchar(100) NOT NULL UNIQUE,
+            `valor` text DEFAULT NULL,
+            `descripcion` text DEFAULT NULL,
+            `tipo` enum('string','number','boolean','json') DEFAULT 'string',
+            `categoria` varchar(50) DEFAULT NULL,
+            `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`),
+            KEY `idx_clave` (`clave`),
+            KEY `idx_categoria` (`categoria`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ";
+    
+    try {
+        $pdo->beginTransaction();
         
-        // Determinar curso por defecto (primer ciclo disponible)
-        $curso_id = $datos_inscripcion['curso_asignado_id'] ?? obtenerCursoPorDefecto($datos_inscripcion['turno'] ?? 'tarde');
+        if (in_array('usuarios', $tables)) {
+            $pdo->exec($sql_usuarios);
+            
+            // Insertar usuario admin por defecto si no existe
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE tipo_usuario = 'admin'");
+            $stmt->execute();
+            
+            if ($stmt->fetchColumn() == 0) {
+                $admin_password = password_hash('admin123', PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("
+                    INSERT INTO usuarios (nombre, apellido, email, tipo_usuario, password_hash, activo)
+                    VALUES ('Administrador', 'EPA 703', 'admin@epa703.edu.ar', 'admin', ?, 1)
+                ");
+                $stmt->execute([$admin_password]);
+            }
+        }
         
-        // Crear registro de estudiante
-        $stmt = $pdo->prepare("
-            INSERT INTO estudiantes (usuario_id, legajo, curso_id, fecha_ingreso, estado) 
-            VALUES (?, ?, ?, CURDATE(), 'activo')
-        ");
-        $stmt->execute([$usuario_id, $legajo, $curso_id]);
+        if (in_array('contactos', $tables)) {
+            $pdo->exec($sql_contactos);
+        }
+        
+        if (in_array('inscripciones', $tables)) {
+            $pdo->exec($sql_inscripciones);
+        }
+        
+        if (in_array('configuracion', $tables)) {
+            $pdo->exec($sql_configuracion);
+            
+            // Insertar configuración por defecto
+            $configuraciones = [
+                ['sitio_nombre', 'EPA 703', 'Nombre de la institución', 'string', 'general'],
+                ['sitio_email', 'info@epa703.edu.ar', 'Email principal de contacto', 'string', 'general'],
+                ['sitio_telefono', '+54 11 1234-5678', 'Teléfono principal', 'string', 'general'],
+                ['sitio_direccion', 'Av. Ejemplo 1234, Ciudad, Provincia', 'Dirección de la institución', 'string', 'general'],
+                ['max_consultas_dia', '50', 'Máximo de consultas por día', 'number', 'sistema'],
+                ['auto_respuesta', '1', 'Envío automático de respuestas', 'boolean', 'sistema']
+            ];
+            
+            $stmt = $pdo->prepare("
+                INSERT IGNORE INTO configuracion (clave, valor, descripcion, tipo, categoria)
+                VALUES (?, ?, ?, ?, ?)
+            ");
+            
+            foreach ($configuraciones as $config) {
+                $stmt->execute($config);
+            }
+        }
         
         $pdo->commit();
         
-        // Obtener información del curso asignado
-        $stmt = $pdo->prepare("
-            SELECT c.nombre as curso_nombre, c.turno, o.nombre as orientacion_nombre 
-            FROM cursos c 
-            LEFT JOIN orientaciones o ON c.orientacion_id = o.id 
-            WHERE c.id = ?
-        ");
-        $stmt->execute([$curso_id]);
-        $curso_info = $stmt->fetch();
+        if (DB_DEBUG) {
+            error_log("✅ Tablas creadas correctamente: " . implode(', ', $tables));
+        }
         
-        return [
-            'usuario_id' => $usuario_id,
-            'email' => $email,
-            'password_temporal' => $password_temporal,
-            'legajo' => $legajo,
-            'nombre_completo' => trim($nombre . ' ' . $apellido),
-            'curso_id' => $curso_id,
-            'curso_nombre' => $curso_info['curso_nombre'] ?? 'No asignado',
-            'turno' => $curso_info['turno'] ?? 'No asignado',
-            'orientacion' => $curso_info['orientacion_nombre'] ?? 'General'
-        ];
+        return true;
         
     } catch (Exception $e) {
         $pdo->rollBack();
-        error_log("Error creando usuario: " . $e->getMessage());
-        throw new Exception("Error al crear usuario: " . $e->getMessage());
+        
+        if (DB_DEBUG) {
+            error_log("❌ Error al crear tablas: " . $e->getMessage());
+        }
+        
+        return false;
     }
 }
 
 /**
- * Obtener curso por defecto según turno
+ * Obtener configuración del sistema
+ * @param string $clave Clave de configuración
+ * @param mixed $default Valor por defecto
+ * @return mixed Valor de configuración
  */
-function obtenerCursoPorDefecto($turno = 'tarde') {
+function getConfig($clave, $default = null) {
     try {
         $pdo = getDBConnection();
+        $stmt = $pdo->prepare("SELECT valor, tipo FROM configuracion WHERE clave = ?");
+        $stmt->execute([$clave]);
+        $result = $stmt->fetch();
         
-        // Buscar primer ciclo en el turno solicitado
-        $stmt = $pdo->prepare("
-            SELECT id FROM cursos 
-            WHERE turno = ? AND activo = 1 
-            ORDER BY anio ASC, division ASC 
-            LIMIT 1
-        ");
-        $stmt->execute([$turno]);
-        $curso = $stmt->fetch();
-        
-        if ($curso) {
-            return $curso['id'];
+        if (!$result) {
+            return $default;
         }
         
-        // Si no hay curso en ese turno, buscar cualquier curso disponible
-        $stmt = $pdo->query("
-            SELECT id FROM cursos 
-            WHERE activo = 1 
-            ORDER BY anio ASC, division ASC 
-            LIMIT 1
-        ");
-        $curso = $stmt->fetch();
-        
-        return $curso ? $curso['id'] : 1; // Fallback al curso ID 1
+        // Convertir según el tipo
+        switch ($result['tipo']) {
+            case 'boolean':
+                return (bool) $result['valor'];
+            case 'number':
+                return is_numeric($result['valor']) ? (float) $result['valor'] : $default;
+            case 'json':
+                return json_decode($result['valor'], true) ?: $default;
+            default:
+                return $result['valor'];
+        }
         
     } catch (Exception $e) {
-        error_log("Error obteniendo curso por defecto: " . $e->getMessage());
-        return 1; // Fallback
+        if (DB_DEBUG) {
+            error_log("❌ Error al obtener configuración '{$clave}': " . $e->getMessage());
+        }
+        return $default;
     }
 }
 
 /**
- * Guardar consulta en tabla contactos adaptada
+ * Establecer configuración del sistema
+ * @param string $clave Clave de configuración
+ * @param mixed $valor Valor a establecer
+ * @param string $tipo Tipo de dato
+ * @return bool True si se estableció correctamente
  */
-function guardarConsultaContacto($datos) {
+function setConfig($clave, $valor, $tipo = 'string') {
     try {
         $pdo = getDBConnection();
         
-        // Mapear tipo de consulta al asunto
-        $tipos_consulta = [
-            'inscripcion' => 'Solicitud de inscripción',
-            'ciclos' => 'Consulta sobre ciclos educativos',
-            'horarios' => 'Consulta sobre horarios',
-            'requisitos' => 'Requisitos de ingreso',
-            'certificados' => 'Trámite de certificados',
-            'becas' => 'Información sobre becas',
-            'general' => 'Consulta general'
-        ];
-        
-        $asunto = $tipos_consulta[$datos['consulta']] ?? 'Consulta general';
-        
-        // Insertar en tabla contactos
-        $stmt = $pdo->prepare("
-            INSERT INTO contactos (nombre, email, telefono, edad, asunto, tipo_consulta, mensaje, estado, ip_address, user_agent) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)
-        ");
-        
-        $stmt->execute([
-            $datos['nombre'],
-            $datos['email'],
-            $datos['telefono'] ?: null,
-            $datos['edad'] > 0 ? $datos['edad'] : null,
-            $asunto,
-            $datos['consulta'],
-            $datos['mensaje'],
-            $_SERVER['REMOTE_ADDR'] ?? null,
-            $_SERVER['HTTP_USER_AGENT'] ?? null
-        ]);
-        
-        $contacto_id = $pdo->lastInsertId();
-        
-        // Si es una inscripción, crear registro en tabla inscripciones
-        if ($datos['consulta'] === 'inscripcion') {
-            $stmt = $pdo->prepare("
-                INSERT INTO inscripciones (contacto_id, estado_inscripcion) 
-                VALUES (?, 'pendiente')
-            ");
-            $stmt->execute([$contacto_id]);
+        // Convertir valor según el tipo
+        switch ($tipo) {
+            case 'boolean':
+                $valor = $valor ? '1' : '0';
+                break;
+            case 'json':
+                $valor = json_encode($valor);
+                break;
+            default:
+                $valor = (string) $valor;
         }
         
-        return $contacto_id;
+        $stmt = $pdo->prepare("
+            INSERT INTO configuracion (clave, valor, tipo) 
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE 
+            valor = VALUES(valor), 
+            tipo = VALUES(tipo),
+            updated_at = CURRENT_TIMESTAMP
+        ");
+        
+        return $stmt->execute([$clave, $valor, $tipo]);
         
     } catch (Exception $e) {
-        error_log("Error guardando consulta: " . $e->getMessage());
-        throw new Exception("Error al guardar consulta");
+        if (DB_DEBUG) {
+            error_log("❌ Error al establecer configuración '{$clave}': " . $e->getMessage());
+        }
+        return false;
+    }
+}
+
+/**
+ * Validar estructura de la base de datos
+ * @return array Array con el resultado de la validación
+ */
+function validateDatabaseStructure() {
+    $result = [
+        'valid' => true,
+        'errors' => [],
+        'warnings' => []
+    ];
+    
+    try {
+        $pdo = getDBConnection();
+        
+        // Verificar tablas principales
+        $required_tables = ['usuarios', 'contactos', 'inscripciones', 'configuracion'];
+        
+        foreach ($required_tables as $table) {
+            $stmt = $pdo->prepare("SHOW TABLES LIKE ?");
+            $stmt->execute([$table]);
+            
+            if (!$stmt->fetch()) {
+                $result['valid'] = false;
+                $result['errors'][] = "Tabla '{$table}' no encontrada";
+            }
+        }
+        
+        // Verificar usuario admin
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE tipo_usuario = 'admin' AND activo = 1");
+        $stmt->execute();
+        
+        if ($stmt->fetchColumn() == 0) {
+            $result['warnings'][] = "No hay usuarios administradores activos";
+        }
+        
+    } catch (Exception $e) {
+        $result['valid'] = false;
+        $result['errors'][] = "Error al validar estructura: " . $e->getMessage();
+    }
+    
+    return $result;
+}
+
+// Inicializar base de datos si es necesario
+if (!isDatabaseAvailable()) {
+    if (DB_DEBUG) {
+        error_log("⚠️ Base de datos no disponible, intentando inicializar...");
+    }
+    initializeDatabase();
+}
+
+// Verificar estructura en modo debug
+if (DB_DEBUG) {
+    $validation = validateDatabaseStructure();
+    if (!$validation['valid']) {
+        error_log("❌ Errores en estructura de BD: " . implode(', ', $validation['errors']));
+    }
+    if (!empty($validation['warnings'])) {
+        error_log("⚠️ Advertencias en BD: " . implode(', ', $validation['warnings']));
     }
 }
 ?>

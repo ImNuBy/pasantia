@@ -1,41 +1,35 @@
-
 <?php
 /**
- * API de logout - api/logout.php
+ * Sistema de Logout EPA 703
+ * Cierra la sesión y redirige al login
  */
-require_once '../config/database.php';
 
-setCORSHeaders();
+session_start();
 
-try {
-    $user_id = requireAuth();
-    
-    $headers = getallheaders();
-    $token = $headers['Authorization'] ?? $_POST['token'] ?? $_GET['token'] ?? '';
-    
-    if (strpos($token, 'Bearer ') === 0) {
-        $token = substr($token, 7);
-    }
-    
-    $database = new Database();
-    $db = $database->getConnection();
-    $auth = new Auth($db);
-    
-    $result = $auth->logout($token);
-    
-    if ($result['success']) {
-        logActivity($user_id, 'logout');
-        echo json_encode(['success' => true, 'message' => 'Sesión cerrada correctamente']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Error cerrando sesión']);
-    }
+// Destruir todas las variables de sesión
+$_SESSION = array();
 
-} catch (Exception $e) {
-    error_log("Error en logout API: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Error interno del servidor']);
+// Si se desea destruir la sesión completamente, también hay que borrar la cookie de sesión
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
 }
-?>
 
----
+// Destruir la sesión
+session_destroy();
+
+// Log del logout (opcional)
+error_log("Logout realizado - IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . " - Time: " . date('Y-m-d H:i:s'));
+
+// Limpiar cualquier caché
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
+// Redirigir al login con mensaje
+header('Location: login.html?logout=success');
+exit();
+?>

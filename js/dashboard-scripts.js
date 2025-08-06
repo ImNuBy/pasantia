@@ -1,6 +1,6 @@
 /**
  * Dashboard Administrativo EPA 703
- * JavaScript separado para funcionalidades del panel principal
+ * JavaScript funcional para el panel de administración
  */
 
 // ========================================
@@ -9,6 +9,7 @@
 const DASHBOARD_CONFIG = {
     refreshInterval: 300000, // 5 minutos
     animationDuration: 300,
+    apiEndpoint: 'api/admin-dashboard-data.php',
     chartColors: {
         primary: '#1e3a2e',
         secondary: '#2d5a42',
@@ -26,6 +27,7 @@ class AdminDashboard {
     constructor() {
         this.isCollapsed = false;
         this.refreshTimer = null;
+        this.isMobile = window.innerWidth <= 768;
         this.init();
     }
 
@@ -38,6 +40,7 @@ class AdminDashboard {
         this.animateCounters();
         this.setupTooltips();
         this.setupKeyboardShortcuts();
+        this.setupResponsive();
         
         console.log('✅ Dashboard inicializado correctamente');
     }
@@ -53,76 +56,47 @@ class AdminDashboard {
         this.setupMobileSidebar();
 
         // Refresh button
-        const refreshBtn = document.querySelector('[onclick="refreshActivity()"]');
-        if (refreshBtn) {
-            refreshBtn.removeAttribute('onclick');
-            refreshBtn.addEventListener('click', () => this.refreshActivity());
-        }
+        const refreshBtns = document.querySelectorAll('[onclick*="refreshActivity"]');
+        refreshBtns.forEach(btn => {
+            btn.removeAttribute('onclick');
+            btn.addEventListener('click', () => this.refreshActivity());
+        });
 
         // Click fuera del sidebar en móviles
         document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768) {
+            if (this.isMobile) {
                 const sidebar = document.getElementById('sidebar');
                 const sidebarToggle = document.getElementById('sidebar-toggle');
                 
-                if (sidebar && !sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
-                    sidebar.classList.remove('open');
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
                 }
             }
         });
 
-        // Resize window
-        window.addEventListener('resize', () => this.handleResize());
-
-        // Setup hover effects
+        // Hover effects para elementos interactivos
         this.setupHoverEffects();
-    }
 
-    setupMobileSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const links = sidebar.querySelectorAll('.nav-link');
-        
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.remove('open');
-                }
-            });
-        });
+        // Resize handler
+        window.addEventListener('resize', () => this.handleResize());
     }
 
     setupHoverEffects() {
-        // Hover effects para navigation
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            if (!link.classList.contains('active')) {
-                link.addEventListener('mouseenter', function() {
-                    this.style.backgroundColor = '#2d5a42';
-                    this.style.transform = 'translateX(5px)';
-                });
-                
-                link.addEventListener('mouseleave', function() {
-                    this.style.backgroundColor = 'transparent';
-                    this.style.transform = 'translateX(0)';
-                });
-            }
-        });
-
         // Hover effects para stat cards
         const statCards = document.querySelectorAll('.stat-card');
         statCards.forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 1rem 3rem rgba(0, 0, 0, 0.175)';
+                this.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)';
             });
             
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0)';
-                this.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)';
+                this.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
             });
         });
 
-        // Hover effects para items interactivos
+        // Hover effects para items de consultas y usuarios
         const interactiveItems = document.querySelectorAll('.consulta-item, .usuario-item');
         interactiveItems.forEach(item => {
             item.addEventListener('mouseenter', function() {
@@ -132,9 +106,23 @@ class AdminDashboard {
             });
             
             item.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = 'transparent';
+                this.style.backgroundColor = '#ffffff';
                 this.style.borderColor = '#e9ecef';
                 this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Hover effects para timeline markers
+        const timelineMarkers = document.querySelectorAll('.timeline-marker');
+        timelineMarkers.forEach(marker => {
+            marker.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+                this.style.boxShadow = '0 0 15px rgba(30, 58, 46, 0.3)';
+            });
+            
+            marker.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = 'none';
             });
         });
     }
@@ -146,22 +134,25 @@ class AdminDashboard {
         
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href') === currentPage) {
+            const linkHref = link.getAttribute('href');
+            if (linkHref === currentPage || 
+                (currentPage === 'dashboard-admin.php' && linkHref === 'dashboard-admin.php') ||
+                (currentPage === '' && linkHref === 'dashboard-admin.php')) {
                 link.classList.add('active');
             }
         });
 
         // Si no hay activo, marcar dashboard
         if (!document.querySelector('.nav-link.active')) {
-            const dashboardLink = document.querySelector('a[href="dashboard.php"]');
+            const dashboardLink = document.querySelector('a[href*="dashboard"]');
             if (dashboardLink) {
                 dashboardLink.classList.add('active');
             }
         }
 
         // Restaurar estado del sidebar desde localStorage
-        const savedState = localStorage.getItem('sidebar-collapsed');
-        if (savedState === 'true' && window.innerWidth > 768) {
+        const savedState = localStorage.getItem('epa703-sidebar-collapsed');
+        if (savedState === 'true' && !this.isMobile) {
             this.isCollapsed = true;
             document.getElementById('sidebar').classList.add('collapsed');
         }
@@ -170,510 +161,293 @@ class AdminDashboard {
     toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         
-        if (window.innerWidth > 768) {
+        if (this.isMobile) {
+            // Mobile: mostrar/ocultar
+            sidebar.classList.toggle('show');
+        } else {
             // Desktop: colapsar/expandir
             this.isCollapsed = !this.isCollapsed;
             sidebar.classList.toggle('collapsed', this.isCollapsed);
             
-            // Guardar preferencia
-            localStorage.setItem('sidebar-collapsed', this.isCollapsed);
-        } else {
-            // Móvil: mostrar/ocultar
-            sidebar.classList.toggle('open');
+            // Guardar estado en localStorage
+            localStorage.setItem('epa703-sidebar-collapsed', this.isCollapsed.toString());
         }
+    }
+
+    setupMobileSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        
+        // Cerrar con escape en móvil
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isMobile) {
+                sidebar.classList.remove('show');
+            }
+        });
+    }
+
+    setupResponsive() {
+        this.handleResize();
     }
 
     handleResize() {
-        const sidebar = document.getElementById('sidebar');
+        const wasMobile = this.isMobile;
+        this.isMobile = window.innerWidth <= 768;
         
-        if (window.innerWidth > 768) {
-            sidebar.classList.remove('open');
+        if (wasMobile !== this.isMobile) {
+            const sidebar = document.getElementById('sidebar');
             
-            // Restaurar estado colapsado en desktop
-            const savedState = localStorage.getItem('sidebar-collapsed');
-            if (savedState === 'true') {
-                this.isCollapsed = true;
-                sidebar.classList.add('collapsed');
+            if (this.isMobile) {
+                // Cambio a móvil
+                sidebar.classList.remove('collapsed');
+                sidebar.classList.remove('show');
+            } else {
+                // Cambio a desktop
+                sidebar.classList.remove('show');
+                
+                // Restaurar estado de colapso guardado
+                const savedState = localStorage.getItem('epa703-sidebar-collapsed');
+                if (savedState === 'true') {
+                    sidebar.classList.add('collapsed');
+                    this.isCollapsed = true;
+                }
             }
-        } else {
-            sidebar.classList.remove('collapsed');
-            this.isCollapsed = false;
         }
     }
 
-    // ========================================
-    // ANIMACIONES Y EFECTOS
-    // ========================================
-    animateCounters() {
-        const counters = document.querySelectorAll('.stat-content h3, .stat-value');
+    startAutoRefresh() {
+        // Refrescar cada 5 minutos
+        this.refreshTimer = setInterval(() => {
+            this.refreshActivity();
+        }, DASHBOARD_CONFIG.refreshInterval);
+
+        console.log('🔄 Auto-refresh iniciado (cada 5 minutos)');
+    }
+
+    refreshActivity() {
+        console.log('🔄 Actualizando datos del dashboard...');
         
-        counters.forEach(counter => {
-            const target = parseInt(counter.textContent.replace(/\D/g, ''));
-            if (isNaN(target)) return;
+        // Mostrar indicador de carga
+        this.showLoadingIndicator();
+        
+        // Simular llamada a API (reemplazar con fetch real)
+        setTimeout(() => {
+            this.hideLoadingIndicator();
+            this.showNotification('Datos actualizados correctamente', 'success');
             
-            let current = 0;
-            const increment = target / 60; // 60 frames para animación suave
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    counter.textContent = target.toLocaleString();
-                    clearInterval(timer);
+            // Aquí iría la lógica real de actualización
+            // this.fetchDashboardData();
+        }, 1000);
+    }
+
+    fetchDashboardData() {
+        fetch(DASHBOARD_CONFIG.apiEndpoint)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.updateDashboardData(data.data);
+                    this.showNotification('Datos actualizados correctamente', 'success');
                 } else {
-                    counter.textContent = Math.floor(current).toLocaleString();
+                    throw new Error(data.error || 'Error desconocido');
                 }
-            }, 16); // ~60fps
+            })
+            .catch(error => {
+                console.error('Error al actualizar datos:', error);
+                this.showNotification('Error al actualizar datos', 'danger');
+            })
+            .finally(() => {
+                this.hideLoadingIndicator();
+            });
+    }
+
+    updateDashboardData(data) {
+        // Actualizar estadísticas
+        if (data.stats) {
+            this.updateStats(data.stats);
+        }
+        
+        // Actualizar actividad reciente
+        if (data.recent_activity) {
+            this.updateRecentActivity(data.recent_activity);
+        }
+        
+        // Actualizar consultas pendientes
+        if (data.pending_consultations) {
+            this.updatePendingConsultations(data.pending_consultations);
+        }
+    }
+
+    updateStats(stats) {
+        const elements = {
+            'total-users': stats.total_users || 0,
+            'students': stats.students || 0,
+            'teachers': stats.teachers || 0,
+            'pending-consultations': stats.pending_consultations || 0
+        };
+
+        Object.entries(elements).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                this.animateNumber(element, parseInt(element.textContent) || 0, value);
+            }
+        });
+    }
+
+    animateNumber(element, start, end) {
+        const duration = 1000;
+        const range = end - start;
+        const startTime = performance.now();
+
+        const updateNumber = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            const current = Math.floor(start + (range * this.easeOutCubic(progress)));
+            element.textContent = current.toLocaleString();
+
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+            }
+        };
+
+        requestAnimationFrame(updateNumber);
+    }
+
+    easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    animateCounters() {
+        const counters = document.querySelectorAll('.stat-content h3');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.textContent.replace(/[^\d]/g, ''));
+                    this.animateNumber(entry.target, 0, target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        counters.forEach(counter => {
+            observer.observe(counter);
         });
     }
 
     setupTooltips() {
-        // Inicializar tooltips de Bootstrap si están disponibles
+        // Configurar tooltips de Bootstrap si está disponible
         if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         }
-
-        // Tooltips personalizados para badges
-        this.addCustomTooltips();
     }
 
-    addCustomTooltips() {
-        const badges = document.querySelectorAll('.badge');
-        badges.forEach(badge => {
-            let tooltipText = '';
-            
-            if (badge.textContent.includes('inscripcion')) {
-                tooltipText = 'Consultas relacionadas con inscripciones';
-            } else if (badge.textContent.includes('estudiante')) {
-                tooltipText = 'Usuario con rol de estudiante';
-            } else if (badge.textContent.includes('profesor')) {
-                tooltipText = 'Usuario con rol de profesor';
+    setupKeyboardShortcuts() {
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + R: Actualizar datos
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                this.refreshActivity();
             }
             
-            if (tooltipText) {
-                badge.setAttribute('title', tooltipText);
-                badge.style.cursor = 'help';
+            // Ctrl/Cmd + B: Toggle sidebar
+            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+                e.preventDefault();
+                this.toggleSidebar();
             }
-        });
-    }
-
-    // ========================================
-    // REFRESH Y DATOS EN TIEMPO REAL
-    // ========================================
-    startAutoRefresh() {
-        // Auto-refresh cada 5 minutos
-        this.refreshTimer = setInterval(() => {
-            this.refreshData();
-        }, DASHBOARD_CONFIG.refreshInterval);
-
-        // Refresh cuando la página vuelve a ser visible
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                this.refreshData();
-            }
-        });
-    }
-
-    async refreshData() {
-        try {
-            console.log('🔄 Actualizando datos del dashboard...');
             
-            // Mostrar indicador de carga
-            this.showRefreshIndicator('loading');
-            
-            const response = await fetch('api/dashboard-data.php', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
+            // Alt + números: Navegación rápida
+            if (e.altKey && /^[1-6]$/.test(e.key)) {
+                e.preventDefault();
+                const navItems = document.querySelectorAll('.nav-link');
+                const index = parseInt(e.key) - 1;
+                if (navItems[index]) {
+                    navItems[index].click();
                 }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const data = await response.json();
             
-            if (data.success) {
-                this.updateDashboardData(data.data);
-                this.showRefreshIndicator('success');
-            } else {
-                throw new Error(data.error || 'Error desconocido');
-            }
-
-        } catch (error) {
-            console.error('❌ Error actualizando dashboard:', error);
-            this.showRefreshIndicator('error');
-        }
-    }
-
-    async refreshActivity() {
-        const button = document.querySelector('[onclick*="refreshActivity"]');
-        const originalContent = button ? button.innerHTML : '';
-        
-        try {
-            if (button) {
-                button.innerHTML = '<i class="fas fa-sync fa-spin"></i> Actualizando...';
-                button.disabled = true;
-            }
-
-            // Simular refresh (en producción haría una llamada AJAX real)
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            this.showNotification('Actividad actualizada correctamente', 'success');
-
-        } catch (error) {
-            console.error('Error refreshing activity:', error);
-            this.showNotification('Error al actualizar actividad', 'danger');
-        } finally {
-            if (button) {
-                setTimeout(() => {
-                    button.innerHTML = originalContent;
-                    button.disabled = false;
-                }, 500);
-            }
-        }
-    }
-
-    updateDashboardData(data) {
-        // Actualizar contadores principales
-        if (data.stats) {
-            this.updateStatCounters(data.stats);
-        }
-
-        // Actualizar actividad reciente
-        if (data.recent_activity) {
-            this.updateRecentActivity(data.recent_activity);
-        }
-
-        // Actualizar consultas pendientes
-        if (data.pending_consultations) {
-            this.updatePendingConsultations(data.pending_consultations);
-        }
-
-        // Actualizar usuarios recientes
-        if (data.recent_users) {
-            this.updateRecentUsers(data.recent_users);
-        }
-    }
-
-    updateStatCounters(stats) {
-        // Actualizar números en las tarjetas de estadísticas
-        const counters = {
-            'total_usuarios': stats.total_users || 0,
-            'total_estudiantes': stats.students || 0,
-            'consultas_pendientes': stats.pending_consultations || 0,
-            'inscripciones_pendientes': stats.pending_enrollments || 0
-        };
-
-        Object.entries(counters).forEach(([id, value]) => {
-            const element = document.querySelector(`#${id}, .stat-content h3`);
-            if (element) {
-                // Animar cambio si el valor es diferente
-                const currentValue = parseInt(element.textContent.replace(/\D/g, ''));
-                if (currentValue !== value) {
-                    this.animateValueChange(element, currentValue, value);
+            // Escape: Cerrar modales/sidebar móvil
+            if (e.key === 'Escape') {
+                if (this.isMobile) {
+                    document.getElementById('sidebar').classList.remove('show');
                 }
             }
         });
     }
 
-    animateValueChange(element, from, to) {
-        const duration = 1000;
-        const startTime = Date.now();
-        
-        const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            // Easing function
-            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-            const current = Math.round(from + (to - from) * easeOutQuart);
-            
-            element.textContent = current.toLocaleString();
-            
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            }
-        };
-        
-        requestAnimationFrame(animate);
+    showLoadingIndicator() {
+        const indicators = document.querySelectorAll('.dashboard-section');
+        indicators.forEach(indicator => {
+            indicator.classList.add('loading');
+        });
     }
 
-    // ========================================
-    // NOTIFICACIONES Y UI
-    // ========================================
+    hideLoadingIndicator() {
+        const indicators = document.querySelectorAll('.dashboard-section');
+        indicators.forEach(indicator => {
+            indicator.classList.remove('loading');
+        });
+    }
+
     showNotification(message, type = 'info') {
+        // Crear notificación
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-dismissible fade show`;
-        notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.right = '20px';
-        notification.style.zIndex = '9999';
-        notification.style.minWidth = '300px';
-        notification.style.maxWidth = '400px';
-        
-        const iconMap = {
-            success: 'check-circle',
-            danger: 'exclamation-triangle',
-            warning: 'exclamation-circle',
-            info: 'info-circle'
-        };
+        notification.className = `alert alert-${type} alert-dismissible fade show notification-toast`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        `;
         
         notification.innerHTML = `
-            <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         
         document.body.appendChild(notification);
         
-        // Auto-remove después de 4 segundos
+        // Auto-eliminar después de 5 segundos
         setTimeout(() => {
             if (notification.parentNode) {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.remove();
-                    }
-                }, 300);
+                notification.remove();
             }
-        }, 4000);
+        }, 5000);
     }
 
-    showRefreshIndicator(type = 'success') {
-        const indicator = document.createElement('div');
-        indicator.className = 'position-fixed top-0 end-0 m-3';
-        indicator.style.zIndex = '9999';
-        
-        let content = '';
-        switch (type) {
-            case 'loading':
-                content = `
-                    <div class="alert alert-info">
-                        <i class="fas fa-sync fa-spin"></i> Actualizando datos...
-                    </div>
-                `;
-                break;
-            case 'success':
-                content = `
-                    <div class="alert alert-success">
-                        <i class="fas fa-check"></i> Datos actualizados
-                    </div>
-                `;
-                break;
-            case 'error':
-                content = `
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle"></i> Error al actualizar
-                    </div>
-                `;
-                break;
-        }
-        
-        indicator.innerHTML = content;
-        document.body.appendChild(indicator);
-        
-        // Auto-remove después de 3 segundos
-        setTimeout(() => {
-            if (indicator.parentNode) {
-                indicator.remove();
-            }
-        }, 3000);
-    }
-
-    // ========================================
-    // KEYBOARD SHORTCUTS
-    // ========================================
-    setupKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Ctrl/Cmd + R: Refresh manual
-            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
-                e.preventDefault();
-                this.refreshData();
-                return;
-            }
-
-            // Ctrl/Cmd + B: Toggle sidebar
-            if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-                e.preventDefault();
-                this.toggleSidebar();
-                return;
-            }
-
-            // Escape: Cerrar modales/overlays
-            if (e.key === 'Escape') {
-                const activeModal = document.querySelector('.modal.show');
-                if (activeModal && typeof bootstrap !== 'undefined') {
-                    const modal = bootstrap.Modal.getInstance(activeModal);
-                    if (modal) modal.hide();
-                }
-            }
-
-            // Alt + 1-6: Navegación rápida
-            if (e.altKey && e.key >= '1' && e.key <= '6') {
-                e.preventDefault();
-                const index = parseInt(e.key) - 1;
-                const navLinks = document.querySelectorAll('.nav-link');
-                if (navLinks[index]) {
-                    navLinks[index].click();
-                }
-            }
-        });
-    }
-
-    // ========================================
-    // MANEJO DE NOTIFICACIONES DEL SISTEMA
-    // ========================================
-    checkNotifications() {
-        // Verificar consultas urgentes
-        const urgentConsultations = document.querySelectorAll('.badge.bg-danger');
-        if (urgentConsultations.length > 0) {
-            this.showSystemNotification(
-                'Consultas Urgentes',
-                `Hay ${urgentConsultations.length} consultas que requieren atención inmediata.`,
-                'warning'
-            );
-        }
-
-        // Verificar inscripciones pendientes
-        const pendingEnrollments = document.querySelector('.stat-card.info .stat-content h3');
-        if (pendingEnrollments) {
-            const count = parseInt(pendingEnrollments.textContent.replace(/\D/g, ''));
-            if (count > 5) {
-                this.showSystemNotification(
-                    'Muchas Inscripciones Pendientes',
-                    `Hay ${count} inscripciones esperando tu revisión.`,
-                    'info'
-                );
-            }
-        }
-    }
-
-    showSystemNotification(title, message, type = 'info') {
-        // Mostrar notificación del sistema si está soportado
-        if ('Notification' in window && Notification.permission === 'granted') {
-            const notification = new Notification(title, {
-                body: message,
-                icon: '/favicon.ico',
-                tag: 'epa703-admin',
-                requireInteraction: type === 'warning'
-            });
-
-            // Auto-close después de 5 segundos para notificaciones informativas
-            if (type === 'info') {
-                setTimeout(() => notification.close(), 5000);
-            }
-        }
-    }
-
-    requestNotificationPermission() {
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission().then(permission => {
-                if (permission === 'granted') {
-                    console.log('✅ Permisos de notificación concedidos');
-                    this.showSystemNotification(
-                        'Notificaciones Habilitadas',
-                        'Recibirás alertas importantes del sistema.',
-                        'info'
-                    );
-                }
-            });
-        }
-    }
-
-    // ========================================
-    // PERFORMANCE MONITORING
-    // ========================================
-    monitorPerformance() {
-        // Medir tiempo de carga inicial
-        if ('performance' in window) {
-            window.addEventListener('load', () => {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                const loadTime = perfData.loadEventEnd - perfData.loadEventStart;
-                
-                console.log(`📊 Dashboard cargado en ${loadTime}ms`);
-                
-                // Si el tiempo de carga es muy alto, mostrar advertencia
-                if (loadTime > 3000) {
-                    console.warn('⚠️ Tiempo de carga elevado, considerar optimizaciones');
-                }
-            });
-        }
-
-        // Monitor de memoria (si está disponible)
-        if ('memory' in performance) {
-            setInterval(() => {
-                const memInfo = performance.memory;
-                if (memInfo.usedJSHeapSize > memInfo.jsHeapSizeLimit * 0.9) {
-                    console.warn('⚠️ Alto uso de memoria detectado');
-                }
-            }, 60000); // Check cada minuto
-        }
-    }
-
-    // ========================================
-    // UTILIDADES
-    // ========================================
-    formatNumber(num) {
-        return num.toLocaleString('es-AR');
-    }
-
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-AR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    }
-
-    timeAgo(dateString) {
-        const now = new Date();
-        const date = new Date(dateString);
-        const diffInSeconds = Math.floor((now - date) / 1000);
-
-        if (diffInSeconds < 60) return 'Hace un momento';
-        if (diffInSeconds < 3600) return `Hace ${Math.floor(diffInSeconds / 60)} minutos`;
-        if (diffInSeconds < 86400) return `Hace ${Math.floor(diffInSeconds / 3600)} horas`;
-        if (diffInSeconds < 2592000) return `Hace ${Math.floor(diffInSeconds / 86400)} días`;
-        
-        return this.formatDate(dateString);
-    }
-
-    // ========================================
-    // CLEANUP Y DESTRUCTOR
-    // ========================================
     destroy() {
         if (this.refreshTimer) {
             clearInterval(this.refreshTimer);
         }
-        
-        // Remover event listeners
-        document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-        window.removeEventListener('resize', this.handleResize);
-        
-        console.log('🧹 Dashboard cleanup completado');
+        console.log('🛑 Dashboard destruido');
     }
 }
 
 // ========================================
-// INICIALIZACIÓN GLOBAL
+// INICIALIZACIÓN Y INSTANCIA GLOBAL
 // ========================================
 let dashboardInstance = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     dashboardInstance = new AdminDashboard();
     
-    // Inicializar funcionalidades adicionales
-    dashboardInstance.requestNotificationPermission();
-    dashboardInstance.monitorPerformance();
-    
-    // Check for urgent notifications after load
-    setTimeout(() => {
-        dashboardInstance.checkNotifications();
-    }, 2000);
+    // Mostrar mensaje de bienvenida en desarrollo
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setTimeout(() => {
+            dashboardInstance.showNotification('Dashboard EPA 703 cargado en modo desarrollo', 'info');
+        }, 1000);
+    }
+});
+
+// Limpieza al salir de la página
+window.addEventListener('beforeunload', function() {
+    if (dashboardInstance) {
+        dashboardInstance.destroy();
+    }
 });
 
 // ========================================
@@ -708,6 +482,28 @@ window.addEventListener('error', function(e) {
 window.AdminDashboard = AdminDashboard;
 
 // ========================================
+// UTILIDADES ADICIONALES
+// ========================================
+function formatNumber(num) {
+    return new Intl.NumberFormat('es-AR').format(num);
+}
+
+function formatDate(date) {
+    return new Intl.DateTimeFormat('es-AR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }).format(new Date(date));
+}
+
+function formatTime(date) {
+    return new Intl.DateTimeFormat('es-AR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    }).format(new Date(date));
+}
+
+// ========================================
 // LOGS DE DESARROLLO
 // ========================================
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -732,5 +528,4 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
     • ✅ Error handling
     
     Versión: 1.0.0
-    `);
-}
+    `);}
