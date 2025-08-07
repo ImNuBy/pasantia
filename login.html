@@ -446,58 +446,77 @@
         });
 
         // Función principal de login
-        async function handleLogin(loginData) {
-            setLoading(true);
-            clearAlerts();
-
-            try {
-                const response = await fetch('api/login-handler.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(loginData)
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    showAlert('Login exitoso. Redirigiendo...', 'success');
-                    
-                    // Redirigir después de 1 segundo
-                    setTimeout(() => {
-                        window.location.href = data.redirect;
-                    }, 1000);
-                } else {
-                    throw new Error(data.error || 'Error desconocido');
-                }
-
-            } catch (error) {
-                console.error('Error de login:', error);
-                showAlert(error.message || 'Error de conexión. Inténtalo de nuevo.', 'error');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        // Funciones auxiliares
-        function setLoading(loading) {
-            isLoading = loading;
-            const button = document.getElementById('loginButton');
-            const buttonText = button.querySelector('.button-text');
-            const buttonLoading = button.querySelector('.button-loading');
+       async function handleLogin(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch('ajax_login.php', { // Use the new AJAX endpoint
+            method: 'POST',
+            body: formData
+        });
+        
+        // Get response text first
+        const responseText = await response.text();
+        
+        try {
+            // Try to parse as JSON
+            const data = JSON.parse(responseText);
             
-            if (loading) {
-                button.disabled = true;
-                buttonText.style.opacity = '0';
-                buttonLoading.style.display = 'block';
+            if (data.success) {
+                // Login successful
+                console.log('Login exitoso');
+                window.location.href = data.redirect;
             } else {
-                button.disabled = false;
-                buttonText.style.opacity = '1';
-                buttonLoading.style.display = 'none';
+                // Login failed
+                showError(data.message);
+            }
+        } catch (parseError) {
+            // Response is not JSON - likely an HTML error page
+            console.error('Error parsing JSON:', parseError);
+            console.log('Response received:', responseText);
+            
+            // Check if response contains HTML error indicators
+            if (responseText.includes('<br />') || responseText.includes('<b>')) {
+                showError('Error del servidor. Por favor, contacte al administrador.');
+            } else {
+                showError('Error de comunicación con el servidor.');
             }
         }
+        
+    } catch (networkError) {
+        console.error('Network error:', networkError);
+        showError('Error de conexión. Verifique su conexión a internet.');
+    }
+}
 
+function showError(message) {
+    // Remove any existing error messages
+    const existingError = document.querySelector('.error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Create and show error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #f1aeb5;
+        border-radius: 5px;
+        font-size: 14px;
+    `;
+    errorDiv.textContent = message;
+    
+    // Insert error before the form
+    const form = document.querySelector('form');
+    form.parentNode.insertBefore(errorDiv, form);
+}
         function showAlert(message, type) {
             const alertContainer = document.getElementById('alert-container');
             const alertDiv = document.createElement('div');
