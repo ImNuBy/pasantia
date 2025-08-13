@@ -4,404 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - EPA 703</title>
+    <meta name="description" content="Sistema de acceso para estudiantes, profesores y administradores de EPA 703">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1a365d;
-            --secondary-color: #2d5aa0;
-            --accent-color: #4a7c59;
-            --success-color: #38a169;
-            --error-color: #e53e3e;
-            --warning-color: #d69e2e;
-            --text-dark: #1a202c;
-            --text-light: #718096;
-            --white: #ffffff;
-            --gray-50: #f7fafc;
-            --gray-100: #edf2f7;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e0;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            position: relative;
-        }
-
-        .login-container {
-            background: var(--white);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            padding: 3rem;
-            width: 100%;
-            max-width: 450px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .login-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        .login-subtitle {
-            color: var(--text-light);
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .role-selector {
-            margin-bottom: 2rem;
-        }
-
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-        .role-option {
-            cursor: pointer;
-        }
-
-        .role-input {
-            display: none;
-        }
-
-        .role-card {
-            padding: 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: 12px;
-            text-align: center;
-            transition: var(--transition);
-            background: var(--white);
-        }
-
-        .role-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px -8px rgba(74, 124, 89, 0.3);
-        }
-
-        .role-input:checked + .role-card {
-            border-color: var(--accent-color);
-            background: rgba(74, 124, 89, 0.05);
-            transform: translateY(-2px);
-        }
-
-        .role-icon {
-            font-size: 1.5rem;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .role-name {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.875rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.875rem;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: var(--transition);
-            background: var(--white);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
-        }
-
-        .password-group {
-            position: relative;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-light);
-            padding: 0.25rem;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
-            color: var(--white);
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -8px rgba(74, 124, 89, 0.4);
-        }
-
-        .login-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .button-loading {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .alert-success {
-            background: rgba(56, 161, 105, 0.1);
-            color: var(--success-color);
-            border: 1px solid rgba(56, 161, 105, 0.2);
-        }
-
-        .alert-error {
-            background: rgba(229, 62, 62, 0.1);
-            color: var(--error-color);
-            border: 1px solid rgba(229, 62, 62, 0.2);
-        }
-
-        .credentials-demo {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.15);
-            max-width: 300px;
-            font-size: 0.8rem;
-            z-index: 1000;
-        }
-
-        .credentials-demo h4 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-        }
-
-        .credential-item {
-            margin-bottom: 0.75rem;
-            padding: 0.5rem;
-            background: var(--gray-50);
-            border-radius: 6px;
-            border-left: 3px solid var(--accent-color);
-        }
-
-        .credential-item strong {
-            color: var(--text-dark);
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .credential-item small {
-            color: var(--text-light);
-            font-family: monospace;
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 2rem;
-                margin: 1rem;
-            }
-            
-            .credentials-demo {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 2rem;
-                max-width: none;
-            }
-        }
-
-        .logout-message {
-            background: rgba(56, 161, 105, 0.1);
-            color: var(--success-color);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            font-weight: 500;
-            border: 1px solid rgba(56, 161, 105, 0.2);
-        }
-    </style>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-    <!-- Credenciales Demo -->
-    <div class="credentials-demo">
-        <h4>🔑 Credenciales de Prueba</h4>
-        <div class="credential-item">
-            <strong>👨‍💼 Administrador</strong>
-            <small>admin@epa703.edu.ar / admin123</small>
-        </div>
-        <div class="credential-item">
-            <strong>👨‍🏫 Profesor</strong>
-            <small>profesor@epa703.edu.ar / prof123</small>
-        </div>
-        <div class="credential-item">
-            <strong>🎓 Estudiante</strong>
-            <small>alumno@epa703.edu.ar / est123</small>
-        </div>
-        <div class="credential-item">
-            <strong>👔 Secretario</strong>
-            <small>secretario@epa703.edu.ar / sec123</small>
-        </div>
+    <!-- Mensaje de logout exitoso -->
+    <div id="logout-message" class="logout-message">
+        ✅ Sesión cerrada exitosamente
     </div>
 
     <div class="login-container">
+        <!-- Header con logo -->
         <div class="login-header">
-            <div class="logo">🎓</div>
-            <h1 class="login-title">Iniciar Sesión</h1>
-            <p class="login-subtitle">EPA 703 - Portal Educativo</p>
+            <div class="logo">
+                EPA
+            </div>
+            <h1 class="login-title">EPA 703</h1>
+            <p class="login-subtitle">Sistema de Gestión Académica</p>
         </div>
 
-        <!-- Mensaje de logout -->
-        <div id="logout-message" class="logout-message" style="display: none;">
-            ✅ Sesión cerrada correctamente. Puedes iniciar sesión nuevamente.
-        </div>
-
-        <!-- Alertas -->
-        <div id="alert-container"></div>
-
-        <form class="login-form" id="loginForm">
-            <div class="role-selector">
-                <div class="role-grid">
-                    <label class="role-option">
-                        <input type="radio" name="role" value="estudiante" class="role-input" checked>
-                        <div class="role-card">
-                            <span class="role-icon">🎓</span>
-                            <div class="role-name">Estudiante</div>
-                        </div>
+        <!-- Formulario de login -->
+        <form id="loginForm">
+            <!-- Selector de rol -->
+            <div class="role-grid">
+                <div class="role-card">
+                    <input type="radio" id="estudiante" name="role" value="estudiante" checked>
+                    <label for="estudiante" class="role-label">
+                        <div class="role-icon">🎓</div>
+                        <div class="role-text">Estudiante</div>
                     </label>
-                    <label class="role-option">
-                        <input type="radio" name="role" value="profesor" class="role-input">
-                        <div class="role-card">
-                            <span class="role-icon">👨‍🏫</span>
-                            <div class="role-name">Profesor</div>
-                        </div>
+                </div>
+                <div class="role-card">
+                    <input type="radio" id="profesor" name="role" value="profesor">
+                    <label for="profesor" class="role-label">
+                        <div class="role-icon">👨‍🏫</div>
+                        <div class="role-text">Profesor</div>
                     </label>
-                    <label class="role-option">
-                        <input type="radio" name="role" value="secretario" class="role-input">
-                        <div class="role-card">
-                            <span class="role-icon">👔</span>
-                            <div class="role-name">Secretario</div>
-                        </div>
-                    </label>
-                    <label class="role-option">
-                        <input type="radio" name="role" value="admin" class="role-input">
-                        <div class="role-card">
-                            <span class="role-icon">⚙️</span>
-                            <div class="role-name">Administrador</div>
-                        </div>
+                </div>
+                <div class="role-card">
+                    <input type="radio" id="admin" name="role" value="admin">
+                    <label for="admin" class="role-label">
+                        <div class="role-icon">⚙️</div>
+                        <div class="role-text">Admin</div>
                     </label>
                 </div>
             </div>
 
+            <!-- Campo de usuario -->
             <div class="form-group">
                 <label for="usuario" class="form-label">Correo Electrónico</label>
-                <input type="email" id="usuario" name="usuario" class="form-input" required 
-                       autocomplete="username" placeholder="usuario@epa703.edu.ar">
+                <input type="email" 
+                       id="usuario" 
+                       name="usuario" 
+                       class="form-input" 
+                       required 
+                       autocomplete="username" 
+                       placeholder="usuario@epa703.edu.ar">
             </div>
 
+            <!-- Campo de contraseña -->
             <div class="form-group">
                 <label for="password" class="form-label">Contraseña</label>
                 <div class="password-group">
-                    <input type="password" id="password" name="password" class="form-input" required 
-                           autocomplete="current-password" placeholder="Tu contraseña">
-                    <button type="button" class="toggle-password" onclick="togglePassword()">
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           class="form-input" 
+                           required 
+                           autocomplete="current-password" 
+                           placeholder="Tu contraseña">
+                    <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Mostrar/ocultar contraseña">
                         👁️
                     </button>
                 </div>
             </div>
 
+            <!-- Botón de submit -->
             <button type="submit" class="login-button" id="loginButton">
                 <span class="button-text">Iniciar Sesión</span>
                 <div class="button-loading">
@@ -410,22 +93,29 @@
             </button>
         </form>
 
-        <div style="text-align: center;">
-            <a href="index.html" style="color: var(--text-light); text-decoration: none; font-size: 0.9rem;">
-                ← Volver al inicio
-            </a>
+        <!-- Link para volver -->
+        <div class="back-link">
+            <a href="index.html">← Volver al inicio</a>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
         // Variables globales
         let isLoading = false;
 
-        // Verificar mensaje de logout
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('logout') === 'success') {
-            document.getElementById('logout-message').style.display = 'block';
-        }
+        // Verificar mensaje de logout al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('logout') === 'success') {
+                document.getElementById('logout-message').style.display = 'block';
+                
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    document.getElementById('logout-message').style.display = 'none';
+                }, 5000);
+            }
+        });
 
         // Manejar envío del formulario
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -445,88 +135,115 @@
             await handleLogin(loginData);
         });
 
-        // Función principal de login
-       async function handleLogin(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    try {
-        const response = await fetch('ajax_login.php', { // Use the new AJAX endpoint
-            method: 'POST',
-            body: formData
-        });
-        
-        // Get response text first
-        const responseText = await response.text();
-        
-        try {
-            // Try to parse as JSON
-            const data = JSON.parse(responseText);
+        // ✅ FUNCIÓN CORREGIDA - Recibe datos del login, no evento
+        async function handleLogin(loginData) {
+            if (isLoading) return;
             
-            if (data.success) {
-                // Login successful
-                console.log('Login exitoso');
-                window.location.href = data.redirect;
-            } else {
-                // Login failed
-                showError(data.message);
-            }
-        } catch (parseError) {
-            // Response is not JSON - likely an HTML error page
-            console.error('Error parsing JSON:', parseError);
-            console.log('Response received:', responseText);
+            isLoading = true;
+            setLoading(true);
             
-            // Check if response contains HTML error indicators
-            if (responseText.includes('<br />') || responseText.includes('<b>')) {
-                showError('Error del servidor. Por favor, contacte al administrador.');
-            } else {
-                showError('Error de comunicación con el servidor.');
+            try {
+                const formData = new FormData();
+                formData.append('usuario', loginData.usuario);
+                formData.append('password', loginData.password);
+                formData.append('role', loginData.role);
+                
+                const response = await fetch('api/ajax_login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Get response text first
+                const responseText = await response.text();
+                
+                try {
+                    // Try to parse as JSON
+                    const data = JSON.parse(responseText);
+                    
+                    if (data.success) {
+                        // Login successful
+                        console.log('Login exitoso');
+                        showAlert('¡Bienvenido! Redirigiendo...', 'success');
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 1500);
+                    } else {
+                        // Login failed
+                        showError(data.message || 'Error de autenticación');
+                    }
+                } catch (parseError) {
+                    // Response is not JSON - likely an HTML error page
+                    console.error('Error parsing JSON:', parseError);
+                    console.log('Response received:', responseText);
+                    
+                    // Check if response contains HTML error indicators
+                    if (responseText.includes('<br />') || responseText.includes('<b>')) {
+                        showError('Error del servidor. Por favor, contacte al administrador.');
+                    } else {
+                        showError('Error de comunicación con el servidor.');
+                    }
+                }
+                
+            } catch (networkError) {
+                console.error('Network error:', networkError);
+                showError('Error de conexión. Verifique su conexión a internet.');
+            } finally {
+                isLoading = false;
+                setLoading(false);
             }
         }
-        
-    } catch (networkError) {
-        console.error('Network error:', networkError);
-        showError('Error de conexión. Verifique su conexión a internet.');
-    }
-}
 
-function showError(message) {
-    // Remove any existing error messages
-    const existingError = document.querySelector('.error-message');
-    if (existingError) {
-        existingError.remove();
-    }
-    
-    // Create and show error message
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.style.cssText = `
-        background-color: #f8d7da;
-        color: #721c24;
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #f1aeb5;
-        border-radius: 5px;
-        font-size: 14px;
-    `;
-    errorDiv.textContent = message;
-    
-    // Insert error before the form
-    const form = document.querySelector('form');
-    form.parentNode.insertBefore(errorDiv, form);
-}
+        // Función para manejar el estado de carga del botón
+        function setLoading(loading) {
+            const button = document.getElementById('loginButton');
+            const buttonText = button.querySelector('.button-text');
+            const buttonLoading = button.querySelector('.button-loading');
+            
+            if (loading) {
+                button.disabled = true;
+                buttonText.style.opacity = '0';
+                buttonLoading.style.display = 'block';
+            } else {
+                button.disabled = false;
+                buttonText.style.opacity = '1';
+                buttonLoading.style.display = 'none';
+            }
+        }
+
+        // Función para mostrar errores
+        function showError(message) {
+            // Remove any existing error messages
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Create and show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            // Insert error before the form
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(errorDiv, form);
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 8000);
+        }
+
+        // Función para mostrar alertas
         function showAlert(message, type) {
-            const alertContainer = document.getElementById('alert-container');
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type}`;
             alertDiv.textContent = message;
             
-            alertContainer.innerHTML = '';
-            alertContainer.appendChild(alertDiv);
+            document.body.appendChild(alertDiv);
             
-            // Auto-remover después de 5 segundos
+            // Auto-remove after 5 seconds
             setTimeout(() => {
                 if (alertDiv.parentNode) {
                     alertDiv.remove();
@@ -534,10 +251,7 @@ function showError(message) {
             }, 5000);
         }
 
-        function clearAlerts() {
-            document.getElementById('alert-container').innerHTML = '';
-        }
-
+        // Función para alternar visibilidad de contraseña
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleButton = document.querySelector('.toggle-password');
@@ -545,69 +259,33 @@ function showError(message) {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 toggleButton.textContent = '🙈';
+                toggleButton.setAttribute('aria-label', 'Ocultar contraseña');
             } else {
                 passwordInput.type = 'password';
                 toggleButton.textContent = '👁️';
+                toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
             }
         }
 
-        // Actualizar placeholder según el rol seleccionado
-        document.querySelectorAll('input[name="role"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const emailInput = document.getElementById('usuario');
-                const roleMap = {
-                    'estudiante': 'alumno@epa703.edu.ar',
-                    'profesor': 'profesor@epa703.edu.ar', 
-                    'admin': 'admin@epa703.edu.ar',
-                    'secretario': 'secretario@epa703.edu.ar'
-                };
-                emailInput.placeholder = roleMap[this.value] || 'usuario@epa703.edu.ar';
-            });
-        });
-
-        // Auto-completar credenciales de demo
-        document.querySelectorAll('.credential-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const text = this.querySelector('small').textContent;
-                const [email, password] = text.split(' / ');
-                
-                document.getElementById('usuario').value = email;
-                document.getElementById('password').value = password;
-                
-                // Seleccionar el rol correspondiente
-                const roleMap = {
-                    'admin@epa703.edu.ar': 'admin',
-                    'profesor@epa703.edu.ar': 'profesor',
-                    'alumno@epa703.edu.ar': 'estudiante',
-                    'secretario@epa703.edu.ar': 'secretario'
-                };
-                
-                const role = roleMap[email];
-                if (role) {
-                    document.querySelector(`input[value="${role}"]`).checked = true;
+        // Mejora de accesibilidad: permitir Enter en los roles
+        document.querySelectorAll('.role-card input[type="radio"]').forEach(radio => {
+            radio.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    this.checked = true;
                 }
-                
-                // Efecto visual
-                this.style.background = 'rgba(74, 124, 89, 0.1)';
-                setTimeout(() => {
-                    this.style.background = 'var(--gray-50)';
-                }, 500);
             });
         });
 
-        // Inicialización
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Sistema de login EPA 703 inicializado');
-            document.getElementById('usuario').focus();
-        });
+        // Clear errors when user starts typing
+        document.getElementById('usuario').addEventListener('input', clearErrors);
+        document.getElementById('password').addEventListener('input', clearErrors);
 
-        // Atajos de teclado
-        document.addEventListener('keydown', function(e) {
-            // Enter para enviar
-            if (e.key === 'Enter' && !isLoading) {
-                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        function clearErrors() {
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
             }
-        });
+        }
     </script>
 </body>
 </html>
