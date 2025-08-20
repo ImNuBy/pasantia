@@ -118,7 +118,7 @@ try {
     $redirect_urls = [
         'estudiante' => 'panel-estudiante.html',
         'profesor' => 'panel-profesor.html',
-        'admin' => 'dashboard-admin.php',
+        'admin' => 'panel-admin.html',
         'secretario' => 'panel-secretario.html'
     ];
 
@@ -318,7 +318,7 @@ function validarUsuarioPrueba($usuario, $password, $role) {
     $redirect_urls = [
         'estudiante' => 'panel-estudiante.html',
         'profesor' => 'panel-profesor.html',
-        'admin' => 'dashboard-admin.php'
+        'admin' => 'panel-admin.html'
     ];
 
     $redirect_url = $redirect_urls[$role] ?? 'index.html';
