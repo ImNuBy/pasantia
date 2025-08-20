@@ -13,7 +13,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['tipo_usuario'] !== 'admin') {
 }
 
 // Incluir configuración y funciones
-require_once '../config/database-config.php';
+require_once 'config/database.php';
 
 try {
     $pdo = getDBConnection();
