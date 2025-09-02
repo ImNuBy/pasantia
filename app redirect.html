@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasantía App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        
+        .status {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎓</div>
+        <h1>Sistema de Pasantías</h1>
+        
+        <div id="loading" class="status">
+            <div class="loader"></div>
+            <p>Conectando al servidor...</p>
+        </div>
+        
+        <div id="error" class="error hidden">
+            <h3>⚠️ Error de Conexión</h3>
+            <p>No se puede conectar al servidor. Verifica que:</p>
+            <ul style="text-align: left; display: inline-block;">
+                <li>Estés conectado a la WiFi correcta</li>
+                <li>XAMPP esté ejecutándose</li>
+                <li>La IP del servidor sea correcta</li>
+            </ul>
+        </div>
+        
+        <div id="buttons" class="hidden">
+            <button class="button" onclick="conectar()">🔄 Reintentar</button>
+            <button class="button" onclick="abrirEnNavegador()">🌐 Abrir en Navegador</button>
+        </div>
+    </div>
+
+    <script>
+        const serverUrl = 'http://10.0.50.109/pasantia/index.html';
+        let intentos = 0;
+        const maxIntentos = 3;
+        
+        function conectar() {
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('error').classList.add('hidden');
+            document.getElementById('buttons').classList.add('hidden');
+            
+            // Simular verificación de conexión
+            fetch(serverUrl, { 
+                method: 'HEAD',
+                mode: 'no-cors' 
+            })
+            .then(() => {
+                // Si la conexión es exitosa, redirigir
+                setTimeout(() => {
+                    window.location.href = serverUrl;
+                }, 1500);
+            })
+            .catch(() => {
+                // Si falla la conexión
+                intentos++;
+                setTimeout(() => {
+                    if (intentos < maxIntentos) {
+                        conectar();
+                    } else {
+                        mostrarError();
+                    }
+                }, 2000);
+            });
+        }
+        
+        function mostrarError() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('buttons').classList.remove('hidden');
+        }
+        
+        function abrirEnNavegador() {
+            window.open(serverUrl, '_blank');
+        }
+        
+        // Intentar conectar automáticamente al cargar
+        setTimeout(conectar, 1000);
+    </script>
+</body>
+</html>
