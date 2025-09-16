@@ -1,85 +1,771 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Profesor - E.E.S.T N°2</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/panel.css">
+    <title>Panel de Administración - EPA 703</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
 </head>
 <body>
-    <div class="panel-container">
-        <header class="panel-header">
-            <div class="header-content">
-                <div class="header-info">
-                    <h1>Panel de Profesor</h1>
-                    <p>E.E.S.T N°2 - Sistema Educativo</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1 class="header-title">EPA 703 - Administración</h1>
+            </div>
+            <div class="header-right">
+                <div class="notification-bell">
+                    <span class="bell-icon">🔔</span>
+                    <span class="notification-count" id="notificationCount">0</span>
                 </div>
-                <div class="user-info">
-                    <span id="user-welcome">Cargando...</span>
-                    <div class="user-details" id="user-details">
-                        <div>Legajo: <span id="user-legajo">--</span></div>
-                        <div>Especialidad: <span id="user-especialidad">--</span></div>
+                <div class="user-menu">
+                    <div class="user-avatar">
+                        <span id="userInitials">AD</span>
                     </div>
-                    <a href="#" onclick="logout()" class="logout-btn">Cerrar Sesión</a>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Administrador</span>
+                        <span class="user-role">Administrador</span>
+                    </div>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showProfile()">Mi Perfil</a>
+                        <a href="#" onclick="showSettings()">Configuración</a>
+                        <a href="#" onclick="logout()">Cerrar Sesión</a>
+                    </div>
                 </div>
             </div>
-        </header>
-        
-        <nav class="panel-nav">
-            <ul class="nav-list">
-                <li class="nav-item"><a href="#" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('cursos')">Mis Cursos</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('calificaciones')">Calificaciones</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('asistencias')">Asistencias</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('horarios')">Horarios</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showSection('perfil')">Mi Perfil</a></li>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="logo">
+                <div class="logo-icon">EPA</div>
+                <span class="logo-text">703</span>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="showSection('dashboard')">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('usuarios')">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('consultas')">
+                        <span class="nav-icon">💬</span>
+                        <span class="nav-text">Consultas</span>
+                        <span class="nav-badge" id="consultasBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('inscripciones')">
+                        <span class="nav-icon">📝</span>
+                        <span class="nav-text">Inscripciones</span>
+                        <span class="nav-badge" id="inscripcionesBadge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('estudiantes')">
+                        <span class="nav-icon">🎓</span>
+                        <span class="nav-text">Estudiantes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('profesores')">
+                        <span class="nav-icon">👨‍🏫</span>
+                        <span class="nav-text">Profesores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('cursos')">
+                        <span class="nav-icon">📚</span>
+                        <span class="nav-text">Cursos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('reportes')">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Reportes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showSection('configuracion')">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Configuración</span>
+                    </a>
+                </li>
             </ul>
-        </nav>
-        
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
         <!-- Dashboard Section -->
-        <section id="dashboard" class="panel-section">
-            <div class="dashboard-grid">
+        <section id="dashboard" class="content-section active">
+            <div class="section-header">
+                <h2>Dashboard</h2>
+                <p>Resumen general del sistema EPA 703</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>Cursos Asignados</h3>
-                    <div class="stat-number" id="total-cursos">0</div>
-                    <div class="stat-description">Cursos activos</div>
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <h3 id="totalUsuarios">0</h3>
+                        <p>Total Usuarios</p>
+                        <span class="stat-change positive">+5% este mes</span>
+                    </div>
                 </div>
-                
                 <div class="stat-card">
-                    <h3>Total Estudiantes</h3>
-                    <div class="stat-number" id="total-estudiantes">0</div>
-                    <div class="stat-description">Estudiantes a cargo</div>
+                    <div class="stat-icon">🎓</div>
+                    <div class="stat-content">
+                        <h3 id="totalEstudiantes">0</h3>
+                        <p>Estudiantes Activos</p>
+                        <span class="stat-change positive">+12% este mes</span>
+                    </div>
                 </div>
-                
                 <div class="stat-card">
-                    <h3>Calificaciones Pendientes</h3>
-                    <div class="stat-number" id="calificaciones-pendientes">0</div>
-                    <div class="stat-description">Por calificar</div>
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-content">
+                        <h3 id="consultasPendientes">0</h3>
+                        <p>Consultas Pendientes</p>
+                        <span class="stat-change negative">-3% esta semana</span>
+                    </div>
                 </div>
-                
                 <div class="stat-card">
-                    <h3>Promedio General</h3>
-                    <div class="stat-number" id="promedio-cursos">--</div>
-                    <div class="stat-description">De todos los cursos</div>
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <h3 id="inscripcionesNuevas">0</h3>
+                        <p>Nuevas Inscripciones</p>
+                        <span class="stat-change positive">+8% este mes</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="data-table">
-                <h3 class="table-header">Actividad Reciente</h3>
-                <div class="table-content">
-                    <div id="actividad-profesor" class="loading">
-                        Cargando actividad reciente...
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Acciones Rápidas</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="showSection('usuarios'); showModal('nuevoUsuario')">
+                        <span class="action-icon">➕</span>
+                        Nuevo Usuario
+                    </button>
+                    <button class="action-btn" onclick="showSection('consultas')">
+                        <span class="action-icon">💬</span>
+                        Ver Consultas
+                    </button>
+                    <button class="action-btn" onclick="showSection('inscripciones')">
+                        <span class="action-icon">📝</span>
+                        Gestionar Inscripciones
+                    </button>
+                    <button class="action-btn" onclick="showSection('reportes')">
+                        <span class="action-icon">📊</span>
+                        Generar Reporte
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <h3>Actividad Reciente</h3>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <div class="activity-icon">👤</div>
+                        <div class="activity-content">
+                            <p><strong>Nuevo usuario registrado:</strong> Juan Pérez</p>
+                            <span class="activity-time">Hace 2 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">💬</div>
+                        <div class="activity-content">
+                            <p><strong>Nueva consulta:</strong> Información sobre horarios</p>
+                            <span class="activity-time">Hace 4 horas</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">📝</div>
+                        <div class="activity-content">
+                            <p><strong>Inscripción procesada:</strong> María González aprobada</p>
+                            <span class="activity-time">Hace 6 horas</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-        
-        <!-- Contenido dinámico -->
-        <div id="dynamic-content"></div>
+
+        <!-- Usuarios Section -->
+        <section id="usuarios" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Usuarios</h2>
+                <button class="btn btn-primary" onclick="showModal('nuevoUsuario')">
+                    <span>➕</span> Nuevo Usuario
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Tipo de Usuario:</label>
+                    <select id="filtroTipoUsuario" onchange="filtrarUsuarios()">
+                        <option value="">Todos</option>
+                        <option value="estudiante">Estudiantes</option>
+                        <option value="profesor">Profesores</option>
+                        <option value="admin">Administradores</option>
+                        <option value="secretario">Secretarios</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filtroEstado" onchange="filtrarUsuarios()">
+                        <option value="">Todos</option>
+                        <option value="1">Activos</option>
+                        <option value="0">Inactivos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Buscar:</label>
+                    <input type="text" id="buscarUsuario" placeholder="Nombre, email..." onkeyup="filtrarUsuarios()">
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <table class="data-table" id="usuariosTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuariosTableBody">
+                        <!-- Los usuarios se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Consultas Section -->
+        <section id="consultas" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Consultas</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportarConsultas()">
+                        <span>📥</span> Exportar
+                    </button>
+                    <button class="btn btn-primary" onclick="responderMasivo()">
+                        <span>📧</span> Respuesta Masiva
+                    </button>
+                </div>
+            </div>
+
+            <!-- Consultas Stats -->
+            <div class="consultas-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="consultasTotales">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="consultasPendientesCount">0</span>
+                    <span class="stat-label">Pendientes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="consultasRespondidas">0</span>
+                    <span class="stat-label">Respondidas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="consultasHoy">0</span>
+                    <span class="stat-label">Hoy</span>
+                </div>
+            </div>
+
+            <!-- Consultas Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filtroEstadoConsulta" onchange="filtrarConsultas()">
+                        <option value="">Todas</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="respondida">Respondidas</option>
+                        <option value="cerrada">Cerradas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo:</label>
+                    <select id="filtroTipoConsulta" onchange="filtrarConsultas()">
+                        <option value="">Todos</option>
+                        <option value="general">General</option>
+                        <option value="inscripcion">Inscripción</option>
+                        <option value="academica">Académica</option>
+                        <option value="administrativa">Administrativa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Prioridad:</label>
+                    <select id="filtroPrioridad" onchange="filtrarConsultas()">
+                        <option value="">Todas</option>
+                        <option value="urgente">Urgente</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Consultas Table -->
+            <div class="table-container">
+                <table class="data-table" id="consultasTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Asunto</th>
+                            <th>Tipo</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consultasTableBody">
+                        <!-- Las consultas se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Inscripciones Section -->
+        <section id="inscripciones" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Inscripciones</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportarInscripciones()">
+                        <span>📥</span> Exportar
+                    </button>
+                    <button class="btn btn-success" onclick="procesarMasivo()">
+                        <span>⚡</span> Procesar Masivo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Inscripciones Stats -->
+            <div class="inscripciones-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="inscripcionesTotales">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="inscripcionesPendientesCount">0</span>
+                    <span class="stat-label">Pendientes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="inscripcionesAprobadas">0</span>
+                    <span class="stat-label">Aprobadas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="inscripcionesRechazadas">0</span>
+                    <span class="stat-label">Rechazadas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="inscripcionesHoy">0</span>
+                    <span class="stat-label">Hoy</span>
+                </div>
+            </div>
+
+            <!-- Inscripciones Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filtroEstadoInscripcion" onchange="filtrarInscripciones()">
+                        <option value="">Todas</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="aprobada">Aprobadas</option>
+                        <option value="rechazada">Rechazadas</option>
+                        <option value="en_revision">En Revisión</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Orientación:</label>
+                    <select id="filtroOrientacion" onchange="filtrarInscripciones()">
+                        <option value="">Todas</option>
+                        <option value="1">Primer Ciclo</option>
+                        <option value="2">Segundo Ciclo</option>
+                        <option value="3">Alfabetización</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Año:</label>
+                    <select id="filtroAnio" onchange="filtrarInscripciones()">
+                        <option value="">Todos</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Buscar:</label>
+                    <input type="text" id="buscarInscripcion" placeholder="Nombre, DNI, email..." onkeyup="filtrarInscripciones()">
+                </div>
+            </div>
+
+            <!-- Inscripciones Table -->
+            <div class="table-container">
+                <table class="data-table" id="inscripcionesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Email</th>
+                            <th>DNI</th>
+                            <th>Orientación</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Documentos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inscripcionesTableBody">
+                        <!-- Las inscripciones se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Estudiantes Section -->
+        <section id="estudiantes" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Estudiantes</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportarEstudiantes()">
+                        <span>📥</span> Exportar
+                    </button>
+                    <button class="btn btn-primary" onclick="showModal('nuevoEstudiante')">
+                        <span>➕</span> Nuevo Estudiante
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estudiantes Stats -->
+            <div class="estudiantes-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="estudiantesTotales">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="estudiantesActivos">0</span>
+                    <span class="stat-label">Activos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="estudiantesGraduados">0</span>
+                    <span class="stat-label">Graduados</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="estudiantesNuevos">0</span>
+                    <span class="stat-label">Nuevos este mes</span>
+                </div>
+            </div>
+
+            <!-- Estudiantes Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filtroEstadoEstudiante" onchange="filtrarEstudiantes()">
+                        <option value="">Todos</option>
+                        <option value="activo">Activos</option>
+                        <option value="inactivo">Inactivos</option>
+                        <option value="graduado">Graduados</option>
+                        <option value="desertor">Desertores</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Curso:</label>
+                    <select id="filtroCurso" onchange="filtrarEstudiantes()">
+                        <option value="">Todos</option>
+                        <!-- Se llenarán dinámicamente -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Orientación:</label>
+                    <select id="filtroOrientacionEst" onchange="filtrarEstudiantes()">
+                        <option value="">Todas</option>
+                        <option value="1">Primer Ciclo</option>
+                        <option value="2">Segundo Ciclo</option>
+                        <option value="3">Alfabetización</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Buscar:</label>
+                    <input type="text" id="buscarEstudiante" placeholder="Nombre, legajo, email..." onkeyup="filtrarEstudiantes()">
+                </div>
+            </div>
+
+            <!-- Estudiantes Table -->
+            <div class="table-container">
+                <table class="data-table" id="estudiantesTable">
+                    <thead>
+                        <tr>
+                            <th>Legajo</th>
+                            <th>Nombre Completo</th>
+                            <th>Email</th>
+                            <th>Curso</th>
+                            <th>Orientación</th>
+                            <th>Estado</th>
+                            <th>Fecha Ingreso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estudiantesTableBody">
+                        <!-- Los estudiantes se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Profesores Section -->
+        <section id="profesores" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Profesores</h2>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="exportarProfesores()">
+                        <span>📥</span> Exportar
+                    </button>
+                    <button class="btn btn-primary" onclick="showModal('nuevoProfesor')">
+                        <span>➕</span> Nuevo Profesor
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profesores Stats -->
+            <div class="profesores-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="profesoresTotales">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="profesoresActivos">0</span>
+                    <span class="stat-label">Activos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="profesoresLicencia">0</span>
+                    <span class="stat-label">En Licencia</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="profesoresNuevos">0</span>
+                    <span class="stat-label">Nuevos este mes</span>
+                </div>
+            </div>
+
+            <!-- Profesores Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filtroEstadoProfesor" onchange="filtrarProfesores()">
+                        <option value="">Todos</option>
+                        <option value="activo">Activos</option>
+                        <option value="licencia">En Licencia</option>
+                        <option value="inactivo">Inactivos</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Especialidad:</label>
+                    <select id="filtroEspecialidad" onchange="filtrarProfesores()">
+                        <option value="">Todas</option>
+                        <!-- Se llenarán dinámicamente -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Buscar:</label>
+                    <input type="text" id="buscarProfesor" placeholder="Nombre, legajo, especialidad..." onkeyup="filtrarProfesores()">
+                </div>
+            </div>
+
+            <!-- Profesores Table -->
+            <div class="table-container">
+                <table class="data-table" id="profesoresTable">
+                    <thead>
+                        <tr>
+                            <th>Legajo</th>
+                            <th>Nombre Completo</th>
+                            <th>Email</th>
+                            <th>Especialidad</th>
+                            <th>Título</th>
+                            <th>Estado</th>
+                            <th>Fecha Ingreso</th>
+                            <th>Carga Horaria</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profesoresTableBody">
+                        <!-- Los profesores se cargarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Cursos Section -->
+        <section id="cursos" class="content-section">
+            <div class="section-header">
+                <h2>Gestión de Cursos</h2>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showModal('nuevoCurso')">
+                        <span>➕</span> Nuevo Curso
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cursos Grid -->
+            <div class="cursos-grid" id="cursosGrid">
+                <!-- Los cursos se cargarán aquí dinámicamente -->
+            </div>
+        </section>
+
+        <section id="reportes" class="content-section">
+            <div class="section-header">
+                <h2>Reportes y Estadísticas</h2>
+            </div>
+            <p>Módulo de reportes en desarrollo...</p>
+        </section>
+
+       <section id="configuracion" class="content-section">
+    <div class="section-header">
+        <h2>Configuración del Sistema</h2>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="showModal('nuevaConfig')">
+                <span>➕</span> Nueva Configuración
+            </button>
+        </div>
     </div>
 
-    <script src="js/panel-profesor.js"></script>
+    <!-- Tabla de configuraciones -->
+    <div class="table-container">
+        <table class="data-table" id="configuracionTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Clave</th>
+                    <th>Valor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="configuracionTableBody">
+                <!-- Se llenará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Modal Nueva Configuración -->
+<div class="modal" id="nuevaConfigModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Nueva Configuración</h3>
+            <button class="modal-close" onclick="closeModal('nuevaConfig')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="nuevaConfigForm" onsubmit="guardarConfig(event)">
+                <div class="form-group">
+                    <label for="claveConfig">Clave *</label>
+                    <input type="text" id="claveConfig" name="clave" required>
+                </div>
+                <div class="form-group">
+                    <label for="valorConfig">Valor *</label>
+                    <input type="text" id="valorConfig" name="valor" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('nuevaConfig')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+        
+    </main>
+
+    <!-- Modales -->
+    <!-- Modal Nuevo Usuario -->
+    <div class="modal" id="nuevoUsuarioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Usuario</h3>
+                <button class="modal-close" onclick="closeModal('nuevoUsuario')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="nuevoUsuarioForm" onsubmit="crearUsuario(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nuevoNombre">Nombre *</label>
+                            <input type="text" id="nuevoNombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevoApellido">Apellido *</label>
+                            <input type="text" id="nuevoApellido" name="apellido" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoEmail">Email *</label>
+                        <input type="email" id="nuevoEmail" name="email" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nuevoTelefono">Teléfono</label>
+                            <input type="tel" id="nuevoTelefono" name="telefono">
+                        </div>
+                        <div class="form-group">
+                            <label for="nuevoDni">DNI</label>
+                            <input type="text" id="nuevoDni" name="dni">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoTipoUsuario">Tipo de Usuario *</label>
+                        <select id="nuevoTipoUsuario" name="tipo_usuario" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="estudiante">Estudiante</option>
+                            <option value="profesor">Profesor</option>
+                            <option value="admin">Administrador</option>
+                            <option value="secretario">Secretario</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoPassword">Contraseña *</label>
+                        <input type="password" id="nuevoPassword" name="password" required>
+                        <small>Mínimo 6 caracteres</small>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('nuevoUsuario')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin-dashboard.js"></script>
 </body>
 </html>
