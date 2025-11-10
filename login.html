@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - EPA 703</title>
-    <link rel="stylesheet" href="css/login.css">
     <meta name="description" content="Sistema de acceso para estudiantes, profesores y administradores de EPA 703">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-   
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
     <!-- Mensaje de logout exitoso -->
@@ -22,7 +22,7 @@
         <!-- Header con logo -->
         <div class="login-header">
             <div class="logo">
-                <img src="assets/logoeparedimension.jpg" alt="Logo EPA 703" />
+                EPA
             </div>
             <h1 class="login-title">EPA 703</h1>
             <p class="login-subtitle">Sistema de Gestión Académica</p>
@@ -33,29 +33,19 @@
             <!-- Selector de rol -->
             <div class="role-grid">
                 <div class="role-card">
-                    <input type="radio" id="profesor" name="role" value="profesor" checked>
+                    <input type="radio" id="estudiante" name="role" value="estudiante" checked>
+                    <label for="estudiante" class="role-label">
+                        <div class="role-icon">🎓</div>
+                        <div class="role-text">Estudiante</div>
+                    </label>
+                </div>
+                <div class="role-card">
+                    <input type="radio" id="profesor" name="role" value="profesor">
                     <label for="profesor" class="role-label">
                         <div class="role-icon">👨‍🏫</div>
                         <div class="role-text">Profesor</div>
                     </label>
                 </div>
-
-                   <div class="role-card">
-                    <input type="radio" id="admin" name="role" value="admin">
-                    <label for="admin" class="role-label">
-                        <div class="role-icon">👨‍💼</div>
-                        <div class="role-text">Directivo</div>
-                    </label>
-                </div>
-
-                   <div class="role-card">
-                    <input type="radio" id="admin" name="role" value="admin">
-                    <label for="admin" class="role-label">
-                        <div class="role-icon">👔</div>
-                        <div class="role-text">Secretario</div>
-                    </label>
-                </div>
-
                 <div class="role-card">
                     <input type="radio" id="admin" name="role" value="admin">
                     <label for="admin" class="role-label">

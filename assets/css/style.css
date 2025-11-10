@@ -1,0 +1,56 @@
+
+/* Blue & white theme */
+:root{
+  --blue-700:#0b5ed7;
+  --blue-500:#2b7cff;
+  --blue-100:#e8f1ff;
+  --white:#ffffff;
+  --text:#1b2a44;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:linear-gradient(180deg,var(--blue-100),var(--white));
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:1100px;margin:30px auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.logo{font-weight:700;color:var(--blue-700);font-size:20px}
+.nav a{margin-left:12px;text-decoration:none;color:var(--blue-700);font-weight:600}
+
+/* Carousel */
+.carousel{position:relative;overflow:hidden;border-radius:12px;box-shadow:0 8px 30px rgba(11,94,215,0.12)}
+.carousel-track{display:flex;transition:transform 0.5s ease}
+.carousel-slide{min-width:100%;user-select:none}
+.carousel-slide img{width:100%;height:450px;object-fit:cover;display:block}
+
+/* carousel controls */
+.carousel .prev,.carousel .next{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,0.8);border:none;padding:8px;border-radius:50%;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,0.12)
+}
+.carousel .prev{left:14px}.carousel .next{right:14px}
+
+/* fixed blocks below */
+.blocks{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.block{background:var(--white);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(11,94,215,0.06);min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.block img{max-width:100%;border-radius:8px;max-height:120px;object-fit:cover}
+.block h3{margin:10px 0 6px;color:var(--blue-700)}
+
+/* responsive */
+@media(max-width:900px){
+  .blocks{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .blocks{grid-template-columns:1fr}
+  .carousel-slide img{height:280px}
+}
+
+/* modal */
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999}
+.modal.show{display:flex}
+.modal .content{max-width:90%;max-height:90%}
+.modal img{width:100%;height:auto;border-radius:8px}
