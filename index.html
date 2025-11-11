@@ -17,6 +17,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Estilos adicionales para espacios de imágenes */
+        .image-placeholder {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #718096;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .image-placeholder:hover {
+            border-color: #4299e1;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        }
+        
+        .image-placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .about-image-space {
+            width: 100%;
+            height: 350px;
+            margin: 20px 0;
+        }
+        
+        .ciclos-image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .ciclos-image-item {
+            height: 250px;
+        }
+        
+        .gallery-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .gallery-item {
+            height: 300px;
+        }
+        
+        .testimonials-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+        
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .staff-photo {
+            width: 100%;
+            height: 250px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -24,13 +106,18 @@
         <nav class="navbar">
             <div class="nav-container container">
                 <div class="nav-logo">
-                    <h1>EPA 703</h1>
+                    <!-- ESPACIO PARA LOGO -->
+                    <div class="image-placeholder" style="width: 60px; height: 60px; min-height: 60px; margin-right: 15px; display: inline-flex; vertical-align: middle;">
+                        <span style="font-size: 24px;">🎓</span>
+                    </div>
+                    <h1 style="display: inline-block; vertical-align: middle;">EPA 703</h1>
                 </div>
                 <ul class="nav-menu" id="nav-menu">
                     <li><a href="#inicio" class="nav-link active">Inicio</a></li>
                     <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
                     <li><a href="#ciclos" class="nav-link">Ciclos</a></li>
                     <li><a href="#programas" class="nav-link">Programas</a></li>
+                    <li><a href="#galeria" class="nav-link">Galería</a></li>
                     <li><a href="#servicios" class="nav-link">Servicios</a></li>
                     <li><a href="#contacto" class="nav-link">Contacto</a></li>
                     <li><a href="login.html" class="nav-link login-btn">Iniciar Sesión</a></li>
@@ -45,7 +132,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="inicio" class="hero">
+    <section id="inicio" class="hero" style="min-height: 70vh; padding: 120px 0 80px;">
         <div class="hero-content animate-fade-in-up">
             <div class="hero-badge">
                 Más de 50 años formando adultos
@@ -61,329 +148,656 @@
                 Ofrecemos educación primaria de calidad para adultos con horarios flexibles, 
                 metodología adaptada y apoyo integral. Tu futuro comienza aquí.
             </p>
-            <div class="hero-buttons">
-                <a href="#contacto" class="btn btn-primary btn-large">
-                    Inscribirse Ahora
+            
+            <div class="hero-buttons" style="margin-top: 30px;">
+                <a href="#inscripcion" class="btn btn-primary">
+                    Inscribite Ahora
                     <span>→</span>
                 </a>
-                <a href="login.html" class="btn btn-secondary btn-large">
-                    Portal Estudiantes
+                <a href="#nosotros" class="btn btn-secondary">
+                    Conocer Más
                 </a>
             </div>
             <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="hero-stat-number">2000+</span>
-                    <span class="hero-stat-label">Graduados</span>
+                <div class="stat">
+                    <h3>50+</h3>
+                    <p>Años de experiencia</p>
                 </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-number">50+</span>
-                    <span class="hero-stat-label">Años de experiencia</span>
+                <div class="stat">
+                    <h3>1000+</h3>
+                    <p>Estudiantes graduados</p>
                 </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-number">95%</span>
-                    <span class="hero-stat-label">Tasa de éxito</span>
+                <div class="stat">
+                    <h3>95%</h3>
+                    <p>Tasa de finalización</p>
                 </div>
             </div>
-        </div>
-        <div class="scroll-indicator" onclick="document.getElementById('nosotros').scrollIntoView()">
-            <div class="scroll-arrow"></div>
         </div>
     </section>
-<!-- Gallery Carousel -->
-<section class="gallery-section">
-    <div class="carousel-container">
-        <div class="carousel" id="carousel">
-            <div class="carousel-track" id="carouselTrack">
-                <div class="carousel-slide">
-                    <img src="assets/img/img1.jpeg" alt="Instalaciones de la escuela">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/img/img2.jpeg" alt="Clases en EPA 703">
-                </div>
-                <div class="carousel-slide">
-                    <img src="assets/img/img3.jpeg" alt="Graduación de alumnos">
+    
+    <!-- Hero Image Section - Separada para mejor control -->
+    <section style="padding: 40px 0; background: #f8f9fa;">
+        <div class="container">
+            <!-- ESPACIO PARA IMAGEN PRINCIPAL DEL HERO -->
+            <div class="image-placeholder" style="width: 100%; max-width: 1200px; height: 600px; margin: 0 auto;">
+                <div>
+                    <img src="assets/img/hero.jpeg" alt="">
+                   
                 </div>
             </div>
-            <button class="carousel-btn prev" aria-label="Anterior">&lt;</button>
-            <button class="carousel-btn next" aria-label="Siguiente">&gt;</button>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Nosotros Section -->
-    <section id="nosotros" class="section">
+    <section id="nosotros" class="section section-light">
         <div class="container">
             <div class="section-header">
-                <div class="section-badge">Quiénes Somos</div>
-                <h2 class="section-title">Comprometidos con tu educación</h2>
-                <p class="section-subtitle">
-                    Somos una institución educativa especializada en brindar oportunidades 
-                    de aprendizaje para adultos, con un enfoque integral y personalizado.
+                <div class="section-badge">Nuestra Historia</div>
+                <h2 class="section-title">Sobre EPA 703</h2>
+                <p class="section-description">
+                    Más de 50 años acompañando a adultos en su proceso educativo
                 </p>
             </div>
-            <div class="grid grid-3">
-                <div class="card animate-fade-in-up">
-                    <div class="card-icon">🎯</div>
-                    <h3 class="card-title">Nuestra Misión</h3>
-                    <p class="card-description">
-                        Brindar educación primaria de calidad a adultos, con metodología 
-                        flexible y adaptada a sus necesidades, promoviendo su desarrollo 
-                        personal y social.
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin: 40px 0;">
+                <!-- ESPACIO PARA IMAGEN DE LA ESCUELA -->
+                <div class="image-placeholder about-image-space">
+                    <div>
+                        <div class="image-placeholder-icon">🏫</div>
+                        <strong>Imagen del Edificio</strong><br>
+                        Fachada de la escuela EPA 703<br>
+                        Dimensiones: 800x600px
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 20px;">¿Quiénes Somos?</h3>
+                    <p style="margin-bottom: 15px; line-height: 1.8;">
+                        La Escuela Primaria para Adultos N°703 es una institución educativa dedicada a brindar 
+                        oportunidades de formación primaria a personas adultas que, por diversos motivos, no pudieron 
+                        completar su educación en tiempo y forma.
+                    </p>
+                    <p style="margin-bottom: 15px; line-height: 1.8;">
+                        Fundada hace más de cinco décadas, nos enorgullecemos de haber acompañado a miles de estudiantes 
+                        en su camino hacia la certificación primaria y la mejora de sus oportunidades laborales y personales.
+                    </p>
+                    <p style="line-height: 1.8;">
+                        Nuestro equipo de profesionales está comprometido con la educación inclusiva, adaptando la metodología 
+                        a las necesidades específicas de cada estudiante adulto.
                     </p>
                 </div>
-                <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <div class="card-icon">👥</div>
-                    <h3 class="card-title">Nuestra Comunidad</h3>
-                    <p class="card-description">
-                        Más de 2000 adultos han completado sus estudios primarios con nosotros, 
-                        logrando mejores oportunidades laborales y continuando sus estudios secundarios.
+            </div>
+
+            <!-- Misión y Visión -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 60px 0;">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Nuestra Misión</h3>
+                    <p>
+                        Brindar educación primaria de calidad a personas adultas, promoviendo su desarrollo 
+                        integral y facilitando su reinserción en el sistema educativo y laboral.
                     </p>
                 </div>
-                <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="card-icon">⏰</div>
-                    <h3 class="card-title">Horarios Flexibles</h3>
-                    <p class="card-description">
-                        Entendemos que nuestros estudiantes trabajan y tienen responsabilidades 
-                        familiares, por eso ofrecemos horarios de tarde y noche que se adaptan 
-                        a tu rutina.
+                <div class="feature-card">
+                    <div class="feature-icon">🌟</div>
+                    <h3>Nuestra Visión</h3>
+                    <p>
+                        Ser referentes en educación para adultos, reconocidos por nuestra excelencia académica, 
+                        compromiso social y capacidad de transformar vidas a través de la educación.
                     </p>
+                </div>
+            </div>
+
+            <!-- Valores -->
+            <div style="margin: 60px 0;">
+                <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 40px;">Nuestros Valores</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🤝</div>
+                        <h4>Inclusión</h4>
+                        <p>Todos merecen una segunda oportunidad</p>
+                    </div>
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">💪</div>
+                        <h4>Compromiso</h4>
+                        <p>Dedicación con cada estudiante</p>
+                    </div>
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">🎓</div>
+                        <h4>Excelencia</h4>
+                        <p>Calidad educativa garantizada</p>
+                    </div>
+                    <div style="text-align: center; padding: 30px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">❤️</div>
+                        <h4>Respeto</h4>
+                        <p>Valoramos cada historia de vida</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Ciclos Section -->
+    <!-- Ciclos Educativos Section -->
     <section id="ciclos" class="section">
         <div class="container">
             <div class="section-header">
-                <div class="section-badge">Educación Adaptada</div>
+                <div class="section-badge">Oferta Educativa</div>
                 <h2 class="section-title">Ciclos Educativos</h2>
-                <p class="section-subtitle">
-                    Programas diseñados para diferentes niveles de conocimiento, 
-                    desde alfabetización inicial hasta preparación para secundaria.
+                <p class="section-description">
+                    Programas adaptados a tu nivel de conocimientos
                 </p>
             </div>
-            <div class="grid grid-3">
-                <div class="card animate-slide-in-left">
-                    <div class="card-icon">📚</div>
-                    <h3 class="card-title">Alfabetización</h3>
-                    <p class="card-description">
-                        Ideal para adultos sin escolaridad previa. Aprenderás lectoescritura 
-                        y cálculo básico en un ambiente comprensivo y motivador.
-                    </p>
-                    <ul class="card-list">
-                        <li>Lectoescritura Inicial</li>
-                        <li>Cálculo Básico</li>
-                        <li>Educación Cívica</li>
-                        <li>Conocimiento del Medio</li>
-                        <li>Habilidades Sociales</li>
-                    </ul>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Duración:</strong> 6 meses</span>
-                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+
+            <!-- ESPACIOS PARA IMÁGENES DE LOS CICLOS -->
+            <div class="ciclos-image-grid">
+                <div class="image-placeholder ciclos-image-item">
+                    <div>
+                        <div class="image-placeholder-icon">📚</div>
+                        <strong>Primer Ciclo</strong><br>
+                        Estudiantes en clase de alfabetización<br>
+                        500x400px
                     </div>
                 </div>
-                <div class="card animate-slide-in-left" style="animation-delay: 0.1s;">
-                    <div class="card-icon">📖</div>
-                    <h3 class="card-title">Primer Ciclo</h3>
-                    <p class="card-description">
-                        Equivalente a 1°, 2° y 3° grado. Construye bases sólidas de 
-                        conocimiento en todas las áreas fundamentales.
-                    </p>
-                    <ul class="card-list">
-                        <li>Lengua y Literatura</li>
-                        <li>Matemática</li>
-                        <li>Ciencias Naturales</li>
-                        <li>Ciencias Sociales</li>
-                        <li>Educación Artística</li>
-                    </ul>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Duración:</strong> 1 año</span>
-                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+                <div class="image-placeholder ciclos-image-item">
+                    <div>
+                        <div class="image-placeholder-icon">✍️</div>
+                        <strong>Segundo Ciclo</strong><br>
+                        Estudiantes trabajando en grupo<br>
+                        500x400px
                     </div>
                 </div>
-                <div class="card animate-slide-in-left" style="animation-delay: 0.2s;">
-                    <div class="card-icon">🎓</div>
-                    <h3 class="card-title">Segundo Ciclo</h3>
-                    <p class="card-description">
-                        Equivalente a 4°, 5° y 6° grado. Consolida tus conocimientos 
-                        y prepárate para continuar con la educación secundaria.
-                    </p>
-                    <ul class="card-list">
-                        <li>Lengua y Literatura Avanzada</li>
-                        <li>Matemática Aplicada</li>
-                        <li>Ciencias Naturales</li>
-                        <li>Ciencias Sociales</li>
-                        <li>Educación Artística</li>
-                        <li>Educación Física</li>
+                <div class="image-placeholder ciclos-image-item">
+                    <div>
+                        <div class="image-placeholder-icon">🎯</div>
+                        <strong>Tercer Ciclo</strong><br>
+                        Estudiantes en examen o presentación<br>
+                        500x400px
+                    </div>
+                </div>
+            </div>
+
+            <div class="cycles-grid">
+                <div class="cycle-card">
+                    <div class="cycle-number">1°</div>
+                    <h3>Primer Ciclo</h3>
+                    <p class="cycle-subtitle">Alfabetización Inicial</p>
+                    <ul class="cycle-features">
+                        <li>✓ Lectoescritura básica</li>
+                        <li>✓ Matemática elemental</li>
+                        <li>✓ Ciencias naturales introductorias</li>
+                        <li>✓ Ciencias sociales básicas</li>
                     </ul>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Duración:</strong> 1 año</span>
-                        <span class="card-meta-item"><strong>Modalidad:</strong> Presencial</span>
+                    <div class="cycle-duration">
+                        Duración: 2 años
+                    </div>
+                </div>
+
+                <div class="cycle-card featured">
+                    <div class="cycle-badge">Más Popular</div>
+                    <div class="cycle-number">2°</div>
+                    <h3>Segundo Ciclo</h3>
+                    <p class="cycle-subtitle">Formación Intermedia</p>
+                    <ul class="cycle-features">
+                        <li>✓ Comprensión lectora avanzada</li>
+                        <li>✓ Matemática aplicada</li>
+                        <li>✓ Ciencias naturales</li>
+                        <li>✓ Geografía e historia</li>
+                        <li>✓ Educación cívica</li>
+                    </ul>
+                    <div class="cycle-duration">
+                        Duración: 2 años
+                    </div>
+                </div>
+
+                <div class="cycle-card">
+                    <div class="cycle-number">3°</div>
+                    <h3>Tercer Ciclo</h3>
+                    <p class="cycle-subtitle">Finalización Primaria</p>
+                    <ul class="cycle-features">
+                        <li>✓ Lengua y literatura</li>
+                        <li>✓ Matemática avanzada</li>
+                        <li>✓ Ciencias completas</li>
+                        <li>✓ Formación ética y ciudadana</li>
+                        <li>✓ Preparación para secundaria</li>
+                    </ul>
+                    <div class="cycle-duration">
+                        Duración: 2 años
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Galería de Fotos Section -->
+    <section id="galeria" class="gallery-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Nuestros Momentos</div>
+                <h2 class="section-title">Galería de Fotos</h2>
+                <p class="section-description">
+                    Conoce nuestra comunidad educativa
+                </p>
+            </div>
 
+            <!-- GALERÍA DE IMÁGENES -->
+            <div class="gallery-grid">
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Aula de Clases</strong><br>
+                        600x400px
+                    </div>
+                </div>
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Acto de Graduación</strong><br>
+                        600x400px
+                    </div>
+                </div>
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Biblioteca</strong><br>
+                        600x400px
+                    </div>
+                </div>
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Taller de Computación</strong><br>
+                        600x400px
+                    </div>
+                </div>
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Actividad Grupal</strong><br>
+                        600x400px
+                    </div>
+                </div>
+                <div class="image-placeholder gallery-item">
+                    <div>
+                        <div class="image-placeholder-icon">📷</div>
+                        <strong>Ceremonia de Entrega</strong><br>
+                        600x400px
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipo Docente Section -->
+    <section id="equipo" class="section section-light">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Nuestro Equipo</div>
+                <h2 class="section-title">Profesionales Comprometidos</h2>
+                <p class="section-description">
+                    Docentes con amplia experiencia en educación de adultos
+                </p>
+            </div>
+
+            <!-- FOTOS DEL EQUIPO -->
+            <div class="staff-grid">
+                <div style="text-align: center;">
+                    <div class="image-placeholder staff-photo">
+                        <div>
+                            <div class="image-placeholder-icon">👨‍🏫</div>
+                            <strong>Director/a</strong><br>
+                            Foto profesional<br>
+                            400x500px
+                        </div>
+                    </div>
+                    <h4>Director/a</h4>
+                    <p style="color: #666;">Gestión y Coordinación</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder staff-photo">
+                        <div>
+                            <div class="image-placeholder-icon">👩‍🏫</div>
+                            <strong>Prof. de Lengua</strong><br>
+                            Foto profesional<br>
+                            400x500px
+                        </div>
+                    </div>
+                    <h4>Profesor/a de Lengua</h4>
+                    <p style="color: #666;">Área Lengua y Literatura</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder staff-photo">
+                        <div>
+                            <div class="image-placeholder-icon">👨‍🏫</div>
+                            <strong>Prof. de Matemática</strong><br>
+                            Foto profesional<br>
+                            400x500px
+                        </div>
+                    </div>
+                    <h4>Profesor/a de Matemática</h4>
+                    <p style="color: #666;">Área Matemática</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <div class="image-placeholder staff-photo">
+                        <div>
+                            <div class="image-placeholder-icon">👩‍🏫</div>
+                            <strong>Prof. de Ciencias</strong><br>
+                            Foto profesional<br>
+                            400x500px
+                        </div>
+                    </div>
+                    <h4>Profesor/a de Ciencias</h4>
+                    <p style="color: #666;">Ciencias Naturales y Sociales</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programas Section -->
+    <section id="programas" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Apoyo Integral</div>
+                <h2 class="section-title">Programas Especiales</h2>
+                <p class="section-description">
+                    Servicios complementarios para tu desarrollo
+                </p>
+            </div>
+
+            <div class="programs-grid">
+                <div class="program-card">
+                    <div class="program-icon">💻</div>
+                    <h3>Alfabetización Digital</h3>
+                    <p>
+                        Aprende a usar computadoras, internet y herramientas digitales 
+                        esenciales para el mundo actual.
+                    </p>
+                    <ul>
+                        <li>✓ Manejo de PC básico</li>
+                        <li>✓ Internet y email</li>
+                        <li>✓ Redes sociales seguras</li>
+                        <li>✓ Trámites online</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">🎨</div>
+                    <h3>Talleres Creativos</h3>
+                    <p>
+                        Desarrolla tus habilidades artísticas y manuales mientras aprendes 
+                        de forma entretenida.
+                    </p>
+                    <ul>
+                        <li>✓ Arte y manualidades</li>
+                        <li>✓ Teatro y expresión</li>
+                        <li>✓ Música y canto</li>
+                        <li>✓ Lectura recreativa</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">💼</div>
+                    <h3>Orientación Laboral</h3>
+                    <p>
+                        Te ayudamos a mejorar tus oportunidades de empleo con capacitación 
+                        específica y orientación profesional.
+                    </p>
+                    <ul>
+                        <li>✓ Armado de CV</li>
+                        <li>✓ Búsqueda de empleo</li>
+                        <li>✓ Preparación para entrevistas</li>
+                        <li>✓ Emprendedurismo básico</li>
+                    </ul>
+                </div>
+
+                <div class="program-card">
+                    <div class="program-icon">🏥</div>
+                    <h3>Educación para la Salud</h3>
+                    <p>
+                        Talleres sobre salud, alimentación, prevención y bienestar general 
+                        para toda la familia.
+                    </p>
+                    <ul>
+                        <li>✓ Salud y prevención</li>
+                        <li>✓ Alimentación saludable</li>
+                        <li>✓ Actividad física</li>
+                        <li>✓ Primeros auxilios</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios Section -->
+    <section id="testimonios" class="section section-light">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Historias Reales</div>
+                <h2 class="section-title">Lo Que Dicen Nuestros Estudiantes</h2>
+                <p class="section-description">
+                    Experiencias que inspiran y motivan
+                </p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <!-- FOTO DEL TESTIMONIO -->
+                    <div class="image-placeholder testimonials-image">
+                        <div style="font-size: 32px;">👤</div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Después de 30 años, decidí volver a estudiar. La EPA 703 me dio la confianza 
+                        y el apoyo que necesitaba. Hoy tengo mi certificado primario y estoy cursando 
+                        la secundaria. ¡Nunca es tarde!"
+                    </p>
+                    <h4>María González</h4>
+                    <p class="testimonial-role">Graduada 2023</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="image-placeholder testimonials-image">
+                        <div style="font-size: 32px;">👤</div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Los profesores son muy pacientes y comprenden nuestras dificultades. 
+                        Me ayudaron no solo con las materias, sino también con la confianza en mí mismo. 
+                        Es una gran familia."
+                    </p>
+                    <h4>Carlos Rodríguez</h4>
+                    <p class="testimonial-role">Estudiante de 3er Ciclo</p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="image-placeholder testimonials-image">
+                        <div style="font-size: 32px;">👤</div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Empecé sin saber leer ni escribir bien. Ahora puedo ayudar a mis nietos con 
+                        la tarea y leer cuentos. Fue el mejor regalo que me pude hacer a mí misma."
+                    </p>
+                    <h4>Rosa Fernández</h4>
+                    <p class="testimonial-role">Graduada 2024</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Servicios Section -->
     <section id="servicios" class="section">
         <div class="container">
             <div class="section-header">
-                <div class="section-badge">Apoyo Integral</div>
-                <h2 class="section-title">Servicios Adicionales</h2>
-                <p class="section-subtitle">
-                    Brindamos apoyo completo para asegurar tu éxito académico y personal.
+                <div class="section-badge">Facilidades</div>
+                <h2 class="section-title">Servicios Disponibles</h2>
+                <p class="section-description">
+                    Todo lo que necesitas para tu formación
                 </p>
             </div>
-            <div class="grid grid-4">
-                <div class="card animate-fade-in-up">
-                    <div class="card-icon">🎯</div>
-                    <h3 class="card-title">Orientación Vocacional</h3>
-                    <p class="card-description">
-                        Asesoramiento profesional para planificar tu futuro educativo 
-                        y laboral después de completar la primaria.
-                    </p>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Horario:</strong> Mar y Jue 14:00-18:00</span>
-                    </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📚</div>
+                    <h3>Biblioteca</h3>
+                    <p>Material de estudio gratuito y espacio para consulta</p>
                 </div>
-                <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
-                    <div class="card-icon">🧠</div>
-                    <h3 class="card-title">Apoyo Psicopedagógico</h3>
-                    <p class="card-description">
-                        Acompañamiento especializado para superar dificultades 
-                        de aprendizaje y desarrollar estrategias efectivas.
-                    </p>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Horario:</strong> Lun a Vie 16:00-20:00</span>
-                    </div>
+
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>Sala de Informática</h3>
+                    <p>Computadoras con internet para trabajos y consultas</p>
                 </div>
-                <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="card-icon">🔧</div>
-                    <h3 class="card-title">Talleres de Capacitación</h3>
-                    <p class="card-description">
-                        Cursos prácticos de oficios y habilidades laborales 
-                        para complementar tu formación académica.
-                    </p>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Horario:</strong> Sábados 8:00-12:00</span>
-                    </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🏥</div>
+                    <h3>Gabinete Psicopedagógico</h3>
+                    <p>Acompañamiento y orientación personalizada</p>
                 </div>
-                <div class="card animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <div class="card-icon">📚</div>
-                    <h3 class="card-title">Biblioteca Digital</h3>
-                    <p class="card-description">
-                        Acceso a material de estudio, computadoras e internet 
-                        para apoyar tu proceso de aprendizaje.
-                    </p>
-                    <div class="card-meta">
-                        <span class="card-meta-item"><strong>Horario:</strong> Lun a Vie 18:00-22:00</span>
-                    </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🍽️</div>
+                    <h3>Copa de Leche</h3>
+                    <p>Merienda incluida para estudiantes del turno noche</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📋</div>
+                    <h3>Certificados Oficiales</h3>
+                    <p>Validez nacional en todos tus certificados</p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🎓</div>
+                    <h3>Apoyo Escolar</h3>
+                    <p>Clases de apoyo y tutorías personalizadas</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contacto Section -->
-    <section id="contacto" class="section contact-section">
+    <!-- Inscripción Section -->
+    <section id="inscripcion" class="section section-light">
         <div class="container">
             <div class="section-header">
-                <div class="section-badge">Comienza Hoy</div>
-                <h2 class="section-title">Contacto</h2>
-                <p class="section-subtitle">
-                    Estamos aquí para ayudarte a dar el primer paso hacia tu futuro educativo.
+                <div class="section-badge">¡Sumate!</div>
+                <h2 class="section-title">Proceso de Inscripción</h2>
+                <p class="section-description">
+                    Pasos simples para comenzar tu educación
                 </p>
             </div>
+
+            <div class="inscription-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Consulta Inicial</h3>
+                    <p>Contactanos por teléfono, email o visitanos personalmente</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Evaluación de Nivel</h3>
+                    <p>Una charla informal para conocer tu nivel actual</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Documentación</h3>
+                    <p>DNI, certificado de domicilio y cualquier certificado educativo previo</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>¡Comienza!</h3>
+                    <p>Asignación de curso y horarios según tu disponibilidad</p>
+                </div>
+            </div>
+
+            <div class="cta-box">
+                <h3>¿Listo para dar el primer paso?</h3>
+                <p>Las inscripciones están abiertas todo el año</p>
+                <a href="#contacto" class="btn btn-primary">Inscribirme Ahora</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section id="contacto" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">Comunicate</div>
+                <h2 class="section-title">Contacto</h2>
+                <p class="section-description">
+                    Estamos para ayudarte
+                </p>
+            </div>
+
             <div class="contact-grid">
                 <div class="contact-info">
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon">📍</div>
-                            <h3 class="info-card-title">Ubicación</h3>
-                        </div>
-                        <div class="info-card-content">
-                            <p>
-                                Av. Educación 1234<br>
-                                Ciudad Educativa, Buenos Aires<br>
-                                Argentina (C1234ABC)
-                            </p>
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div>
+                            <h4>Dirección</h4>
+                            <p>Av. Educación 1234<br>Buenos Aires, Argentina</p>
                         </div>
                     </div>
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon">📞</div>
-                            <h3 class="info-card-title">Teléfono</h3>
-                        </div>
-                        <div class="info-card-content">
-                            <p>
-                                Principal: +54 11 1234-5678<br>
-                                Secundario: +54 11 8765-4321<br>
-                                WhatsApp: +54 9 11 1234-5678
-                            </p>
+
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div>
+                            <h4>Teléfono</h4>
+                            <p>+54 11 1234-5678</p>
                         </div>
                     </div>
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon">📧</div>
-                            <h3 class="info-card-title">Email</h3>
-                        </div>
-                        <div class="info-card-content">
-                            <p>
-                                <strong>Información:</strong> info@epa703.edu.ar<br>
-                                <strong>Inscripciones:</strong> inscripciones@epa703.edu.ar<br>
-                                <strong>Secretaría:</strong> secretaria@epa703.edu.ar<br><br>
-                                <a href="login.html" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">
-                                    🔐 Acceder al Sistema →
-                                </a>
-                            </p>
+
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcb5b2bab39cb9acbdebeceff2b9b8a9f2bdae">[email&#160;protected]</a></p>
                         </div>
                     </div>
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon">🕒</div>
-                            <h3 class="info-card-title">Horarios</h3>
+
+                    <div class="info-item">
+                        <div class="info-icon">🕒</div>
+                        <div>
+                            <h4>Horarios de Atención</h4>
+                            <p>Lunes a Viernes: 14:00 - 22:00<br>Turno Mañana: 08:00 - 12:00</p>
                         </div>
-                        <div class="info-card-content">
-                            <p>
-                                <strong>Clases:</strong><br>
-                                Lunes a Viernes: 18:00 - 22:00<br>
-                                Sábados: 8:00 - 12:00<br><br>
-                                <strong>Atención administrativa:</strong><br>
-                                Lunes a Viernes: 14:00 - 22:00
-                            </p>
+                    </div>
+
+                    <!-- ESPACIO PARA MAPA O IMAGEN DE UBICACIÓN -->
+                    <div class="image-placeholder" style="height: 300px; margin-top: 30px;">
+                        <div>
+                            <div class="image-placeholder-icon">🗺️</div>
+                            <strong>Mapa de Ubicación</strong><br>
+                            Google Maps embebido o<br>
+                            imagen de la ubicación<br>
+                            800x400px
                         </div>
                     </div>
                 </div>
-                <div class="contact-form">
-                    <h3 style="margin-bottom: var(--spacing-lg); color: var(--primary-color);">
-                        Envíanos tu consulta
-                    </h3>
-                    <form id="contactForm">
+
+                <div class="contact-form-container">
+                    <form id="contactForm" class="contact-form">
                         <div class="form-group">
                             <label for="nombre" class="form-label">Nombre Completo *</label>
-                            <input type="text" id="nombre" name="nombre" class="form-input" required>
+                            <input type="text" id="nombre" name="nombre" class="form-input" required placeholder="Tu nombre completo">
                         </div>
-                        <div class="form-group">
-                            <label for="email" class="form-label">Correo Electrónico *</label>
-                            <input type="email" id="email" name="email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="tel" id="telefono" name="telefono" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="edad" class="form-label">Edad</label>
-                            <input type="number" id="edad" name="edad" class="form-input" min="18" max="99">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" id="email" name="email" class="form-input" required placeholder="tu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono" class="form-label">Teléfono *</label>
+                                <input type="tel" id="telefono" name="telefono" class="form-input" required placeholder="11 1234-5678">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="consulta" class="form-label">Tipo de Consulta *</label>
                             <select id="consulta" name="consulta" class="form-input" required>
-                                <option value="">Seleccionar tipo de consulta</option>
-                                <option value="inscripcion">Información sobre inscripción</option>
-                                <option value="ciclos">Consulta sobre ciclos educativos</option>
+                                <option value="">Selecciona una opción...</option>
+                                <option value="inscripcion">Inscripción</option>
                                 <option value="horarios">Consulta sobre horarios</option>
                                 <option value="requisitos">Requisitos de ingreso</option>
                                 <option value="certificados">Trámite de certificados</option>
@@ -410,6 +824,10 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
+                    <!-- LOGO EN FOOTER -->
+                    <div class="image-placeholder" style="width: 80px; height: 80px; min-height: 80px; margin-bottom: 20px;">
+                        <span style="font-size: 32px;">🎓</span>
+                    </div>
                     <h3>EPA 703</h3>
                     <p>
                         Escuela Primaria para Adultos comprometida con la educación 
@@ -424,6 +842,7 @@
                         <li><a href="#nosotros">Nosotros</a></li>
                         <li><a href="#ciclos">Ciclos Educativos</a></li>
                         <li><a href="#programas">Programas</a></li>
+                        <li><a href="#galeria">Galería</a></li>
                         <li><a href="#servicios">Servicios</a></li>
                         <li><a href="#contacto">Contacto</a></li>
                     </ul>
@@ -442,8 +861,8 @@
                     <h4>Contacto</h4>
                     <p>📍 Av. Educación 1234, Buenos Aires</p>
                     <p>📞 +54 11 1234-5678</p>
-                    <p>📧 info@epa703.edu.ar</p>
-                    <p>🕒 Lun a Vie: 18:00 - 22:00</p>
+                    <p>📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8de4e3ebe2cde8fdecbabdbea3e8e9f8a3ecff">[email&#160;protected]</a></p>
+                    <p>🕒 Lun a Vie: 14:00 - 22:00</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -452,7 +871,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Navegación mejorada
         document.addEventListener('DOMContentLoaded', function() {
             const header = document.getElementById('header');
@@ -479,7 +898,7 @@
             navLinks.forEach(link => {
                 link.addEventListener('click', function() {
                     navMenu.classList.remove('active');
-                    navToggle.classList.remove('active');
+                    navToggle.classList.toggle('active');
                 });
             });
             
@@ -505,365 +924,60 @@
                 observer.observe(section);
             });
             
-            // Smooth scrolling (excluir botón de login)
-navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-        // Solo aplicar smooth scroll a enlaces con anclas (#)
-        const href = this.getAttribute('href');
-        if (href.startsWith('#')) {
-            e.preventDefault();
-            const targetId = href.substring(1);
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-        // Si no es un enlace con ancla (como login.html), permitir navegación normal
-    });
-});
-           // REEMPLAZAR todo el bloque de "Form handling" en index.html con este código:
-
-// Form handling - VERSIÓN CORREGIDA
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        console.log('Formulario interceptado correctamente');
-        
-        // Limpiar errores anteriores
-        clearFormErrors();
-        
-        // Recolectar datos del formulario
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData.entries());
-        
-        console.log('Datos del formulario:', data);
-        
-        // Validar campos requeridos
-        let isValid = true;
-        
-        if (!data.nombre || data.nombre.trim().length < 2) {
-            showFieldError('nombre', 'El nombre debe tener al menos 2 caracteres');
-            isValid = false;
-        }
-        
-        if (!data.email || !isValidEmail(data.email)) {
-            showFieldError('email', 'Ingresa un email válido');
-            isValid = false;
-        }
-        
-        if (!data.consulta) {
-            showFieldError('consulta', 'Selecciona un tipo de consulta');
-            isValid = false;
-        }
-        
-        if (!data.mensaje || data.mensaje.trim().length < 10) {
-            showFieldError('mensaje', 'El mensaje debe tener al menos 10 caracteres');
-            isValid = false;
-        }
-        
-        // Si la validación pasa, enviar formulario
-        if (isValid) {
-            submitForm(data);
-        } else {
-            console.log('Validación falló');
-        }
-    });
-}
-
-// Función para validar email
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-// Mostrar errores en campos
-function showFieldError(fieldName, message) {
-    const field = document.getElementById(fieldName);
-    if (!field) return;
-    
-    const formGroup = field.closest('.form-group');
-    
-    // Remover error existente
-    const existingError = formGroup.querySelector('.error-message');
-    if (existingError) {
-        existingError.remove();
-    }
-    
-    // Agregar mensaje de error
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.style.color = '#e53e3e';
-    errorDiv.style.fontSize = '0.9rem';
-    errorDiv.style.marginTop = '0.5rem';
-    errorDiv.textContent = message;
-    
-    formGroup.appendChild(errorDiv);
-    field.style.borderColor = '#e53e3e';
-}
-
-// Limpiar errores del formulario
-function clearFormErrors() {
-    const errorMessages = document.querySelectorAll('.error-message');
-    errorMessages.forEach(error => error.remove());
-    
-    const inputs = document.querySelectorAll('.form-group input, .form-group select, .form-group textarea');
-    inputs.forEach(input => {
-        input.style.borderColor = '#e2e8f0';
-    });
-}
-
-// Función principal de envío del formulario
-async function submitForm(data) {
-    const submitButton = document.querySelector('#contactForm button[type="submit"]');
-    const originalContent = submitButton.innerHTML;
-    
-    try {
-        // Mostrar estado de carga
-        submitButton.innerHTML = `
-            <span style="display: flex; align-items: center; gap: 8px; justify-content: center;">
-                <span style="animation: spin 1s linear infinite;">⏳</span>
-                Enviando consulta...
-            </span>
-        `;
-        submitButton.disabled = true;
-        
-        console.log('Enviando datos al servidor...');
-        
-        // Enviar datos al servidor PHP
-        const response = await fetch('forms/contact.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        
-        console.log('Respuesta del servidor:', response.status, response.statusText);
-        
-        // Verificar si la respuesta es válida
-        if (!response.ok) {
-            throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
-        }
-        
-        // Parsear respuesta JSON
-        const result = await response.json();
-        console.log('Resultado parseado:', result);
-        
-        if (result.success) {
-            // Éxito - mostrar mensaje y limpiar formulario
-            showSuccessMessage(result.message);
-            document.getElementById('contactForm').reset();
-            clearFormErrors();
-            
-            // Scroll suave hacia arriba para mostrar notificación
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-        } else {
-            // Error del servidor con mensaje específico
-            throw new Error(result.error || 'Error desconocido del servidor');
-        }
-        
-    } catch (error) {
-        console.error('Error al enviar formulario:', error);
-        
-        // Determinar mensaje de error apropiado
-        let errorMessage = 'Error de conexión. Verifica tu internet e intenta nuevamente.';
-        
-        if (error.message.includes('Error del servidor')) {
-            errorMessage = 'Error del servidor. Intenta nuevamente en unos minutos.';
-        } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-            errorMessage = 'Sin conexión a internet. Verifica tu conexión.';
-        } else if (error.message.length > 0 && error.message.length < 200) {
-            // Usar mensaje de error específico si es razonable
-            errorMessage = error.message;
-        }
-        
-        showErrorMessage(errorMessage);
-        
-    } finally {
-        // Restaurar botón original
-        submitButton.innerHTML = originalContent;
-        submitButton.disabled = false;
-    }
-}
-
-// Mostrar mensaje de éxito
-function showSuccessMessage(message = 'Mensaje enviado correctamente') {
-    // Remover notificaciones existentes
-    removeExistingNotifications();
-    
-    const notification = document.createElement('div');
-    notification.className = 'success-notification';
-    notification.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);
-            transform: translateX(120%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        ">
-            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <div style="font-size: 24px; flex-shrink: 0;">✅</div>
-                <div>
-                    <div style="font-weight: 600; margin-bottom: 4px;">¡Consulta enviada!</div>
-                    <div style="font-size: 14px; opacity: 0.9;">${message}</div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animar entrada
-    setTimeout(() => {
-        notification.firstElementChild.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Auto-remover después de 6 segundos
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.firstElementChild.style.transform = 'translateX(120%)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 400);
-        }
-    }, 6000);
-}
-
-// Mostrar mensaje de error
-function showErrorMessage(message) {
-    // Remover notificaciones existentes
-    removeExistingNotifications();
-    
-    const notification = document.createElement('div');
-    notification.className = 'error-notification';
-    notification.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(229, 62, 62, 0.3);
-            transform: translateX(120%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        ">
-            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <div style="font-size: 24px; flex-shrink: 0;">⚠️</div>
-                <div>
-                    <div style="font-weight: 600; margin-bottom: 4px;">Error al enviar</div>
-                    <div style="font-size: 14px; opacity: 0.9;">${message}</div>
-                </div>
-                <button onclick="this.closest('div.error-notification').remove()" style="
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 18px;
-                    cursor: pointer;
-                    opacity: 0.7;
-                    flex-shrink: 0;
-                    padding: 0;
-                    margin-left: 8px;
-                ">×</button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Animar entrada
-    setTimeout(() => {
-        notification.firstElementChild.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Auto-remover después de 8 segundos
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.firstElementChild.style.transform = 'translateX(120%)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 400);
-        }
-    }, 8000);
-}
-
-// Remover notificaciones existentes
-function removeExistingNotifications() {
-    const existingNotifications = document.querySelectorAll('.success-notification, .error-notification');
-    existingNotifications.forEach(notification => {
-        notification.remove();
-    });
-}
-
-// Agregar estilos CSS para la animación de carga
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
-            // Notification system
-            function showNotification(message, type = 'success') {
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.classList.add('show');
-                }, 100);
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
-                }, 5000);
-            }
-            
-            // Animate elements on scroll
-            const animateElements = document.querySelectorAll('.animate-fade-in-up, .animate-slide-in-left');
-            const animateObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
+            // Smooth scrolling
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href.startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = href.substring(1);
+                        const targetSection = document.getElementById(targetId);
+                        if (targetSection) {
+                            targetSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
                     }
                 });
-            }, {
-                threshold: 0.1
             });
-            
-            animateElements.forEach(element => {
-                element.style.opacity = '0';
-                element.style.transform = 'translateY(30px)';
-                animateObserver.observe(element);
-            });
+
+            // Form handling
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(this);
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.innerHTML;
+                    
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '⏳ Enviando...';
+                    
+                    try {
+                        const response = await fetch('forms/contact.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            alert('✅ ¡Mensaje enviado exitosamente! Nos pondremos en contacto pronto.');
+                            this.reset();
+                        } else {
+                            throw new Error(result.message || 'Error al enviar el mensaje');
+                        }
+                    } catch (error) {
+                        alert('❌ Hubo un error al enviar el mensaje. Por favor, intenta nuevamente o contáctanos por teléfono.');
+                        console.error('Error:', error);
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    }
+                });
+            }
         });
     </script>
 </body>
