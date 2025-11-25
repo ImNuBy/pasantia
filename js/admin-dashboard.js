@@ -1244,3 +1244,704 @@ function showNotification(message, type = 'info') {
 }
 
 console.log('✅ Módulos de Reportes y Configuración cargados correctamente');
+
+
+/* ================================================================
+   INSCRIPCIONES - Funciones Completas
+================================================================ */
+
+
+
+/**
+ * Cargar inscripciones desde la API
+ */
+async function loadInscripciones() {
+    showLoading();
+    try {
+        const response = await fetch('api/inscripciones.php');
+        const data = await response.json();
+        
+        if (data.success) {
+            inscripciones = data.inscripciones;
+            renderInscripcionesTable();
+            updateInscripcionesStats();
+            updateInscripcionesBadge();
+        } else {
+            console.error('Error cargando inscripciones:', data.error);
+            showExampleInscripciones();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showExampleInscripciones();
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Renderizar tabla de inscripciones
+ */
+function renderInscripcionesTable() {
+    const tbody = document.getElementById('inscripcionesTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    inscripciones.forEach(inscripcion => {
+        tbody.appendChild(createInscripcionRow(inscripcion));
+    });
+}
+
+/**
+ * Crear fila de inscripción
+ */
+function createInscripcionRow(inscripcion) {
+    const row = document.createElement('tr');
+    
+    const estadoBadge = getEstadoInscripcionBadge(inscripcion.estado);
+    const cicloNombre = getCicloNombre(inscripcion.ciclo);
+    const documentosBadge = inscripcion.archivo_dni ? 
+        '<span class="badge badge-success">✓</span>' : 
+        '<span class="badge badge-danger">✗</span>';
+    
+    row.innerHTML = `
+        <td>${inscripcion.numero_seguimiento || inscripcion.id}</td>
+        <td>${inscripcion.nombre} ${inscripcion.apellido}</td>
+        <td>${inscripcion.email}</td>
+        <td>${inscripcion.dni}</td>
+        <td>${cicloNombre}</td>
+        <td>${estadoBadge}</td>
+        <td>${formatDate(inscripcion.fecha_creacion)}</td>
+        <td>${documentosBadge}</td>
+        <td>
+            <div class="action-buttons">
+                <button class="btn btn-sm btn-primary" onclick="verDetalleInscripcion(${inscripcion.id})" title="Ver detalles">👁️</button>
+                <button class="btn btn-sm btn-success" onclick="aprobarInscripcion(${inscripcion.id})" title="Aprobar" ${inscripcion.estado !== 'pendiente' ? 'disabled' : ''}>✓</button>
+                <button class="btn btn-sm btn-danger" onclick="rechazarInscripcion(${inscripcion.id})" title="Rechazar" ${inscripcion.estado !== 'pendiente' ? 'disabled' : ''}>✗</button>
+                <button class="btn btn-sm btn-info" onclick="descargarDocumentos(${inscripcion.id})" title="Descargar documentos">📁</button>
+            </div>
+        </td>
+    `;
+    
+    return row;
+}
+
+/**
+ * Obtener badge de estado de inscripción
+ */
+function getEstadoInscripcionBadge(estado) {
+    const badges = {
+        'pendiente': '<span class="badge badge-warning">Pendiente</span>',
+        'aprobada': '<span class="badge badge-success">Aprobada</span>',
+        'rechazada': '<span class="badge badge-danger">Rechazada</span>',
+        'en_revision': '<span class="badge badge-info">En Revisión</span>'
+    };
+    return badges[estado] || '<span class="badge badge-secondary">Desconocido</span>';
+}
+
+/**
+ * Obtener nombre del ciclo
+ */
+function getCicloNombre(cicloId) {
+    const ciclos = {
+        '1': 'Primer Ciclo',
+        '2': 'Segundo Ciclo',
+        '3': 'Tercer Ciclo'
+    };
+    return ciclos[cicloId] || 'No especificado';
+}
+
+/**
+ * Actualizar estadísticas de inscripciones
+ */
+function updateInscripcionesStats() {
+    const total = inscripciones.length;
+    const pendientes = inscripciones.filter(i => i.estado === 'pendiente').length;
+    const aprobadas = inscripciones.filter(i => i.estado === 'aprobada').length;
+    const rechazadas = inscripciones.filter(i => i.estado === 'rechazada').length;
+    const hoy = inscripciones.filter(i => {
+        const fecha = new Date(i.fecha_creacion);
+        const hoy = new Date();
+        return fecha.toDateString() === hoy.toDateString();
+    }).length;
+    
+    updateCounter('inscripcionesTotales', total);
+    updateCounter('inscripcionesPendientesCount', pendientes);
+    updateCounter('inscripcionesAprobadas', aprobadas);
+    updateCounter('inscripcionesRechazadas', rechazadas);
+    updateCounter('inscripcionesHoy', hoy);
+}
+
+/**
+ * Actualizar badge de inscripciones
+ */
+function updateInscripcionesBadge() {
+    const pendientes = inscripciones.filter(i => i.estado === 'pendiente').length;
+    const badge = document.getElementById('inscripcionesBadge');
+    if (badge) {
+        badge.textContent = pendientes;
+        badge.classList.toggle('show', pendientes > 0);
+    }
+}
+
+/**
+ * Mostrar datos de ejemplo para inscripciones
+ */
+function showExampleInscripciones() {
+    inscripciones = [
+        {
+            id: 1,
+            numero_seguimiento: 'INS-20241115-ABC123',
+            nombre: 'Juan',
+            apellido: 'Pérez',
+            email: 'juan.perez@email.com',
+            dni: '12345678',
+            ciclo: '1',
+            estado: 'pendiente',
+            fecha_creacion: '2024-11-15',
+            archivo_dni: 'dni_12345678_1234567890.jpg'
+        },
+        {
+            id: 2,
+            numero_seguimiento: 'INS-20241114-DEF456',
+            nombre: 'María',
+            apellido: 'González',
+            email: 'maria.gonzalez@email.com',
+            dni: '87654321',
+            ciclo: '2',
+            estado: 'aprobada',
+            fecha_creacion: '2024-11-14',
+            archivo_dni: 'dni_87654321_1234567890.jpg'
+        },
+        {
+            id: 3,
+            numero_seguimiento: 'INS-20241113-GHI789',
+            nombre: 'Carlos',
+            apellido: 'Rodríguez',
+            email: 'carlos.rodriguez@email.com',
+            dni: '11223344',
+            ciclo: '3',
+            estado: 'rechazada',
+            fecha_creacion: '2024-11-13',
+            archivo_dni: 'dni_11223344_1234567890.jpg'
+        }
+    ];
+    renderInscripcionesTable();
+    updateInscripcionesStats();
+}
+
+/**
+ * Filtrar inscripciones
+ */
+function filtrarInscripciones() {
+    const estadoFiltro = document.getElementById('filtroEstadoInscripcion')?.value || '';
+    const cicloFiltro = document.getElementById('filtroOrientacion')?.value || '';
+    const anioFiltro = document.getElementById('filtroAnio')?.value || '';
+    const busqueda = document.getElementById('buscarInscripcion')?.value.toLowerCase() || '';
+    
+    const inscripcionesFiltradas = inscripciones.filter(inscripcion => {
+        const cumpleEstado = !estadoFiltro || inscripcion.estado === estadoFiltro;
+        const cumpleCiclo = !cicloFiltro || inscripcion.ciclo === cicloFiltro;
+        const cumpleAnio = !anioFiltro || inscripcion.fecha_creacion.startsWith(anioFiltro);
+        const cumpleBusqueda = !busqueda || 
+            inscripcion.nombre.toLowerCase().includes(busqueda) ||
+            inscripcion.apellido.toLowerCase().includes(busqueda) ||
+            inscripcion.email.toLowerCase().includes(busqueda) ||
+            inscripcion.dni.includes(busqueda) ||
+            (inscripcion.numero_seguimiento && inscripcion.numero_seguimiento.toLowerCase().includes(busqueda));
+        
+        return cumpleEstado && cumpleCiclo && cumpleAnio && cumpleBusqueda;
+    });
+    
+    renderInscripcionesTableFiltered(inscripcionesFiltradas);
+}
+
+/**
+ * Renderizar tabla de inscripciones filtradas
+ */
+function renderInscripcionesTableFiltered(inscripcionesFiltradas) {
+    const tbody = document.getElementById('inscripcionesTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    inscripcionesFiltradas.forEach(inscripcion => {
+        tbody.appendChild(createInscripcionRow(inscripcion));
+    });
+}
+
+/**
+ * Ver detalles completos de una inscripción
+ */
+async function verDetalleInscripcion(id) {
+    const inscripcion = inscripciones.find(i => i.id === id);
+    if (!inscripcion) return;
+    
+    try {
+        // Cargar detalles completos desde la API
+        const response = await fetch(`api/inscripcion-detalle.php?id=${id}`);
+        const data = await response.json();
+        
+        const detalle = data.success ? data.inscripcion : inscripcion;
+        
+        // Crear modal con detalles
+        const modalContent = `
+            <div class="modal-header">
+                <h3>Detalles de Inscripción #${detalle.numero_seguimiento || detalle.id}</h3>
+                <button class="modal-close" onclick="closeModal('detalleInscripcion')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detalle-grid">
+                    <div class="detalle-section">
+                        <h4>📋 Datos Personales</h4>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Nombre completo:</span>
+                            <span class="detalle-value">${detalle.nombre} ${detalle.apellido}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">DNI:</span>
+                            <span class="detalle-value">${detalle.dni}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Fecha de nacimiento:</span>
+                            <span class="detalle-value">${formatDate(detalle.fecha_nacimiento)}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Email:</span>
+                            <span class="detalle-value">${detalle.email}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Teléfono:</span>
+                            <span class="detalle-value">${detalle.telefono || 'No especificado'}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Dirección:</span>
+                            <span class="detalle-value">${detalle.direccion || 'No especificada'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detalle-section">
+                        <h4>🎓 Información Académica</h4>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Ciclo solicitado:</span>
+                            <span class="detalle-value">${getCicloNombre(detalle.ciclo)}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Turno preferido:</span>
+                            <span class="detalle-value">${detalle.turno || 'No especificado'}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Nivel educativo:</span>
+                            <span class="detalle-value">${detalle.nivel_educativo || 'No especificado'}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Motivación:</span>
+                            <span class="detalle-value">${detalle.motivacion || 'No especificada'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detalle-section">
+                        <h4>📄 Documentación</h4>
+                        <div class="detalle-row">
+                            <span class="detalle-label">DNI subido:</span>
+                            <span class="detalle-value">
+                                ${detalle.archivo_dni ? 
+                                    `<button class="btn btn-sm btn-primary" onclick="descargarDocumento('${detalle.archivo_dni}', 'dni')">Descargar DNI</button>` : 
+                                    'No subido'}
+                            </span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Certificado subido:</span>
+                            <span class="detalle-value">
+                                ${detalle.archivo_certificado ? 
+                                    `<button class="btn btn-sm btn-primary" onclick="descargarDocumento('${detalle.archivo_certificado}', 'certificado')">Descargar Certificado</button>` : 
+                                    'No subido'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="detalle-section">
+                        <h4>📊 Información del Proceso</h4>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Estado:</span>
+                            <span class="detalle-value">${getEstadoInscripcionBadge(detalle.estado)}</span>
+                        </div>
+                        <div class="detalle-row">
+                            <span class="detalle-label">Fecha de inscripción:</span>
+                            <span class="detalle-value">${formatDate(detalle.fecha_creacion)}</span>
+                        </div>
+                        ${detalle.fecha_revision ? `
+                        <div class="detalle-row">
+                            <span class="detalle-label">Fecha de revisión:</span>
+                            <span class="detalle-value">${formatDate(detalle.fecha_revision)}</span>
+                        </div>
+                        ` : ''}
+                        ${detalle.motivo_rechazo ? `
+                        <div class="detalle-row">
+                            <span class="detalle-label">Motivo de rechazo:</span>
+                            <span class="detalle-value" style="color: #dc3545;">${detalle.motivo_rechazo}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('detalleInscripcion')">Cerrar</button>
+                ${detalle.estado === 'pendiente' ? `
+                <button class="btn btn-success" onclick="aprobarInscripcion(${detalle.id})">Aprobar Inscripción</button>
+                <button class="btn btn-danger" onclick="rechazarInscripcion(${detalle.id})">Rechazar Inscripción</button>
+                ` : ''}
+            </div>
+        `;
+        
+        showModalWithContent('detalleInscripcion', modalContent);
+        
+    } catch (error) {
+        console.error('Error cargando detalles:', error);
+        showAlert('Error al cargar los detalles de la inscripción', 'error');
+    }
+}
+
+/**
+ * Aprobar una inscripción
+ */
+async function aprobarInscripcion(id) {
+    if (!confirm('¿Estás seguro de aprobar esta inscripción? Se creará un usuario de estudiante.')) {
+        return;
+    }
+    
+    showLoading();
+    try {
+        const response = await fetch('api/aprobar-inscripcion.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAlert('✅ Inscripción aprobada exitosamente', 'success');
+            closeModal('detalleInscripcion');
+            loadInscripciones(); // Recargar la lista
+        } else {
+            throw new Error(data.message || 'Error al aprobar la inscripción');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al aprobar inscripción: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Rechazar una inscripción
+ */
+async function rechazarInscripcion(id) {
+    const motivo = prompt('Ingresa el motivo del rechazo:');
+    if (motivo === null) return; // Usuario canceló
+    
+    if (!motivo.trim()) {
+        showAlert('Debes ingresar un motivo para rechazar la inscripción', 'warning');
+        return;
+    }
+    
+    showLoading();
+    try {
+        const response = await fetch('api/rechazar-inscripcion.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, motivo: motivo.trim() })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAlert('✅ Inscripción rechazada', 'success');
+            closeModal('detalleInscripcion');
+            loadInscripciones(); // Recargar la lista
+        } else {
+            throw new Error(data.message || 'Error al rechazar la inscripción');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al rechazar inscripción: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Descargar documentos de una inscripción
+ */
+async function descargarDocumentos(id) {
+    const inscripcion = inscripciones.find(i => i.id === id);
+    if (!inscripcion) return;
+    
+    showLoading();
+    try {
+        const response = await fetch(`api/descargar-documentos.php?id=${id}`);
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `documentos_${inscripcion.numero_seguimiento || inscripcion.id}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showAlert('📁 Documentos descargados exitosamente', 'success');
+        } else {
+            throw new Error('Error al descargar documentos');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al descargar documentos', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Descargar documento individual
+ */
+async function descargarDocumento(nombreArchivo, tipo) {
+    showLoading();
+    try {
+        const response = await fetch(`api/descargar-documento.php?archivo=${nombreArchivo}&tipo=${tipo}`);
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombreArchivo;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } else {
+            throw new Error('Error al descargar documento');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al descargar documento', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Procesar múltiples inscripciones
+ */
+async function procesarMasivo() {
+    const seleccionadas = obtenerInscripcionesSeleccionadas();
+    if (seleccionadas.length === 0) {
+        showAlert('Selecciona al menos una inscripción para procesar', 'warning');
+        return;
+    }
+    
+    const accion = prompt('Ingresa "aprobar" o "rechazar" para las inscripciones seleccionadas:');
+    if (!accion || (accion !== 'aprobar' && accion !== 'rechazar')) {
+        showAlert('Acción no válida', 'warning');
+        return;
+    }
+    
+    let motivo = '';
+    if (accion === 'rechazar') {
+        motivo = prompt('Ingresa el motivo del rechazo (para todas las inscripciones):');
+        if (motivo === null) return;
+    }
+    
+    showLoading();
+    try {
+        const response = await fetch('api/procesar-inscripciones-masivo.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ids: seleccionadas,
+                accion: accion,
+                motivo: motivo
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showAlert(`✅ ${seleccionadas.length} inscripciones ${accion === 'aprobar' ? 'aprobadas' : 'rechazadas'} exitosamente`, 'success');
+            loadInscripciones(); // Recargar la lista
+        } else {
+            throw new Error(data.message || 'Error al procesar inscripciones');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al procesar inscripciones: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Obtener inscripciones seleccionadas (para procesamiento masivo)
+ */
+function obtenerInscripcionesSeleccionadas() {
+    // Implementar lógica de selección si se agregan checkboxes
+    // Por ahora, devuelve un array vacío
+    return [];
+}
+
+/**
+ * Exportar inscripciones
+ */
+async function exportarInscripciones() {
+    showLoading();
+    try {
+        const filtros = {
+            estado: document.getElementById('filtroEstadoInscripcion')?.value || '',
+            ciclo: document.getElementById('filtroOrientacion')?.value || '',
+            anio: document.getElementById('filtroAnio')?.value || ''
+        };
+        
+        const queryParams = new URLSearchParams(filtros).toString();
+        const response = await fetch(`api/exportar-inscripciones.php?${queryParams}`);
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `inscripciones_epa703_${new Date().getTime()}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showAlert('📊 Inscripciones exportadas exitosamente', 'success');
+        } else {
+            throw new Error('Error al exportar inscripciones');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('❌ Error al exportar inscripciones', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+/**
+ * Mostrar modal con contenido personalizado
+ */
+function showModalWithContent(modalId, content) {
+    let modal = document.getElementById(modalId + 'Modal');
+    
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = modalId + 'Modal';
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                ${content}
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        modal.querySelector('.modal-content').innerHTML = content;
+    }
+    
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+}
+
+/**
+ * Cerrar modal
+ */
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId + 'Modal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
+}
+
+/**
+ * Cerrar todos los modales
+ */
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    });
+}
+
+// Agregar estilos CSS para los detalles
+const inscripcionesStyles = document.createElement('style');
+inscripcionesStyles.textContent = `
+    .detalle-grid {
+        display: grid;
+        gap: 20px;
+    }
+    
+    .detalle-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #1e3a2e;
+    }
+    
+    .detalle-section h4 {
+        margin: 0 0 15px 0;
+        color: #1e3a2e;
+        font-size: 16px;
+    }
+    
+    .detalle-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .detalle-row:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .detalle-label {
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .detalle-value {
+        color: #6c757d;
+        text-align: right;
+        max-width: 60%;
+    }
+    
+    .modal-footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 20px;
+        border-top: 1px solid #e0e0e0;
+        margin-top: 20px;
+    }
+    
+    @media (max-width: 768px) {
+        .detalle-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .detalle-value {
+            max-width: 100%;
+            text-align: left;
+        }
+    }
+`;
+document.head.appendChild(inscripcionesStyles);
+
+console.log('✅ Módulo de Inscripciones cargado correctamente');

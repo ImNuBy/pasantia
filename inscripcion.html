@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción - EPA 703</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a2e 0%, #2d5a45 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .inscripcion-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inscripcion-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #1e3a2e;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e3a2e;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #1e3a2e;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2d5a45;
+        }
+
+        .inscripcion-main {
+            flex: 1;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .inscripcion-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .inscripcion-header-card {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .inscripcion-header-card h1 {
+            color: #1e3a2e;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .inscripcion-header-card p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .progress-step.active .step-circle {
+            background: #1e3a2e;
+            color: white;
+        }
+
+        .progress-step.completed .step-circle {
+            background: #28a745;
+            color: white;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #1e3a2e;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1e3a2e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2d5a45;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .document-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .document-upload:hover {
+            border-color: #1e3a2e;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-size {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            color: #1e3a2e;
+            margin-bottom: 15px;
+        }
+
+        .success-message p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .inscripcion-card {
+                padding: 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 15px;
+            }
+            
+            .nav-links a {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="inscripcion-container">
+        <header class="inscripcion-header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">EPA</div>
+                    <span class="logo-text">703</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="index.html">Inicio</a>
+                    <a href="cursos.html">Cursos</a>
+                    <a href="contacto.html">Contacto</a>
+                    <a href="login.html">Acceder</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="inscripcion-main">
+            <div class="inscripcion-card">
+                <div class="inscripcion-header-card">
+                    <h1>Inscripción Online - EPA 703</h1>
+                    <p>Completa el formulario para inscribirte en nuestros programas educativos</p>
+                </div>
+
+                <!-- Barra de progreso -->
+                <div class="progress-bar">
+                    <div class="progress-step active" id="step1">
+                        <div class="step-circle">1</div>
+                        <span class="step-label">Datos Personales</span>
+                    </div>
+                    <div class="progress-step" id="step2">
+                        <div class="step-circle">2</div>
+                        <span class="step-label">Información Académica</span>
+                    </div>
+                    <div class="progress-step" id="step3">
+                        <div class="step-circle">3</div>
+                        <span class="step-label">Documentación</span>
+                    </div>
+                    <div class="progress-step" id="step4">
+                        <div class="step-circle">4</div>
+                        <span class="step-label">Confirmación</span>
+                    </div>
+                </div>
+
+                <!-- Formulario de inscripción -->
+                <form id="inscripcionForm">
+                    <!-- Paso 1: Datos Personales -->
+                    <div class="form-step active" id="step1-form">
+                        <h3>Datos Personales</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre">Nombre *</label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido">Apellido *</label>
+                                <input type="text" id="apellido" name="apellido" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dni">DNI *</label>
+                                <input type="text" id="dni" name="dni" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_nacimiento">Fecha de Nacimiento *</label>
+                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono *</label>
+                                <input type="tel" id="telefono" name="telefono" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="direccion">Dirección *</label>
+                            <input type="text" id="direccion" name="direccion" class="form-control" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <div></div> <!-- Espaciador -->
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Siguiente</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Información Académica -->
+                    <div class="form-step" id="step2-form">
+                        <h3>Información Académica</h3>
+                        
+                        <div class="form-group">
+                            <label for="ciclo">Ciclo de Interés *</label>
+                            <select id="ciclo" name="ciclo" class="form-control" required>
+                                <option value="">Seleccionar ciclo</option>
+                                <option value="1">Primer Ciclo - Alfabetización Inicial</option>
+                                <option value="2">Segundo Ciclo - Formación Intermedia</option>
+                                <option value="3">Tercer Ciclo - Finalización Primaria</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="turno">Turno Preferido *</label>
+                            <select id="turno" name="turno" class="form-control" required>
+                                <option value="">Seleccionar turno</option>
+                                <option value="mañana">Mañana</option>
+                                <option value="tarde">Tarde</option>
+                                <option value="noche">Noche</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nivel_educativo">Último Nivel Educativo Completado *</label>
+                            <select id="nivel_educativo" name="nivel_educativo" class="form-control" required>
+                                <option value="">Seleccionar nivel</option>
+                                <option value="ninguno">Sin estudios formales</option>
+                                <option value="primaria_incompleta">Primaria incompleta</option>
+                                <option value="primaria_completa">Primaria completa</option>
+                                <option value="secundaria_incompleta">Secundaria incompleta</option>
+                                <option value="secundaria_completa">Secundaria completa</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motivacion">Motivación para estudiar *</label>
+                            <textarea id="motivacion" name="motivacion" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Anterior</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Siguiente</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3: Documentación -->
+                    <div class="form-step" id="step3-form">
+                        <h3>Documentación Requerida</h3>
+                        <p>Sube los siguientes documentos en formato PDF o imagen (máx. 5MB cada uno):</p>
+
+                        <div class="document-upload" id="dniUpload">
+                            <div class="upload-icon">📄</div>
+                            <p class="upload-text">Foto/DNI (ambos lados) *</p>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('dniFile').click()">
+                                Seleccionar Archivo
+                            </button>
+                            <input type="file" id="dniFile" class="file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this, 'dni')">
+                        </div>
+
+                        <div class="document-upload" id="certificadoUpload">
+                            <div class="upload-icon">📄</div>
+                            <p class="upload-text">Certificado de Estudios (si corresponde)</p>
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('certificadoFile').click()">
+                                Seleccionar Archivo
+                            </button>
+                            <input type="file" id="certificadoFile" class="file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(this, 'certificado')">
+                        </div>
+
+                        <div class="file-list" id="fileList">
+                            <!-- Los archivos seleccionados aparecerán aquí -->
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Anterior</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(4)">Siguiente</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 4: Confirmación -->
+                    <div class="form-step" id="step4-form">
+                        <h3>Confirmación de Inscripción</h3>
+                        
+                        <div class="alert alert-info">
+                            <strong>Revisa tus datos:</strong> Asegúrate de que toda la información sea correcta antes de enviar.
+                        </div>
+
+                        <div id="resumenDatos">
+                            <!-- Los datos del formulario se mostrarán aquí -->
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="acepto_terminos" required>
+                                Acepto los <a href="#" onclick="mostrarTerminos()">términos y condiciones</a> y autorizo el tratamiento de mis datos *
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">Anterior</button>
+                            <button type="submit" class="btn btn-success">Enviar Inscripción</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Mensaje de éxito -->
+                <div class="form-step" id="success-step">
+                    <div class="success-message">
+                        <div class="success-icon">✅</div>
+                        <h2>¡Inscripción Enviada Exitosamente!</h2>
+                        <p>Hemos recibido tu solicitud de inscripción. Te contactaremos en un plazo de 48 horas para confirmar tu admisión.</p>
+                        <p><strong>Número de seguimiento: <span id="numeroSeguimiento"></span></strong></p>
+                        <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver al Inicio</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const uploadedFiles = {};
+
+        function updateProgressBar() {
+            // Reset all steps
+            document.querySelectorAll('.progress-step').forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+
+            // Mark previous steps as completed and current as active
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (i < currentStep) {
+                    step.classList.add('completed');
+                } else if (i === currentStep) {
+                    step.classList.add('active');
+                }
+            }
+        }
+
+        function showStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Show current step
+            const stepForm = document.getElementById(`step${stepNumber}-form`);
+            if (stepForm) {
+                stepForm.classList.add('active');
+            }
+
+            // Update progress bar
+            updateProgressBar();
+
+            // If we're on step 4, generate the summary
+            if (stepNumber === 4) {
+                generateSummary();
+            }
+        }
+
+        function nextStep(next) {
+            if (validateStep(currentStep)) {
+                currentStep = next;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep(prev) {
+            currentStep = prev;
+            showStep(currentStep);
+        }
+
+        function validateStep(step) {
+            const form = document.getElementById('inscripcionForm');
+            const inputs = form.querySelectorAll(`#step${step}-form [required]`);
+            
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '#ddd';
+                }
+            });
+
+            // Validación específica para el paso 3 (documentos)
+            if (step === 3 && !uploadedFiles.dni) {
+                alert('Debes subir una foto de tu DNI para continuar.');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                alert('Por favor, completa todos los campos obligatorios.');
+            }
+
+            return isValid;
+        }
+
+        function handleFileSelect(input, type) {
+            const file = input.files[0];
+            if (file) {
+                // Validar tamaño (5MB máximo)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('El archivo es demasiado grande. Máximo 5MB permitido.');
+                    input.value = '';
+                    return;
+                }
+
+                uploadedFiles[type] = {
+                    file: file,
+                    name: file.name,
+                    size: formatFileSize(file.size)
+                };
+
+                updateFileList();
+            }
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            Object.keys(uploadedFiles).forEach(type => {
+                const fileInfo = uploadedFiles[type];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <span class="file-name">${fileInfo.name}</span>
+                        <span class="file-size">${fileInfo.size}</span>
+                    </div>
+                    <button type="button" class="file-remove" onclick="removeFile('${type}')">×</button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(type) {
+            delete uploadedFiles[type];
+            document.getElementById(`${type}File`).value = '';
+            updateFileList();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function generateSummary() {
+            const formData = new FormData(document.getElementById('inscripcionForm'));
+            const data = Object.fromEntries(formData);
+            
+            const summary = document.getElementById('resumenDatos');
+            summary.innerHTML = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h4>Datos Personales</h4>
+                    <p><strong>Nombre:</strong> ${data.nombre} ${data.apellido}</p>
+                    <p><strong>DNI:</strong> ${data.dni}</p>
+                    <p><strong>Email:</strong> ${data.email}</p>
+                    <p><strong>Teléfono:</strong> ${data.telefono}</p>
+                    
+                    <h4 style="margin-top: 20px;">Información Académica</h4>
+                    <p><strong>Ciclo:</strong> ${getCycleName(data.ciclo)}</p>
+                    <p><strong>Turno:</strong> ${data.turno}</p>
+                    <p><strong>Nivel Educativo:</strong> ${data.nivel_educativo}</p>
+                    
+                    <h4 style="margin-top: 20px;">Documentos Subidos</h4>
+                    <p><strong>DNI:</strong> ${uploadedFiles.dni ? uploadedFiles.dni.name : 'Pendiente'}</p>
+                    <p><strong>Certificado:</strong> ${uploadedFiles.certificado ? uploadedFiles.certificado.name : 'No subido'}</p>
+                </div>
+            `;
+        }
+
+        function getCycleName(cycleId) {
+            const cycles = {
+                '1': 'Primer Ciclo - Alfabetización Inicial',
+                '2': 'Segundo Ciclo - Formación Intermedia',
+                '3': 'Tercer Ciclo - Finalización Primaria'
+            };
+            return cycles[cycleId] || 'No especificado';
+        }
+
+        function mostrarTerminos() {
+            alert('Aquí se mostrarían los términos y condiciones de la institución.');
+        }
+
+        // Manejar el envío del formulario
+        document.getElementById('inscripcionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!document.getElementById('acepto_terminos').checked) {
+                alert('Debes aceptar los términos y condiciones para continuar.');
+                return;
+            }
+
+            // Mostrar loading
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '⏳ Enviando...';
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData(this);
+                
+                // Agregar archivos al FormData
+                Object.keys(uploadedFiles).forEach(type => {
+                    formData.append(type, uploadedFiles[type].file);
+                });
+
+                // Enviar datos al servidor
+                const response = await fetch('api/procesar-inscripcion.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Mostrar mensaje de éxito
+                    document.getElementById('numeroSeguimiento').textContent = result.numero_seguimiento;
+                    document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+                    document.getElementById('success-step').classList.add('active');
+                } else {
+                    throw new Error(result.message || 'Error al procesar la inscripción');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al enviar la inscripción: ' + error.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Inicializar
+        showStep(1);
+    </script>
+</body>
+</html>

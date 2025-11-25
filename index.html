@@ -18,6 +18,456 @@
     
     <link rel="stylesheet" href="css/styles.css">
     <style>
+        /* ===================================================
+   ESTILOS PARA UBICACIONES POR TURNOS
+   =================================================== */
+
+/* Selector de Turnos */
+
+/* Nuevos estilos añadidos para mejoras */
+
+/* Mejoras en imágenes */
+.hero-image-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.hero-image {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+}
+
+/* Mejoras en navegación móvil */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: white;
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-lg);
+        transform: translateX(-100%);
+        transition: var(--transition-base);
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-menu.active {
+        transform: translateX(0);
+    }
+}
+
+/* Mejoras en formularios */
+.form-group {
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* Mejoras en botones */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+/* Mejoras en tarjetas de ubicación */
+.ubicacion-card {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ubicacion-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.ubicacion-card:hover::after {
+    transform: scaleX(1);
+}
+
+/* Mejoras en el mapa */
+.map-container iframe {
+    border-radius: 16px;
+    filter: grayscale(0.2);
+    transition: filter 0.3s ease;
+}
+
+.map-container:hover iframe {
+    filter: grayscale(0);
+}
+
+
+.turnos-selector {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0 3rem;
+    flex-wrap: wrap;
+}
+
+.turno-btn {
+    padding: 1rem 2rem;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.turno-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+.turno-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3);
+}
+
+/* Contenido de Turnos */
+.turno-content {
+    display: none;
+    animation: fadeInUp 0.5s ease;
+}
+
+.turno-content.active {
+    display: block;
+}
+
+.turno-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px;
+    border-left: 4px solid var(--accent-color);
+}
+
+.turno-header h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.turno-horario {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* Tarjetas de ubicación mejoradas */
+.ubicaciones-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.ubicacion-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.ubicacion-card.featured {
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 8px 30px rgba(74, 124, 89, 0.2);
+}
+
+.ubicacion-card.featured::before {
+    content: '⭐ Sede Principal';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--accent-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.ubicacion-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.ubicacion-imagen {
+    height: 200px;
+    position: relative;
+}
+
+.ubicacion-content {
+    padding: 1.5rem;
+}
+
+.ubicacion-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+}
+
+.ubicacion-info {
+    margin-bottom: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+.info-icon {
+    font-size: 1rem;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ubicacion-servicios {
+    margin-bottom: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ubicacion-servicios h4 {
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.ubicacion-servicios ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ubicacion-servicios li {
+    padding: 0.25rem 0;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.ubicacion-servicios li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Badges mejorados */
+.ubicacion-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+}
+
+.featured-badge {
+    background: linear-gradient(135deg, var(--accent-color), #3a8c5e);
+}
+
+/* Mapa interactivo */
+.ubicaciones-map {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.map-container {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.map-placeholder {
+    height: 400px;
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.map-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.marker-dot {
+    width: 16px;
+    height: 16px;
+    background: var(--accent-color);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.map-marker:hover .marker-dot {
+    transform: scale(1.4);
+    background: #e74c3c;
+}
+
+.marker-info {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+.map-marker:hover .marker-info {
+    opacity: 1;
+    visibility: visible;
+    top: 30px;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .turnos-selector {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .turno-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .ubicaciones-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .ubicacion-imagen {
+        height: 180px;
+    }
+    
+    .ubicacion-content {
+        padding: 1.25rem;
+    }
+    
+    .turno-header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .map-placeholder {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ubicaciones-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ubicacion-card.featured::before {
+        font-size: 0.6rem;
+        padding: 4px 8px;
+    }
+    
+    .turno-header h3 {
+        font-size: 1.25rem;
+    }
+    
+    .turno-horario {
+        font-size: 1rem;
+    }
+}
         /* Estilos adicionales para espacios de imágenes */
         .image-placeholder {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -117,7 +567,7 @@
                     <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
                     <li><a href="#ciclos" class="nav-link">Ciclos</a></li>
                     <li><a href="#programas" class="nav-link">Programas</a></li>
-                    <li><a href="#galeria" class="nav-link">Galería</a></li>
+                   
                     <li><a href="#servicios" class="nav-link">Servicios</a></li>
                     <li><a href="#contacto" class="nav-link">Contacto</a></li>
                     <li><a href="login.html" class="nav-link login-btn">Iniciar Sesión</a></li>
@@ -132,7 +582,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="inicio" class="hero" style="min-height: 70vh; padding: 120px 0 80px;">
+    <section id="inicio" class="hero" style="min-height: 20vh; padding: 120px 0 80px;">
         <div class="hero-content animate-fade-in-up">
             <div class="hero-badge">
                 Más de 50 años formando adultos
@@ -175,18 +625,14 @@
         </div>
     </section>
     
-    <!-- Hero Image Section - Separada para mejor control -->
-    <section style="padding: 40px 0; background: #f8f9fa;">
-        <div class="container">
-            <!-- ESPACIO PARA IMAGEN PRINCIPAL DEL HERO -->
-            <div class="image-placeholder" style="width: 100%; max-width: 1200px; height: 600px; margin: 0 auto;">
-                <div>
-                    <img src="assets/img/hero.jpeg" alt="">
-                   
-                </div>
-            </div>
+   <!-- Hero Section con imagen corregida -->
+<section style="padding: 40px 0; background: #f8f9fa;">
+    <div class="container">
+        <div class="hero-image-container">
+            <img src="assets/img/hero.png" alt="Estudiantes adultos en clase - EPA 703" class="hero-image">
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Nosotros Section -->
     <section id="nosotros" class="section section-light">
@@ -200,15 +646,10 @@
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin: 40px 0;">
-                <!-- ESPACIO PARA IMAGEN DE LA ESCUELA -->
-                <div class="image-placeholder about-image-space">
-                    <div>
-                        <div class="image-placeholder-icon">🏫</div>
-                        <strong>Imagen del Edificio</strong><br>
-                        Fachada de la escuela EPA 703<br>
-                        Dimensiones: 800x600px
-                    </div>
-                </div>
+                 <div class="image-placeholder about-image-space">
+                     <img src="assets/img/escuela.PNG" alt="Edificio de la escuela EPA 703">
+                 </div>
+
                 
                 <div>
                     <h3 style="color: var(--primary-color); margin-bottom: 20px;">¿Quiénes Somos?</h3>
@@ -288,33 +729,18 @@
                 </p>
             </div>
 
-            <!-- ESPACIOS PARA IMÁGENES DE LOS CICLOS -->
-            <div class="ciclos-image-grid">
-                <div class="image-placeholder ciclos-image-item">
-                    <div>
-                        <div class="image-placeholder-icon">📚</div>
-                        <strong>Primer Ciclo</strong><br>
-                        Estudiantes en clase de alfabetización<br>
-                        500x400px
-                    </div>
-                </div>
-                <div class="image-placeholder ciclos-image-item">
-                    <div>
-                        <div class="image-placeholder-icon">✍️</div>
-                        <strong>Segundo Ciclo</strong><br>
-                        Estudiantes trabajando en grupo<br>
-                        500x400px
-                    </div>
-                </div>
-                <div class="image-placeholder ciclos-image-item">
-                    <div>
-                        <div class="image-placeholder-icon">🎯</div>
-                        <strong>Tercer Ciclo</strong><br>
-                        Estudiantes en examen o presentación<br>
-                        500x400px
-                    </div>
-                </div>
-            </div>
+            <!-- Ciclos Educativos con imágenes corregidas -->
+<div class="ciclos-image-grid">
+    <div class="image-placeholder ciclos-image-item">
+        <img src="assets/img/aula1.png" alt="Aula de primer ciclo - Alfabetización">
+    </div>
+    <div class="image-placeholder ciclos-image-item">
+        <img src="assets/img/aula2.jpeg" alt="Aula de segundo ciclo - Formación intermedia">
+    </div>
+    <div class="image-placeholder ciclos-image-item">
+        <img src="assets/img/aula3.jpeg" alt="Aula de tercer ciclo - Finalización primaria">
+    </div>
+</div>
 
             <div class="cycles-grid">
                 <div class="cycle-card">
@@ -368,7 +794,7 @@
         </div>
     </section>
 
-    <!-- Galería de Fotos Section -->
+    <!-- Galería de Fotos Section 
     <section id="galeria" class="gallery-section">
         <div class="container">
             <div class="section-header">
@@ -379,7 +805,7 @@
                 </p>
             </div>
 
-            <!-- GALERÍA DE IMÁGENES -->
+             GALERÍA DE IMÁGENES 
             <div class="gallery-grid">
                 <div class="image-placeholder gallery-item">
                     <div>
@@ -426,8 +852,8 @@
             </div>
         </div>
     </section>
-
-    <!-- Equipo Docente Section -->
+     -->
+    <!-- Equipo Docente Section 
     <section id="equipo" class="section section-light">
         <div class="container">
             <div class="section-header">
@@ -438,7 +864,7 @@
                 </p>
             </div>
 
-            <!-- FOTOS DEL EQUIPO -->
+             FOTOS DEL EQUIPO 
             <div class="staff-grid">
                 <div style="text-align: center;">
                     <div class="image-placeholder staff-photo">
@@ -494,7 +920,7 @@
             </div>
         </div>
     </section>
-
+            -->
     <!-- Programas Section -->
     <section id="programas" class="section">
         <div class="container">
@@ -675,6 +1101,517 @@
         </div>
     </section>
 
+<!-- Ubicaciones por Turnos Section -->
+<section id="ubicaciones" class="section section-light">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-badge">Nuestras Sedes</div>
+            <h2 class="section-title">Ubicaciones por Turnos</h2>
+            <p class="section-description">
+                Encuentra nuestras sedes educativas en diferentes puntos de San Isidro y Beccar
+            </p>
+        </div>
+
+        <!-- Selector de Turnos -->
+        <div class="turnos-selector">
+            <button class="turno-btn active" data-turno="manana">Turno Mañana</button>
+            <button class="turno-btn" data-turno="tarde">Turno Tarde</button>
+            <button class="turno-btn" data-turno="vespertino">Turno Vespertino</button>
+        </div>
+
+        <!-- Turno Mañana -->
+        <div class="turno-content active" id="turno-manana">
+            <div class="turno-header">
+                <h3>📍 Turno Mañana</h3>
+                <p class="turno-horario">Horario: 9:00 a 12:00 HS</p>
+            </div>
+            
+            <div class="ubicaciones-grid">
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/casita-azul.jpg" alt="Casita Azul" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 706/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>Casita Azul</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Juan Clark 1807, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>9:00 - 12:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Alfabetización inicial</li>
+                                <li>✓ Primaria para adultos</li>
+                                <li>✓ Talleres básicos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/biblioteca-popular.jpg" alt="Biblioteca Popular" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 709/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>Biblioteca Popular Barrio Sauce</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Padre Acevedo 1518, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>9:00 - 12:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Educación primaria</li>
+                                <li>✓ Acceso a biblioteca</li>
+                                <li>✓ Actividades culturales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/cfr-403.jpg" alt="CFR N° 403" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 713/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>C.F.R. N° 403</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Formosa 1050, San Isidro</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>9:00 - 12:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Formación integral</li>
+                                <li>✓ Talleres prácticos</li>
+                                <li>✓ Educación comunitaria</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Turno Tarde -->
+        <div class="turno-content" id="turno-tarde">
+            <div class="turno-header">
+                <h3>📍 Turno Tarde</h3>
+                <p class="turno-horario">Horario: 14:00 a 17:00 HS</p>
+            </div>
+            
+            <div class="ubicaciones-grid">
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/la-mutual.jpg" alt="La Mutual" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 706/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>La Mutual - Barrio La Angelita</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Tomkinson 847, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>14:00 - 17:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Educación primaria</li>
+                                <li>✓ Actividades comunitarias</li>
+                                <li>✓ Apoyo educativo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/capilla-cristo.jpg" alt="Capilla Cristo Redentor" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 706/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>Capilla Cristo Redentor</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Murature 2409, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>14:00 - 17:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Alfabetización</li>
+                                <li>✓ Valores y educación</li>
+                                <li>✓ Contención espiritual</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/comedor-misioneras.jpg" alt="Comedor Misioneras" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 706/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>Comedor Misioneras de la Caridad</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Juan Clark 1760, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>14:00 - 17:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Educación básica</li>
+                                <li>✓ Apoyo alimentario</li>
+                                <li>✓ Contención integral</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Turno Vespertino -->
+        <div class="turno-content" id="turno-vespertino">
+            <div class="turno-header">
+                <h3>📍 Turno Vespertino</h3>
+                <p class="turno-horario">Horario: 17:00 a 21:00 HS</p>
+            </div>
+            
+            <div class="ubicaciones-grid">
+                <!-- EPA 703 - Sede Principal -->
+                <div class="ubicacion-card featured">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/ep-10.jpg" alt="EP N° 10" class="ubicacion-img">
+                            <div class="ubicacion-badge featured-badge">EPA N° 703</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>EP N° 10 - Sede Principal</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Av. Santa Fe 2304, Martínez</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>18:00 - 21:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Escuela Primaria para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Todos los ciclos educativos</li>
+                                <li>✓ Alfabetización digital</li>
+                                <li>✓ Orientación laboral</li>
+                                <li>✓ Talleres especiales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/cec-801.jpg" alt="CEC 801" class="ubicacion-img">
+                            <div class="ubicacion-badge">SFS N° 703</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>CEC 801</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Pueyrredón 1350, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>17:30 - 20:30 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Secundaria para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Secundaria completa</li>
+                                <li>✓ Formación profesional</li>
+                                <li>✓ Talleres técnicos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/ep-19.jpg" alt="EP N° 19" class="ubicacion-img">
+                            <div class="ubicacion-badge">SFS N° 703</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>EP N° 19</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Julián Navarro 2691, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>17:30 - 20:30 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Secundaria para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Ciclo básico secundario</li>
+                                <li>✓ Orientación en ciencias</li>
+                                <li>✓ Preparación universitaria</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Más ubicaciones del turno vespertino -->
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/cens-453.jpg" alt="CENS 453" class="ubicacion-img">
+                            <div class="ubicacion-badge">SFS N° 703</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>CENS 453 - Anexo</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Don Bosco 210, San Isidro</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>17:30 - 20:30 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Secundaria para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Educación secundaria</li>
+                                <li>✓ Modalidad adultos</li>
+                                <li>✓ Certificación oficial</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/ep-31.jpg" alt="EP N° 31" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 713/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>EP N° 31</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Onelli 2468, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>17:00 - 20:00 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Primaria para adultos</li>
+                                <li>✓ Talleres vespertinos</li>
+                                <li>✓ Apoyo educativo</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <div class="ubicacion-imagen">
+                        <div class="image-container">
+                            <img src="assets/img/ep-5.jpg" alt="EP N° 5" class="ubicacion-img">
+                            <div class="ubicacion-badge">CEA N° 713/03</div>
+                        </div>
+                    </div>
+                    <div class="ubicacion-content">
+                        <h3>EP N° 5</h3>
+                        <div class="ubicacion-info">
+                            <div class="info-item">
+                                <span class="info-icon">📍</span>
+                                <span>Posadas 606, Beccar</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🕒</span>
+                                <span>17:30 - 20:30 HS</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🎓</span>
+                                <span>Centro de Educación para Adultos</span>
+                            </div>
+                        </div>
+                        <div class="ubicacion-servicios">
+                            <h4>Programas Disponibles:</h4>
+                            <ul>
+                                <li>✓ Educación básica</li>
+                                <li>✓ Formación continua</li>
+                                <li>✓ Actividades culturales</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mapa de Ubicaciones -->
+        <div class="ubicaciones-map">
+            <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">
+                📍 Mapa de Nuestras Sedes en Zona Norte
+            </h3>
+            <!-- En la sección de ubicaciones, reemplaza el div del mapa con esto: -->
+<div class="ubicaciones-map">
+    <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">
+        📍 Mapa de Nuestras Sedes en San Isidro y Beccar
+    </h3>
+    <div class="map-container">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10573.83421121661!2d-58.56082519438402!3d-34.46222253717883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bca5f27b8dce6d%3A0xa5c9516e6c238c1e!2sSan%20Isidro%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1690000000000!5m2!1ses-419!2sar"
+            width="100%"
+            height="400"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <div class="map-overlay">
+            <div class="map-marker" style="top: 45%; left: 48%;">
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                    <strong>EPA 703 - Sede Principal</strong><br>
+                    Av. Santa Fe 2304, Martínez
+                </div>
+            </div>
+            <div class="map-marker" style="top: 50%; left: 52%;">
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                    <strong>Beccar Centro</strong><br>
+                    Múltiples sedes educativas
+                </div>
+            </div>
+            <div class="map-marker" style="top: 55%; left: 45%;">
+                <div class="marker-dot"></div>
+                <div class="marker-info">
+                    <strong>San Isidro Centro</strong><br>
+                    Sedes CENS y CFR
+                </div>
+            </div>
+        </div>
+    </div>
+    <p style="text-align: center; margin-top: 1rem; color: var(--text-light); font-size: 0.9rem;">
+        💡 Pasa el cursor sobre los marcadores para ver más información
+    </p>
+</div>
+        </div>
+    </div>
+</section>
+    
     <!-- Inscripción Section -->
     <section id="inscripcion" class="section section-light">
         <div class="container">
@@ -769,10 +1706,8 @@
                     <div class="image-placeholder" style="height: 300px; margin-top: 30px;">
                         <div>
                             <div class="image-placeholder-icon">🗺️</div>
-                            <strong>Mapa de Ubicación</strong><br>
-                            Google Maps embebido o<br>
-                            imagen de la ubicación<br>
-                            800x400px
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3288.4316056815824!2d-58.50170912448201!3d-34.491940751603146!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcb1078e0ca3eb%3A0xe4e0dd42796c5805!2sAv.%20Sta%20Fe%202304%2C%20B1640IFX%20Mart%C3%ADnez%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1762878228499!5m2!1ses-419!2sar" width="800" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                          
                         </div>
                     </div>
                 </div>
@@ -872,6 +1807,36 @@
     </footer>
 
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Funcionalidad para el selector de turnos
+document.addEventListener('DOMContentLoaded', function() {
+    const turnoBtns = document.querySelectorAll('.turno-btn');
+    const turnoContents = document.querySelectorAll('.turno-content');
+    
+    turnoBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const turno = this.getAttribute('data-turno');
+            
+            // Remover clase active de todos los botones y contenidos
+            turnoBtns.forEach(b => b.classList.remove('active'));
+            turnoContents.forEach(c => c.classList.remove('active'));
+            
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            
+            // Mostrar el contenido correspondiente
+            const targetContent = document.getElementById(`turno-${turno}`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+    
+    // Activar el primer turno por defecto
+    const firstTurnoBtn = document.querySelector('.turno-btn');
+    if (firstTurnoBtn) {
+        firstTurnoBtn.click();
+    }
+});
         // Navegación mejorada
         document.addEventListener('DOMContentLoaded', function() {
             const header = document.getElementById('header');
@@ -979,6 +1944,40 @@
                 });
             }
         });
+        // En el script del HTML, añadir esta función
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 4000);
+}
+// Añadir al script existente
+function validateForm(form) {
+    const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+    
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            input.style.borderColor = 'var(--error-color)';
+            isValid = false;
+        } else {
+            input.style.borderColor = '';
+        }
+    });
+    
+    return isValid;
+}
     </script>
 </body>
 </html>
